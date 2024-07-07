@@ -201,10 +201,10 @@ IP: 65.61.137.117</p>
 <p>随意点击一个栏目, url 会变为 index.jsp?content= 格式
 尝试后可以读取 <code>../login.jsp</code>
 已知是 Tomcat 架构, 可以网上寻找看敏感文件所处位置</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">http://65.61.137.117/index.jsp?content=../WEB-INF/web.xml<br>// 读取 web.xml 的网站配置信息<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://65.61.137.117/index.jsp?content=../WEB-INF/web.xml</span><br><span class="line">// 读取 web.xml 的网站配置信息</span><br></pre></td></tr></table></figure>
 <p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240320092439787.png" alt="image-20240320092439787"></p>
 <h4 id="3-2-3-search框存在xss漏洞"><a class="header-anchor" href="#3-2-3-search框存在xss漏洞">¶</a>3.2.3, search框存在xss漏洞</h4>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">&lt;script&gt;alert(&quot;hello&quot;)&lt;/script&gt;<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;script&gt;alert(&quot;hello&quot;)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
 <p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240320085140052.png" alt="image-20240320085140052"></p>
 <h4 id="3-2-4-反馈页面存在任意文件上传"><a class="header-anchor" href="#3-2-4-反馈页面存在任意文件上传">¶</a>3.2.4, 反馈页面存在任意文件上传</h4>
 <p>抓包测试发现上传几乎没有限制, 可以任意上传一句话木马, 但是没有上传的路径</p>

