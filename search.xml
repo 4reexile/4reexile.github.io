@@ -28,8 +28,6 @@
             
             <tag> 文件上传 </tag>
             
-            <tag> Python </tag>
-            
             <tag> Apache解析漏洞 </tag>
             
         </tags>
@@ -129,13 +127,13 @@
             
             <tag> Linux </tag>
             
+            <tag> 文件上传 </tag>
+            
             <tag> 绕过 </tag>
             
             <tag> FTP </tag>
             
             <tag> SMB </tag>
-            
-            <tag> 文件上传 </tag>
             
         </tags>
       
@@ -485,9 +483,9 @@
             
             <tag> SQL盲注 </tag>
             
-            <tag> sqlmap </tag>
-            
             <tag> 堆叠注入 </tag>
+            
+            <tag> sqlmap </tag>
             
             <tag> SQL预处理 </tag>
             
@@ -526,9 +524,9 @@
             
             <tag> SQL盲注 </tag>
             
-            <tag> sqlmap </tag>
-            
             <tag> 堆叠注入 </tag>
+            
+            <tag> sqlmap </tag>
             
         </tags>
       
@@ -586,13 +584,13 @@
       
         <tags>
             
+            <tag> 文件上传 </tag>
+            
             <tag> 绕过 </tag>
             
             <tag> PHP </tag>
             
             <tag> RCE </tag>
-            
-            <tag> 文件上传 </tag>
             
         </tags>
       
@@ -1177,9 +1175,9 @@
       
         <tags>
             
-            <tag> 绕过 </tag>
-            
             <tag> 文件上传 </tag>
+            
+            <tag> 绕过 </tag>
             
         </tags>
       
