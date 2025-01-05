@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>mhz_cxf-c1f</title>
+      <link href="/article/mhz_cxf-c1f/"/>
+      <url>/article/mhz_cxf-c1f/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>mhz_cxf: c1f</h1><hr><p>easyNo.5</p><blockquote><p>来源: <a href="https://www.vulnhub.com/entry/mhz_cxf-c1f,471/">vulnhub靶场-mhz_cxf: c1f</a></p><p>目标: root</p><p>提示: You will learn a little about enumeration/local enumeration , steganography.</p><p>妙妙工具: bash</p></blockquote><h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2><ul><li>kali: 192.168.56.5</li><li>target: 192.168.56.18</li></ul><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><p>nmap</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -A 192.168.56.18</span><br><span class="line"></span><br><span class="line">22/tcp open  ssh   </span><br><span class="line">80/tcp open  http</span><br></pre></td></tr></table></figure><p>80访问后是一个引导界面, 无时机作用, 进行目录扫描</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dirb http://192.168.56.18</span><br><span class="line">dirsearch -u http://192.168.56.18</span><br></pre></td></tr></table></figure><p>还是没有, 而此处没有更多的利用点了, 那就换一个更大的字典扫描:</p><blockquote><p><code>/usr/share/wordlists/</code> 下有一大堆字典, dirb自己的字典小的不行, 我推荐用别的</p><p>字典太大内存爆了, 唉</p></blockquote><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dirb http://192.168.56.18 /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -w</span><br></pre></td></tr></table></figure><p>反正就是扫到了(恼), 扫到一个<code>notes.txt</code>, 再等下去睡着了还没打出来</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250105204043.png" alt="image.png"></p><p>找到<code>remb.txt</code>和<code>remb2.txt</code>两个文件, 其中<code>remb.txt</code>中有&quot;flag&quot;:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">first_stage:flagitifyoucan1234</span><br></pre></td></tr></table></figure><h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2><p>你说的对, 但是没思路就可以开始乱来了, 是不是账密我一试便知:</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250105204903.png" alt="image.png"></p><h2 id="信息收集-v2"><a class="header-anchor" href="#信息收集-v2">¶</a>信息收集</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 系统信息 Linux mhz_c1f 4.15.0-96-generic #97-Ubuntu SMP Wed Apr 1 03:25:46 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</span></span><br><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="comment"># 内核版本 4.15.0-96-generic</span></span><br><span class="line"><span class="built_in">uname</span> -r</span><br><span class="line"><span class="comment"># 查看环境</span></span><br><span class="line">nc -h</span><br><span class="line"><span class="comment"># 查看特权文件, 似乎没有</span></span><br><span class="line">find / -perm -4000 2&gt;/dev/null</span><br><span class="line"><span class="comment"># 看看权限, 无发现</span></span><br><span class="line">sudo -l</span><br><span class="line"><span class="comment"># 看看计划任务, 没东西</span></span><br><span class="line"><span class="built_in">cat</span> /etc/crontab</span><br></pre></td></tr></table></figure><p>用户目录下有个user.txt, 让我们继续加油拿到root</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">HEEEEEY , you did it </span><br><span class="line">that&#x27;s amazing , good job man</span><br><span class="line"></span><br><span class="line">so just keep it up and get the root bcz i hate low privileges ;)</span><br><span class="line"></span><br><span class="line">#mhz_cyber</span><br></pre></td></tr></table></figure><p>过了一会儿, 发现我们有权限读取mhz_c1f用户下的文件, 发现在Paintings文件夹下有四个jpeg文件</p><blockquote><p>要是root权限, 不然总是Permission denied</p></blockquote><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># sudo</span></span><br><span class="line">scp -r first_stage@192.168.56.18:/home/mhz_c1f/Paintings/ ./picture/</span><br></pre></td></tr></table></figure><p>提示说有图片隐写, 而jpeg常见的是藏文件, 低位数据隐写等</p><p>脚本小子登场:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 都试了一下发现只有它有, 密码为空</span></span><br><span class="line">steghide extract -sf spinning\ the\ wool.jpeg</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250105230016.png" alt="image.png"></p><p>内容如下, 看起来是和之前一样格式的账号和密码</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ooh , i know should delete this , but i cant&#x27; remember it </span><br><span class="line">screw me </span><br><span class="line"></span><br><span class="line">mhz_c1f:1@ec1f</span><br></pre></td></tr></table></figure><p>不能用ssh登录, 猜测是直接su切换用户, 成功切换</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250105230340.png" alt="image.png"></p><p>查看权限, 发现可以在任意位置执行sudo, 那就sudo提权</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo /bin/bash</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250105230535.png" alt="image.png"></p><blockquote><p>内核比较新, 以后看看能不能用脚本打</p></blockquote><p>在<code>root</code>文件夹下拿到最后一个提示<code>.root.txt</code></p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">OwO HACKER MAN :D</span><br><span class="line"></span><br><span class="line">Well done sir , you have successfully got the root flag.</span><br><span class="line">I hope you enjoyed in this mission.</span><br><span class="line"></span><br><span class="line">#mhz_cyber</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> vulnhub靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 信息收集 </tag>
+            
+            <tag> 隐写 </tag>
+            
+            <tag> 图片隐写 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>WestWild-1.1</title>
       <link href="/article/WestWild-1.1/"/>
       <url>/article/WestWild-1.1/</url>
@@ -49,9 +78,9 @@
       
         <tags>
             
-            <tag> MySQL </tag>
-            
             <tag> 提权 </tag>
+            
+            <tag> MySQL </tag>
             
             <tag> 计划任务提权 </tag>
             
@@ -78,9 +107,9 @@
       
         <tags>
             
-            <tag> 提权 </tag>
-            
             <tag> 爆破 </tag>
+            
+            <tag> 提权 </tag>
             
             <tag> 编辑器提权 </tag>
             
@@ -165,9 +194,9 @@
       
         <tags>
             
-            <tag> 提权 </tag>
-            
             <tag> 爆破 </tag>
+            
+            <tag> 提权 </tag>
             
             <tag> SSH毒化 </tag>
             
@@ -361,9 +390,9 @@
             
             <tag> 文件包含 </tag>
             
-            <tag> stmp利用 </tag>
-            
             <tag> 横向移动 </tag>
+            
+            <tag> stmp利用 </tag>
             
             <tag> 端口转发 </tag>
             
@@ -787,9 +816,9 @@
             
             <tag> 工具利用 </tag>
             
-            <tag> MySQL </tag>
-            
             <tag> 提权 </tag>
+            
+            <tag> MySQL </tag>
             
             <tag> 代理 </tag>
             
@@ -820,9 +849,9 @@
             
             <tag> Linux </tag>
             
-            <tag> MySQL </tag>
-            
             <tag> 提权 </tag>
+            
+            <tag> MySQL </tag>
             
             <tag> 漏洞利用 </tag>
             
@@ -896,13 +925,13 @@
             
             <tag> Linux </tag>
             
-            <tag> msf </tag>
-            
-            <tag> MySQL </tag>
+            <tag> 爆破 </tag>
             
             <tag> 提权 </tag>
             
-            <tag> 爆破 </tag>
+            <tag> msf </tag>
+            
+            <tag> MySQL </tag>
             
             <tag> 漏洞利用 </tag>
             
@@ -966,11 +995,11 @@
             
             <tag> Linux </tag>
             
-            <tag> msf </tag>
+            <tag> 爆破 </tag>
             
             <tag> 提权 </tag>
             
-            <tag> 爆破 </tag>
+            <tag> msf </tag>
             
             <tag> 漏洞利用 </tag>
             
@@ -1030,11 +1059,11 @@
             
             <tag> Linux </tag>
             
-            <tag> msf </tag>
+            <tag> 爆破 </tag>
             
             <tag> 提权 </tag>
             
-            <tag> 爆破 </tag>
+            <tag> msf </tag>
             
         </tags>
       
