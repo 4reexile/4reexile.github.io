@@ -8,6 +8,7 @@ export function rehypeCodeBlock() {
       if (!child || child.type !== 'element' || child.tagName !== 'code' || !child.properties) {
         return
       }
+
       const classes = child.properties.className
       let lang = ''
       if (!classes) {
@@ -23,6 +24,8 @@ export function rehypeCodeBlock() {
         'div',
         {
           class: 'code-block',
+          'data-collapsed': 'false',
+          'data-collapsible': 'false',
         },
         [
           h(
@@ -42,6 +45,15 @@ export function rehypeCodeBlock() {
           ),
           h('span', { class: 'lang-tag' }, lang),
           node,
+          h(
+            'button',
+            {
+              class: 'code-fold-btn',
+              type: 'button',
+              'aria-label': 'Expand code block',
+            },
+            [h('i', { class: 'iconfont icon-down code-fold-icon' })],
+          ),
         ],
       )
 

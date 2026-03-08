@@ -9,9 +9,11 @@ import SectionBlock from '@/components/SectionBlock.astro'
 import MarkdownWrapper from '@/components/MarkdownWrapper.astro'
 import FriendList from '@/components/FriendList.astro'
 import ProjectList from '@/components/ProjectList.astro'
+import { ContributionHeatmap } from '@/components/ContributionHeatmap'
 import { ReadingProgress } from '@/components/post/ReadingProgress'
 import { PostToc } from '@/components/post/PostToc'
 import { Comments } from '@/components/comment'
+import { hero } from '@/config.json'
 
 export const getStaticPaths = (async () => {
   const specList = await getCollection('spec')
@@ -32,6 +34,9 @@ const { md } = Astro.props
 
 const { headings, Content } = await md.render()
 
+const githubProfile = hero.socials.find((item) => item.name.toLowerCase() === 'github')?.url || ''
+const githubUsername = githubProfile.split('/').filter(Boolean).pop() || '4reexile'
+
 const isPageLayout = ['friends', 'projects'].includes(md.slug)
 const isMdContentEmpty = md.body.trim().length === 0
 ---
@@ -47,7 +52,14 @@ const isMdContentEmpty = md.body.trim().length === 0
           <p>{md.data.description}</p>
         </header>
         {md.slug === 'friends' && <FriendList />}
-        {md.slug === 'projects' && <ProjectList />}
+        {
+          md.slug === 'projects' && (
+            <div class="space-y-6">
+              <ContributionHeatmap username={githubUsername} client:load />
+              <ProjectList />
+            </div>
+          )
+        }
         {!isMdContentEmpty && (
           <MarkdownWrapper>
             <Content />

@@ -3,6 +3,7 @@ import { remarkReadingTime } from './src/plugins/remarkReadingTime'
 import { rehypeCodeBlock } from './src/plugins/rehypeCodeBlock'
 import { rehypeTableBlock } from './src/plugins/rehypeTableBlock'
 import { rehypeCodeHighlight } from './src/plugins/rehypeCodeHighlight'
+import { rehypeRemoveTabindex } from './src/plugins/rehypeRemoveTabindex'
 import { rehypeImage } from './src/plugins/rehypeImage'
 import { rehypeLink } from './src/plugins/rehypeLink'
 import { rehypeHeading } from './src/plugins/rehypeHeading'
@@ -44,6 +45,7 @@ export default defineConfig({
       rehypeHeading,
       rehypeCodeBlock,
       rehypeCodeHighlight,
+      rehypeRemoveTabindex,
       rehypeTableBlock,
     ],
     remarkRehype: { footnoteLabel: '参考', footnoteBackLabel: '返回正文' },

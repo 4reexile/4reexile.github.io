@@ -12,7 +12,35 @@ const { class: className } = Astro.props
 
 <script>
   const BOUND_ATTR = 'data-code-copy-bound'
+  const COLLAPSE_THRESHOLD_PX = 32 * 16
   const resetTimers = new WeakMap<HTMLButtonElement, number>()
+
+  function initializeCodeBlocks(root: ParentNode = document) {
+    const blocks = root.querySelectorAll('.markdown .code-block')
+    blocks.forEach((block) => {
+      if (!(block instanceof HTMLElement)) return
+
+      const pre = block.querySelector('pre')
+      const foldBtn = block.querySelector('.code-fold-btn')
+      if (!(pre instanceof HTMLElement) || !(foldBtn instanceof HTMLButtonElement)) return
+
+      const isCollapsible = pre.scrollHeight > COLLAPSE_THRESHOLD_PX
+      block.dataset.collapsible = isCollapsible ? 'true' : 'false'
+
+      if (!block.dataset.foldReady) {
+        block.dataset.collapsed = isCollapsible ? 'true' : 'false'
+        block.dataset.foldReady = '1'
+      }
+
+      const collapsed = block.dataset.collapsed !== 'false'
+      if (!isCollapsible) {
+        block.dataset.collapsed = 'false'
+        foldBtn.setAttribute('aria-label', 'Code block is fully visible')
+      } else {
+        foldBtn.setAttribute('aria-label', collapsed ? 'Expand code block' : 'Collapse code block')
+      }
+    })
+  }
 
   function resetCopyState(button: HTMLButtonElement) {
     button.dataset.state = 'idle'
@@ -50,6 +78,18 @@ const { class: className } = Astro.props
     }
   }
 
+  function toggleFold(button: HTMLButtonElement) {
+    const codeBlock = button.closest('.code-block')
+    if (!(codeBlock instanceof HTMLElement)) return
+    if (codeBlock.dataset.collapsible !== 'true') return
+
+    const collapsed = codeBlock.dataset.collapsed !== 'false'
+    codeBlock.dataset.collapsed = collapsed ? 'false' : 'true'
+    button.setAttribute('aria-label', collapsed ? 'Collapse code block' : 'Expand code block')
+  }
+
+  initializeCodeBlocks()
+
   if (!document.documentElement.hasAttribute(BOUND_ATTR)) {
     document.documentElement.setAttribute(BOUND_ATTR, '1')
 
@@ -58,9 +98,19 @@ const { class: className } = Astro.props
       if (!(target instanceof Element)) return
 
       const button = target.closest('.code-copy-btn')
-      if (!(button instanceof HTMLButtonElement)) return
+      if (button instanceof HTMLButtonElement) {
+        handleCopy(button)
+        return
+      }
 
-      handleCopy(button)
+      const foldButton = target.closest('.code-fold-btn')
+      if (!(foldButton instanceof HTMLButtonElement)) return
+
+      toggleFold(foldButton)
+    })
+
+    document.addEventListener('swup:content:replace', () => {
+      initializeCodeBlocks()
     })
   }
 </script>

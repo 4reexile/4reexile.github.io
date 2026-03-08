@@ -62,6 +62,26 @@
   @apply absolute right-6 -top-7 h-7 w-20 px-2 flex items-center justify-center rounded-t-lg bg-inherit text-sm leading-none truncate;
 }
 
+.markdown .code-fold-btn {
+  @apply h-8 w-full flex items-center justify-center border-t border-primary bg-secondary text-secondary transition-colors rounded-b-lg;
+}
+
+.markdown .code-fold-btn:hover {
+  @apply text-accent;
+}
+
+.markdown .code-block[data-collapsible='false'] .code-fold-btn {
+  @apply hidden;
+}
+
+.markdown .code-fold-icon {
+  @apply text-xs leading-none transition-transform duration-200;
+}
+
+.markdown .code-block[data-collapsed='false'] .code-fold-icon {
+  transform: rotate(180deg);
+}
+
 .markdown .code-copy-btn {
   @apply absolute right-28 -top-7 h-7 w-7 px-0 flex items-center justify-center overflow-hidden rounded-t-lg bg-inherit text-secondary transition-all duration-200;
 }
@@ -110,7 +130,25 @@
 }
 
 .markdown pre {
-  @apply px-6 py-4 max-h-[450px] text-sm leading-relaxed overflow-auto;
+  @apply px-6 py-4 text-sm leading-relaxed overflow-x-auto overflow-y-visible;
+}
+
+.markdown .code-block[data-collapsed='true'] pre {
+  @apply max-h-56 overflow-hidden;
+}
+
+.markdown .code-block[data-collapsed='false'] pre {
+  @apply max-h-none overflow-x-auto overflow-y-visible;
+}
+
+.markdown .code-block[data-collapsible='false'] pre {
+  @apply max-h-none overflow-x-auto overflow-y-visible;
+}
+
+.markdown .code-block[data-collapsible='true'][data-collapsed='true']::after {
+  content: '';
+  @apply pointer-events-none absolute inset-x-0 bottom-8 h-12;
+  background: linear-gradient(to top, rgb(var(--color-bg-secondary)) 20%, transparent 100%);
 }
 
 .markdown .table-wrapper {

@@ -1,5 +1,5 @@
 import { author, site } from '@/config.json'
-import { getFormattedDateTime } from '@/utils/date'
+import { getFormattedDate } from '@/utils/date'
 import { AnimatedSignature } from '../AnimatedSignature'
 import { useEffect, useState } from 'react'
 import { toast } from "react-toastify";
@@ -26,7 +26,7 @@ export function PostCopyright({
   }
 
   useEffect(() => {
-    setLastModStr(getFormattedDateTime(lastMod))
+    setLastModStr(getFormattedDate(lastMod))
   }, [lastMod])
 
   return (

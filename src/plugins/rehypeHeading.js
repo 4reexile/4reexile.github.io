@@ -22,6 +22,10 @@ export function rehypeHeading() {
           h('i', { class: 'iconfont icon-link' }),
         )
         node.children.push(link)
+        if (node.properties) {
+          delete node.properties.tabindex
+          delete node.properties.tabIndex
+        }
         node.properties = {
           ...node.properties,
           class: 'heading',

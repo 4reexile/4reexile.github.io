@@ -1,8 +1,19 @@
-<script>
-  import { getLocalTheme, getSystemTheme, changePageTheme } from '@/utils/theme'
-
-  // 哀悼日
+<script is:inline>
+  const THEME_KEY = 'gyoza-theme'
   const MOURNING_DAYS = ['4-4', '5-12', '7-7', '9-18', '12-13']
+
+  function getSystemTheme() {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  }
+
+  function getLocalTheme() {
+    const local = localStorage.getItem(THEME_KEY)
+    if (local === 'dark' || local === 'light' || local === 'system') {
+      return local
+    }
+    localStorage.setItem(THEME_KEY, 'system')
+    return 'system'
+  }
 
   function isMourningDay() {
     const today = new Date()
@@ -10,20 +21,16 @@
     return MOURNING_DAYS.includes(dateStr)
   }
 
-  function load() {
+  function applyTheme() {
     const localTheme = getLocalTheme()
-    const systemTheme = getSystemTheme()
-    if (localTheme === 'system') {
-      changePageTheme(systemTheme)
-    } else {
-      changePageTheme(localTheme)
-    }
+    const nextTheme = localTheme === 'system' ? getSystemTheme() : localTheme
+    document.documentElement.setAttribute('data-theme', nextTheme)
+
     if (isMourningDay()) {
       document.documentElement.classList.add('gray')
     }
   }
 
-  load()
-
-  // document.addEventListener('swup:content:replace', load)
+  applyTheme()
+  document.addEventListener('swup:content:replace', applyTheme)
 </script>
