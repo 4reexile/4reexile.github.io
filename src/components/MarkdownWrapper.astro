@@ -9,3 +9,58 @@ const { class: className } = Astro.props
 <article id="markdown-wrapper" class="markdown" class:list={[className]}>
   <slot />
 </article>
+
+<script>
+  const BOUND_ATTR = 'data-code-copy-bound'
+  const resetTimers = new WeakMap<HTMLButtonElement, number>()
+
+  function resetCopyState(button: HTMLButtonElement) {
+    button.dataset.state = 'idle'
+    button.setAttribute('aria-label', 'Copy code block')
+  }
+
+  function queueReset(button: HTMLButtonElement) {
+    const prevTimer = resetTimers.get(button)
+    if (prevTimer) {
+      window.clearTimeout(prevTimer)
+    }
+
+    const timer = window.setTimeout(() => {
+      resetCopyState(button)
+      resetTimers.delete(button)
+    }, 1400)
+
+    resetTimers.set(button, timer)
+  }
+
+  async function handleCopy(button: HTMLButtonElement) {
+    const codeBlock = button.closest('.code-block')
+    const code = codeBlock?.querySelector('pre code')
+    if (!code || !code.textContent) return
+
+    try {
+      await navigator.clipboard.writeText(code.textContent)
+      button.dataset.state = 'success'
+      button.setAttribute('aria-label', 'Code copied')
+      queueReset(button)
+    } catch {
+      button.dataset.state = 'error'
+      button.setAttribute('aria-label', 'Copy failed')
+      queueReset(button)
+    }
+  }
+
+  if (!document.documentElement.hasAttribute(BOUND_ATTR)) {
+    document.documentElement.setAttribute(BOUND_ATTR, '1')
+
+    document.addEventListener('click', (event) => {
+      const target = event.target
+      if (!(target instanceof Element)) return
+
+      const button = target.closest('.code-copy-btn')
+      if (!(button instanceof HTMLButtonElement)) return
+
+      handleCopy(button)
+    })
+  }
+</script>

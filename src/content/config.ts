@@ -42,6 +42,7 @@ const friendsCollection = defineCollection({
     description: z.string(),
     avatar: z.string(),
     link: z.string().url(),
+    group: z.enum(['friend', 'stack']).default('friend'),
   }),
 })
 

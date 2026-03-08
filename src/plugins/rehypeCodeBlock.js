@@ -24,7 +24,25 @@ export function rehypeCodeBlock() {
         {
           class: 'code-block',
         },
-        [h('span', { class: 'lang-tag' }, lang), node],
+        [
+          h(
+            'button',
+            {
+              class: 'code-copy-btn',
+              type: 'button',
+              'aria-label': 'Copy code block',
+              'data-state': 'idle',
+            },
+            [
+              h('i', { class: 'iconfont icon-file-list code-copy-icon code-copy-icon-idle' }),
+              h('i', { class: 'iconfont icon-check code-copy-icon code-copy-icon-success' }),
+              h('i', { class: 'iconfont icon-close code-copy-icon code-copy-icon-error' }),
+              h('span', { class: 'code-copy-text' }, '已复制'),
+            ],
+          ),
+          h('span', { class: 'lang-tag' }, lang),
+          node,
+        ],
       )
 
       parent.children[index] = codeBlock

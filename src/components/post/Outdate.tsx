@@ -23,7 +23,7 @@ export function Outdate({ lastMod }: { lastMod: Date }) {
         >
           <span>
             这篇文章最后修改于 {getFormattedDate(lastMod)}
-            ，部分内容可能已经不适用，如有疑问可联系作者。
+            ，部分内容可能已经不适用。
           </span>
         </motion.div>
       )}

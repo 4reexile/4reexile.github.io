@@ -134,6 +134,20 @@ function DonateContent() {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 20, opacity: 0 }}
     >
+      <h2 className="text-center mb-5">感谢您的支持,这将成为我前进的最大动力</h2>
+      <h2 className="text-center mb-5">但是这里什么也没有呢</h2>
+    </motion.div>
+  )
+}
+
+/**
+function DonateContent() {
+  return (
+    <motion.div
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: 20, opacity: 0 }}
+    >
       <h2 className="text-center mb-5">感谢您的支持，这将成为我前进的最大动力。</h2>
       <div className="flex flex-wrap gap-4 justify-center">
         <img
@@ -149,3 +163,5 @@ function DonateContent() {
     </motion.div>
   )
 }
+*/
+

@@ -59,7 +59,54 @@
 }
 
 .markdown .lang-tag {
-  @apply absolute right-6 -top-6 h-6 px-4 flex items-center rounded-t-lg bg-inherit text-sm;
+  @apply absolute right-6 -top-7 h-7 w-20 px-2 flex items-center justify-center rounded-t-lg bg-inherit text-sm leading-none truncate;
+}
+
+.markdown .code-copy-btn {
+  @apply absolute right-28 -top-7 h-7 w-7 px-0 flex items-center justify-center overflow-hidden rounded-t-lg bg-inherit text-secondary transition-all duration-200;
+}
+
+.markdown .code-copy-btn:hover {
+  @apply text-accent;
+}
+
+.markdown .code-copy-icon {
+  @apply text-xs leading-none;
+}
+
+.markdown .code-copy-icon-success,
+.markdown .code-copy-icon-error,
+.markdown .code-copy-text {
+  @apply hidden;
+}
+
+.markdown .code-copy-btn[data-state='success'] {
+  @apply w-16 px-2 justify-between text-emerald-500;
+}
+
+.markdown .code-copy-btn[data-state='success'] .code-copy-icon-idle {
+  @apply hidden;
+}
+
+.markdown .code-copy-btn[data-state='success'] .code-copy-icon-success,
+.markdown .code-copy-btn[data-state='success'] .code-copy-text {
+  @apply block;
+}
+
+.markdown .code-copy-btn[data-state='error'] {
+  @apply text-red-500;
+}
+
+.markdown .code-copy-btn[data-state='error'] .code-copy-icon-idle {
+  @apply hidden;
+}
+
+.markdown .code-copy-btn[data-state='error'] .code-copy-icon-error {
+  @apply block;
+}
+
+.markdown .code-copy-text {
+  @apply whitespace-nowrap text-[10px] leading-none;
 }
 
 .markdown pre {
