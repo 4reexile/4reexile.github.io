@@ -9,7 +9,7 @@ category: 'CTF'
 draft: false
 comments: false
 sticky: 0
-tags: [SSTI, CTF]
+tags: [SSTI]
 ---
 
 参考文章

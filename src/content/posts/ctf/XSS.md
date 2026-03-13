@@ -5,11 +5,11 @@ date: 2025-03-18 19:15:14
 lastMod: 2026-01-25
 summary: 'XSS,ctf没有,实战倒是不少'
 cover: ''
-category: '靶场'
+category: 'CTF'
 draft: false
 comments: false
 sticky: 0
-tags: [XSS, CTF]
+tags: [XSS]
 ---
 
 # XSS

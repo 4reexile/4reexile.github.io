@@ -28,7 +28,7 @@ Java 序列化和反序列化的过程使用 `ObjectOutputStream` 和 `ObjectInp
 
 # 代码编写
 
-不知道原理会用也只是脚本小子
+我只是脚本小子
 
 ## 例子
 
@@ -182,7 +182,7 @@ java反序列化漏洞的关键出现在`java.io.ObjectInputStream.readObject()`
 
 Java反序列化和php相同的是，php反序列化通过POP链最终要找到一个落脚点（RCE），这个落脚点一般都是开发自己写的。java通过gadget也要找一个落脚点触发恶意链，而这个落脚点在java标准库和一些常用库就有
 
-> 在Java安全领域，Gadget指的是一系列在目标应用的ClassPath中已存在的类的有机组合, 也就是调用链
+> Gadget指的是一系列在目标应用的ClassPath中已存在的类的有机组合, 也就是调用链
 
 ysoserial上就集成了各种常用gadget，其中最简单的就是URLDNS
 
@@ -228,6 +228,8 @@ java -cp ysoserial.jar ysoserial.exploit.JRMPListener 5555 CommonsCollections4 "
 ```
 
 # 拓展
+
+||你已经学会了反序列化, 现在学学代码审计就去学CC链吧!(开玩笑的)||
 
 ## 定义
 

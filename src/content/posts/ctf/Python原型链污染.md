@@ -9,7 +9,7 @@ category: 'CTF'
 draft: false
 comments: false
 sticky: 0
-tags: [原型链污染, CTF]
+tags: [原型链污染]
 ---
 
 # 是什么

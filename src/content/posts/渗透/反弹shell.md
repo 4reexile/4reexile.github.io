@@ -5,11 +5,11 @@ date: 2025-01-25 20:19:51
 lastMod: 2025-04-12
 summary: ''
 cover: ''
-category: '靶场'
+category: '渗透'
 draft: false
 comments: false
 sticky: 0
-tags: [工具, 渗透]
+tags: [工具]
 ---
 
 # 前置知识
