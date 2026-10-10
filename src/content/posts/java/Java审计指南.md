@@ -5,16 +5,12 @@ date: 2025-08-20
 lastMod: 2025-08-20
 summary: 'cup是杯子,cdown是倒过来的杯子'
 cover: ''
-category: 'Java安全'
+category: 'Java'
 draft: false
 comments: false
 sticky: 0
-tags: [Java, 代码审计]
+tags: [Java安全, Java, SQL注入, XSS, SSRF, XXE, 缓冲区溢出, 反序列化]
 ---
-
-参考文章:
-
-1. [springmvc Controller接收前端参数的几种方式总结](https://www.cnblogs.com/mjs154/p/11667796.html)
 
 # 审计
 
@@ -496,3 +492,7 @@ session是否有超时注销功能
 `parse` 和 `parseObject`
 
 ## Struts2
+
+参考文章:
+
+1. [springmvc Controller接收前端参数的几种方式总结](https://www.cnblogs.com/mjs154/p/11667796.html)

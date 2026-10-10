@@ -5,7 +5,7 @@ date: 2024-11-02
 lastMod: 2024-12-19
 summary: ''
 cover: ''
-category: ''
+category: 'CTF'
 draft: false
 comments: false
 sticky: 0

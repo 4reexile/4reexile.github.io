@@ -2,24 +2,21 @@
 title: HQL注入
 author: Creexile
 date: 2025-10-23
-lastMod: 2025-10-23
-summary: '你和SQL注入是什么关系'
+lastMod: 2026-07-29
+summary: 你和SQL注入是什么关系
 cover: ''
 category: '渗透'
-draft: false
+draft: true
 comments: false
 sticky: 0
-tags: [HQL注入]
+tags:
+  - 渗透
+  - 渗透知识
+  - HQL注入
+  - CVE
+  - Python
+  - Java
 ---
-
-参考连接
-
-1. [freebuf-『渗透测试』HQL注入之从学会发音到逐渐遗忘](https://www.freebuf.com/articles/web/287849.html)
-2. [博客园-hsql整理](https://www.cnblogs.com/fengyouheng/p/11013013.html)
-3. [博客园-攻防世界-web-Zhuanxv（任意文件读取、万能密钥、sql盲注）](https://www.cnblogs.com/zhengna/p/13684201.html)
-4. [csdn-xctf攻防世界 Web高手进阶区 Zhuanxv](https://blog.csdn.net/l8947943/article/details/122372989)
-
-工具: HQLMap
 
 # 介绍
 
@@ -202,4 +199,13 @@ public String buildSafeHql(String className) {
 
 1. 仅保证了 from 子句中的类名安全, 查询的其他部分必须使用参数绑定或白名单验证; 类名验证不能替代参数化查询
 2. JPA 允许通过 `@Entity(name = "custom_name")` 指定一个不同于 Java 类名的实体名称, 如果系统使用了这类自定义名称则依然有注入风险
-3. 其实是我绕不过这个方式, 我就扔在这里看看有没有人能研究出来
+3. 其实是我绕不过这个方式, 我就扔在这里看看有没有大佬
+
+工具: HQLMap
+
+参考连接
+
+1. [freebuf-『渗透测试』HQL注入之从学会发音到逐渐遗忘](https://www.freebuf.com/articles/web/287849.html)
+2. [博客园-hsql整理](https://www.cnblogs.com/fengyouheng/p/11013013.html)
+3. [博客园-攻防世界-web-Zhuanxv（任意文件读取、万能密钥、sql盲注）](https://www.cnblogs.com/zhengna/p/13684201.html)
+4. [csdn-xctf攻防世界 Web高手进阶区 Zhuanxv](https://blog.csdn.net/l8947943/article/details/122372989)

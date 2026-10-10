@@ -51,6 +51,22 @@ export default defineConfig({
     remarkRehype: { footnoteLabel: '参考', footnoteBackLabel: '返回正文' },
   },
   vite: {
+    plugins: [
+      {
+        // 预览面板等客户端可能把 HTML 属性里的 &amp; 原样发进请求 URL，
+        // 导致 astro 虚拟脚本模块 (?astro&type=script...) 解析失败，
+        // vite fallback 读到原始 .astro 源码而报 esbuild 语法错误。这里在入口处还原。
+        name: 'fix-escaped-ampersand-query',
+        configureServer(server) {
+          server.middlewares.use((req, _res, next) => {
+            if (req.url && req.url.includes('&amp;')) {
+              req.url = req.url.replaceAll('&amp;', '&')
+            }
+            next()
+          })
+        },
+      },
+    ],
     build: {
       rollupOptions: {
         external: ['/pagefind/pagefind.js'],

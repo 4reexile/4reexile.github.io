@@ -3,19 +3,16 @@ title: JavaSec
 author: Creexile
 date: 2025-08-29
 lastMod: 2025-08-29
-summary: '玩Java代码审计的'
+summary: '一个Java安全靶场和安全审计学习项目'
 cover: ''
 category: '工具'
 draft: false
 comments: false
 sticky: 0
-tags: [代码审计, Java]
+tags: [Java安全, Java, RCE, MySQL]
 ---
 
-参考文章
-
-1. [先知社区-Java-Sec代码审计漏洞篇(一)](https://xz.aliyun.com/news/15669)
-2. [先知社区-Java-Sec代码审计漏洞篇(二)](https://xz.aliyun.com/news/15721)
+一个Java安全靶场和安全审计学习项目, 记得下载zip和releases中的jar包共两个文件
 
 # 环境配置
 
@@ -91,3 +88,8 @@ JavaSec-app\
 ```
 
 此时运行jar, 发现端口变为8005, 且能正常登录
+
+参考文章
+
+1. [先知社区-Java-Sec代码审计漏洞篇(一)](https://xz.aliyun.com/news/15669)
+2. [先知社区-Java-Sec代码审计漏洞篇(二)](https://xz.aliyun.com/news/15721)

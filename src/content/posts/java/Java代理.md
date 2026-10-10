@@ -3,18 +3,14 @@ title: Java代理
 author: Creexile
 date: 2025-08-08
 lastMod: 2025-08-08
-summary: '没有中间商赚差价'
+summary: 'xxx,没有中间商赚差价'
 cover: ''
-category: 'Java安全'
+category: 'Java'
 draft: false
 comments: false
 sticky: 0
-tags: [Java]
+tags: [Java基础, Java安全, Java, 反序列化]
 ---
-
-参考文章
-
-1. [博客园-java动态代理实现与原理详细分析](https://www.cnblogs.com/gonjan-blog/p/6685611.html)
 
 # 前置知识
 
@@ -115,3 +111,7 @@ public class Main {
 执行被代理对象的任何方法都会先触发代理类的invoke方法, 你从上面的方法调用流程可以很直观的看出来
 
 嗯, 这里好像可以利用反序列化哦
+
+参考文章
+
+1. [博客园-java动态代理实现与原理详细分析](https://www.cnblogs.com/gonjan-blog/p/6685611.html)

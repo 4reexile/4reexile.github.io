@@ -1,5 +1,4 @@
-import { site } from '@/config.json'
-// import { sponsor, site } from '@/config.json'
+import { site, sponsor } from '@/config.json'
 import { motion } from 'framer-motion'
 import * as QR from 'qrcode.react'
 import { useAtomValue } from 'jotai'
@@ -131,28 +130,14 @@ function DonateButton() {
 function DonateContent() {
   return (
     <motion.div
+      className="bg-primary rounded-lg border border-primary p-8 flex flex-col items-center gap-4 shadow-xl"
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 20, opacity: 0 }}
     >
-      <h2 className="text-center mb-5">感谢您的支持,这将成为我前进的最大动力</h2>
-      <h2 className="text-center mb-5">但是这里什么也没有呢</h2>
-    </motion.div>
-  )
-}
-
-/**
-function DonateContent() {
-  return (
-    <motion.div
-      initial={{ y: 20, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      exit={{ y: 20, opacity: 0 }}
-    >
-      <h2 className="text-center mb-5">感谢您的支持，这将成为我前进的最大动力。</h2>
-      <div className="flex flex-wrap gap-4 justify-center">
+      {sponsor.wechat ? (
         <img
-          className="object-cover"
+          className="object-cover rounded-md"
           width={300}
           height={300}
           src={sponsor.wechat}
@@ -160,9 +145,14 @@ function DonateContent() {
           loading="lazy"
           decoding="async"
         />
-      </div>
+      ) : (
+        <i className="iconfont icon-user-heart text-4xl text-accent" aria-hidden></i>
+      )}
+      <h2 className="text-center font-bold">感谢您的支持,这将成为我前进的最大动力</h2>
+      {!sponsor.wechat && (
+        <p className="text-center text-sm text-secondary">但是这里什么也没有呢</p>
+      )}
     </motion.div>
   )
 }
-*/
 

@@ -1,23 +1,16 @@
 ---
-title: JMT
+title: JWT
 author: Creexile
 date: 2025-12-30
 lastMod: 2025-12-30
 summary: ''
 cover: ''
-category: CTF
+category: 'CTF'
 draft: false
 comments: false
 sticky: 0
-tags:
-  - JWT
+tags: [CTF, CTF知识, JWT, 爆破]
 ---
-
-参考文章
-
-1. [知乎-破解 JWT：漏洞赏金猎人指南（第七部分）——最终的 P1 Boss](https://zhuanlan.zhihu.com/p/1922990289649378959)
-2. [博客园-JWT攻防实战：混淆、破解与红队利用技术](https://www.cnblogs.com/qife122/p/19114704)
-3. [个人博客-Abusing JWT public keys without the public key](https://blog.silentsignal.eu/2021/02/08/abusing-jwt-public-keys-without-the-public-key/)
 
 # JWT是什么
 
@@ -130,3 +123,9 @@ data={
 data = Object.assign(data);
 console.log( jwt.sign(data, publicKey, { algorithm:'HS256'}))
 ```
+
+参考文章
+
+1. [知乎-破解 JWT：漏洞赏金猎人指南（第七部分）——最终的 P1 Boss](https://zhuanlan.zhihu.com/p/1922990289649378959)
+2. [博客园-JWT攻防实战：混淆、破解与红队利用技术](https://www.cnblogs.com/qife122/p/19114704)
+3. [个人博客-Abusing JWT public keys without the public key](https://blog.silentsignal.eu/2021/02/08/abusing-jwt-public-keys-without-the-public-key/)

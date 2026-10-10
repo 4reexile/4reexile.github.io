@@ -36,7 +36,7 @@ interface Props {
 
 const { currentPage, totalPage, data } = Astro.props
 
-const hotTags = await getHotTags()
+const hotTags = await getHotTags(10)
 const allTags = await getAllTags()
 const allCategories = await getAllCategories()
 

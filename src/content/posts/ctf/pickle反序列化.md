@@ -7,7 +7,7 @@ description:
 lastMod: 2025-05-06
 summary: ''
 cover: ''
-category: CTF
+category: 'CTF'
 draft: true
 comments: false
 sticky: 0

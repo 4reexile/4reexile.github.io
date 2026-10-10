@@ -5,11 +5,11 @@ date: 2025-12-18
 lastMod: 2025-12-18
 summary: ''
 cover: ''
-category: 'Java安全'
+category: 'Java'
 draft: false
 comments: false
 sticky: 0
-tags: [Java]
+tags: [Java安全, Java, JavaWeb, Tomcat]
 ---
 
 # 基础三大件

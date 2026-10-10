@@ -5,11 +5,11 @@ date: 2025-08-10
 lastMod: 2025-08-10
 summary: ''
 cover: ''
-category: 'Java安全'
+category: 'Java'
 draft: false
 comments: false
 sticky: 0
-tags: [Java]
+tags: [Java基础, Java安全, Java]
 ---
 
 先讲一下Java类动态加载方式

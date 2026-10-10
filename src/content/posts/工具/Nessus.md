@@ -9,15 +9,8 @@ category: '工具'
 draft: false
 comments: false
 sticky: 0
-tags: [渗透]
+tags: []
 ---
-
-参考文章
-
-1. [知乎-漏扫神器：Nessus 安装、使用及插件升级（附破解步骤）](https://zhuanlan.zhihu.com/p/708965325)
-2. [csdn-手把手教学Windows系统安装破解Nessus版](https://blog.csdn.net/edsion4/article/details/138632194)
-3. [博客园-Windows下安装Nessus 10.8.3安装破解教程](https://www.cnblogs.com/CVE-2003/p/18442392)
-4. [知乎-Nessus漏洞扫描使用教程](https://zhuanlan.zhihu.com/p/625304158)
 
 我翻了好多发现安装最后卡住/无法使用的情况, 然后发现没法用其实是因为要等加载, 没绷住
 
@@ -170,3 +163,10 @@ attrib -s -r -h "D:\tool\web\Nessus\Nessus\nessus\plugin_feed_info.inc"
 ```
 
 再查看`E:\Nessus\nessus\plugins\plugin_feed_info.inc `和 `E:\Nessus\nessus\plugin_feed_info.inc` 文件内容是否变化了
+
+参考文章
+
+1. [知乎-漏扫神器：Nessus 安装、使用及插件升级（附破解步骤）](https://zhuanlan.zhihu.com/p/708965325)
+2. [csdn-手把手教学Windows系统安装破解Nessus版](https://blog.csdn.net/edsion4/article/details/138632194)
+3. [博客园-Windows下安装Nessus 10.8.3安装破解教程](https://www.cnblogs.com/CVE-2003/p/18442392)
+4. [知乎-Nessus漏洞扫描使用教程](https://zhuanlan.zhihu.com/p/625304158)

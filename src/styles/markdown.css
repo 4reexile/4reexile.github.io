@@ -15,15 +15,25 @@
 }
 
 .markdown h2 {
-  @apply text-2xl font-bold mt-12 mb-6;
+  @apply text-2xl font-bold mt-14 mb-6 pl-4 pb-2.5 border-l-4 border-l-accent border-b border-b-primary;
 }
 
 .markdown h3 {
-  @apply text-xl font-semibold mt-8 mb-3;
+  @apply text-lg font-bold mt-10 mb-4 pl-4 relative;
+}
+
+.markdown h3::before {
+  content: '';
+  @apply absolute left-0 top-[0.35em] h-[0.85em] w-1 rounded bg-accent;
 }
 
 .markdown h4 {
-  @apply font-semibold mt-6 mb-2;
+  @apply font-bold mt-8 mb-3 pl-3 relative;
+}
+
+.markdown h4::before {
+  content: '';
+  @apply absolute left-0 top-[0.55em] w-[3px] h-[0.9em] rounded bg-secondary;
 }
 
 .markdown a {
@@ -51,23 +61,31 @@
 }
 
 .markdown :not(pre) > code {
-  @apply px-2 py-1 rounded bg-secondary text-sm font-semibold;
+  @apply px-1.5 py-0.5 rounded bg-secondary text-[0.85em] font-semibold text-accent;
 }
 
 .markdown .code-block {
   @apply relative mt-10 mb-5 bg-secondary rounded-lg;
 }
 
+.markdown .code-header {
+  @apply flex items-center justify-between h-9 pl-4 pr-1.5 border-b border-primary;
+}
+
+.markdown .code-actions {
+  @apply flex items-center gap-1;
+}
+
 .markdown .lang-tag {
-  @apply absolute right-6 -top-7 h-7 w-20 px-2 flex items-center justify-center rounded-t-lg bg-inherit text-sm leading-none truncate;
+  @apply text-xs uppercase tracking-wider leading-none text-secondary select-none;
 }
 
 .markdown .code-fold-btn {
-  @apply h-8 w-full flex items-center justify-center border-t border-primary bg-secondary text-secondary transition-colors rounded-b-lg;
+  @apply h-7 w-7 flex items-center justify-center rounded-md bg-primary border border-transparent text-secondary transition-colors;
 }
 
 .markdown .code-fold-btn:hover {
-  @apply text-accent;
+  @apply text-accent border-accent/40;
 }
 
 .markdown .code-block[data-collapsible='false'] .code-fold-btn {
@@ -75,7 +93,7 @@
 }
 
 .markdown .code-fold-icon {
-  @apply text-xs leading-none transition-transform duration-200;
+  @apply text-sm leading-none transition-transform duration-200;
 }
 
 .markdown .code-block[data-collapsed='false'] .code-fold-icon {
@@ -83,11 +101,11 @@
 }
 
 .markdown .code-copy-btn {
-  @apply absolute right-28 -top-7 h-7 w-7 px-0 flex items-center justify-center overflow-hidden rounded-t-lg bg-inherit text-secondary transition-all duration-200;
+  @apply h-7 w-7 flex items-center justify-center overflow-hidden rounded-md bg-primary border border-transparent text-secondary transition-all duration-200;
 }
 
 .markdown .code-copy-btn:hover {
-  @apply text-accent;
+  @apply text-accent border-accent/40;
 }
 
 .markdown .code-copy-icon {
@@ -147,7 +165,7 @@
 
 .markdown .code-block[data-collapsible='true'][data-collapsed='true']::after {
   content: '';
-  @apply pointer-events-none absolute inset-x-0 bottom-8 h-12;
+  @apply pointer-events-none absolute inset-x-0 bottom-0 h-12;
   background: linear-gradient(to top, rgb(var(--color-bg-secondary)) 20%, transparent 100%);
 }
 
@@ -163,9 +181,13 @@
   @apply border-b border-primary;
 }
 
+.markdown th {
+  @apply font-semibold bg-secondary;
+}
+
 .markdown th,
 .markdown td {
-  @apply p-2;
+  @apply px-3 py-2;
 }
 
 .markdown td {
@@ -206,7 +228,11 @@
 }
 
 .markdown hr {
-  @apply my-12 mx-auto max-w-[100px] border-primary;
+  @apply my-12 mx-auto h-[2px] max-w-[120px] rounded-full border-0 bg-gradient-to-r from-transparent via-accent to-transparent;
+}
+
+.markdown strong {
+  @apply font-bold text-accent;
 }
 
 .markdown ul {
@@ -220,6 +246,10 @@
 .markdown ol,
 .markdown ul {
   @apply my-5 pl-6 space-y-2;
+}
+
+.markdown li::marker {
+  @apply text-accent;
 }
 
 .markdown ul ul,

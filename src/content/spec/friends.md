@@ -1,10 +1,10 @@
 ---
-title: 朋友们
-description: 我的外置大脑
+title: 友链
+description: 外置大脑
 comments: true
 ---
 
-新建一个`<short-name>.yaml`文件，参考格式：
+加入方式: 新建一个`<short-name>.yaml`文件，参考格式：
 
 ```yml
 title: 网站名称

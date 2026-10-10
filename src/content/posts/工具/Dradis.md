@@ -18,6 +18,10 @@ tags: []
 >
 > 你可以先git下来, 然后装好ruby后尝试安装, 它会告诉你缺了什么; [官方教程](https://dradis.com/ce/documentation/install_git.html)
 
+Dradis 是一款开源的 IT 安全团队协作与报告平台‌，主要用于渗透测试和漏洞评估项目中的数据整合与报告生成
+
+本章只记录了踩的坑, 没有完整安装过程以及使用方法
+
 ## 安装环境
 
 ```bash

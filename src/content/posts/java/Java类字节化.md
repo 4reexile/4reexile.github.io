@@ -5,16 +5,12 @@ date: 2025-08-10
 lastMod: 2025-08-10
 summary: ''
 cover: ''
-category: 'Java安全'
+category: 'Java'
 draft: false
 comments: false
 sticky: 0
-tags: [Java]
+tags: [Java基础, Java安全, Java, RCE, Javassist]
 ---
-
-参考文章
-
-1. [51CTO-maven导入javassist](https://blog.51cto.com/u_16213311/13172392)
 
 # 什么是Java类字节化？
 
@@ -209,3 +205,9 @@ public class Main {
     }
 }
 ```
+
+---
+
+参考文章
+
+1. [51CTO-maven导入javassist](https://blog.51cto.com/u_16213311/13172392)
